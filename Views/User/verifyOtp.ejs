@@ -1,0 +1,284 @@
+<%- include("../../Views/Partials/user/header") %>
+    
+    <title>OTP Registration</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+
+        * {
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #EAF5F6;
+        }
+
+        .page-container {
+            min-height: 92vh;
+        }
+
+        .otp-box {
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            max-width: 435px;
+            width: 100%;
+        }
+
+        .otp-input {
+            width: 40px;
+            height: 50px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        @media (min-width: 576px) {
+            .otp-input {
+                width: 50px;
+            }
+        }
+
+        .otp-input:focus {
+            border-color: #2c7;
+            box-shadow: none;
+            outline: none;
+        }
+
+        .submit-btn {
+            background: #00a884;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0.8rem;
+        }
+
+        .submit-btn:disabled {
+            background: #00a884;
+            background: -webkit-linear-gradient(to right, #00a884, #009688, #00897b, #00796b);
+            background: linear-gradient(to right, #00a884, #009688, #00897b, #00796b);
+            cursor: not-allowed;
+        }
+
+        .resend-btn {
+            color: #2c7;
+            background: none;
+            border: none;
+        }
+
+        .resend-btn:disabled {
+            color: #999;
+        }
+
+        .timer {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .message.success {
+            color: #2c7;
+        }
+
+        .message.error {
+            color: #dc3545;
+        }
+    </style>
+
+
+    <div class="container">
+        <div class="page-container col-sm-12 col-md-12 d-flex align-items-center justify-content-center">
+            <div class="otp-box p-4 p-md-5">
+                <h2 class="text-center mb-4">Enter Verification Code</h2>
+                <p class="message text-center text-muted mb-4" id="note">We have sent a 6-digit code to your email</p>
+        
+                <form id="otpForm">
+                    <div class="d-flex justify-content-center gap-2 gap-md-3 mb-4">
+                        <input type="text" maxlength="1" class="otp-input form-control" autofocus>
+                        <input type="text" maxlength="1" class="otp-input form-control">
+                        <input type="text" maxlength="1" class="otp-input form-control">
+                        <input type="text" maxlength="1" class="otp-input form-control">
+                        <input type="text" maxlength="1" class="otp-input form-control">
+                        <input type="text" maxlength="1" class="otp-input form-control">
+                    </div>
+                </form>
+
+                <div class="timer text-center mb-3">
+                    Time remaining: <span id="timer">00:30</span>
+                </div>
+                <button class="submit-btn w-100 mb-3" id="submitBtn"type="submit" >
+                    Verify Code
+                </button>
+                <button class="resend-btn w-100 " id="resendBtn"  onclick="resendOtp()">
+                    Resend Code 
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        
+        let otpStr = "";
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.otp-input');
+            const submitBtn = document.getElementById('submitBtn');
+            const resendBtn = document.getElementById('resendBtn');
+            const timerDisplay = document.getElementById('timer');
+            let timeLeft = 30;
+            let timerInterval;
+
+            function startTimer() {
+                timeLeft = 30;
+                resendBtn.disabled = true;
+                
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    const minutes = Math.floor(timeLeft / 30);
+                    const seconds = timeLeft % 30;
+                    timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        resendBtn.disabled = false;
+                        timerDisplay.textContent = "00:00";
+                    }
+                }, 1000);
+            }
+
+            startTimer();
+
+            inputs.forEach((input, index) => {
+                input.addEventListener('keyup', (e) => {
+                    if (e.key === "Backspace") {
+                        if (index > 0) {
+                            inputs[index - 1].focus();
+                        }
+                    } else {
+                        const currentValue = e.target.value;
+                        
+                        if (currentValue.length === 1) {
+                            if (index < inputs.length - 1) {
+                                inputs[index + 1].focus();
+                            }
+                            checkComplete();
+                        }
+                    }
+                });
+
+                input.addEventListener('keypress', (e) => {
+                    if (!/^\d$/.test(e.key)) {
+                        e.preventDefault();
+                    }
+                });
+
+                // Add touch device support
+                input.addEventListener('input', () => {
+                    const currentValue = input.value;
+                    if (currentValue.length === 1 && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                    checkComplete();
+                });
+            });
+
+            function checkComplete() {
+                const values = [...inputs].map(input => input.value);
+                otpStr = values.join("");
+                submitBtn.disabled = values.some(value => !value);
+            }
+
+            resendBtn.addEventListener('click', () => {
+                otpStr = "";
+                startTimer();
+                inputs.forEach(input => input.value = '');
+                inputs[0].focus();
+                submitBtn.disabled = true;
+                
+                const message = document.querySelector('.message');
+                message.textContent = 'New verification code sent!';
+                message.className = 'message success text-center mb-4';
+                setTimeout(() => {
+                    message.textContent = 'We have sent a verification code to your email';
+                    message.className = 'message text-center text-muted mb-4';
+                }, 3000);
+
+            });
+
+          
+            document.getElementById('submitBtn').addEventListener('click', () => {
+                otpStr = "";
+                let otp = document.getElementsByClassName('otp-input')
+                for(let x of otp){
+                    otpStr += x.value 
+                }
+                
+                (async function(){
+                    const sendOtp = await fetch('/verifyOtp', {
+                        method : "POST",
+                        headers : {
+                            'Content-Type' : "application/json"
+                        },
+                        body : JSON.stringify({otpStr})
+                    });
+                    
+                    const data =  await sendOtp.json();
+
+                    if(data.success){
+                        window.location.href = "/"
+                    }
+                    else{
+                        document.getElementById('note').innerHTML = data.message
+                      
+                        // Clear all inputs
+                        const inputs = document.querySelectorAll('.otp-input');
+                        inputs.forEach(input => {
+                            input.value = '';
+                        });
+                        inputs[0].focus();
+                
+                        // Disable submit button
+                        document.getElementById('submitBtn').disabled = true
+                    }
+                })()   
+
+                    const inputs = document.querySelectorAll('.otp-input');
+                    inputs.forEach(input => {
+                        input.addEventListener('input', () => {
+                            const errorMessage = document.getElementById('error-message');
+                            errorMessage.classList.remove('show');
+                        });
+                    });   
+            })  
+            
+        });
+            async function resendOtp(){ 
+                let response = await fetch('/resend-otp',{
+                    method : "POST",
+                    headers : {
+                        'Content-Type' : 'application/json'
+                    },
+                    body : JSON.stringify({otpStr})
+                })
+                let data = await response.json()
+
+                if(!data.success){
+                    document.getElementById('note').innerHTML = data.message   
+                }
+            }
+            
+
+    </script>
+
+<%- include("../../Views/Partials/user/footer")%>
