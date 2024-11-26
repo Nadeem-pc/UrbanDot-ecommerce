@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>UrbanDot Sign in</title>
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta property="og:title" content="" />
+        <meta property="og:type" content="" />
+        <meta property="og:url" content="" />
+        <meta property="og:image" content="" />
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="/Admin/imgs/theme/favicon.svg" />
+        <!-- Template CSS -->
+        <link href="/Admin/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+    </head>
+
+    <body>
+        <main>
+            <header class="main-header style-2 navbar">
+                <div class="col-brand">
+                    <a href="index.html" class="brand-wrap">
+                        <img src="/Admin/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
+                    </a>
+                </div>
+                <div class="col-nav">
+            </header>
+
+            <section class="content-main mt-80 mb-80">
+                <div class="card mx-auto card-login">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4" id="title" >Sign in</h4>
+    
+                        <% if(typeof message !=='undefined' ){ %>
+                            <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                                <i class="bi-exclamation-octagon-fill"></i>
+                                <strong class="mx-auto"> <%- message %></strong>
+        
+                            </div>
+                            <% } %>
+
+                        <form method="post">
+                            <div class="mb-3">
+                                <input class="form-control" placeholder="Email" type="text" id="email" name="email" />
+                            </div>
+                            <!-- form-group// -->
+                            <div class="mb-3">
+                                <input class="form-control" placeholder="Password" type="password" id="password" name="password"/>
+                            </div>
+                            <!-- form-group// -->
+                            <div class="mb-3">
+                                <a href="#" class="font-sm text-center">Forgot password ?</a>
+                            </div>
+                            <!-- form-group form-check .// -->
+                            <div class="mb-4">
+                                <button type="submit" class="btn btn-primary w-100">Login</button>
+                            </div>
+                            <!-- form-group// -->
+                        </form>
+                       
+                </div> 
+            </section>
+
+            <!-- <footer class="main-footer text-center">
+                <p class="font-xs">
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>
+                    &copy; UrbanDot.
+                </p>
+                <p class="font-xs mb-30">All rights reserved</p>
+            </footer> -->
+
+        </main>
+
+
+        <script src="/Admin/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="/Admin/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="/Admin/js/vendors/jquery.fullscreen.min.js"></script>
+        <!-- Main Script -->
+        <script src="/Admin/js/main.js?v=1.1" type="text/javascript"></script>
+    </body>
+</html>

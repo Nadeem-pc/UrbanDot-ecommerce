@@ -1,4 +1,4 @@
-const User = require("../../Models/userSchema") 
+const User = require("../Models/userSchema") 
 const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer');
 const passport = require("passport");
@@ -7,7 +7,7 @@ const session = require('express-session')
 
  
 const loadHomePage = async (req,res) => {
-    try{
+    try{    
         return res.render("home")
     }
     catch(error){
@@ -35,10 +35,10 @@ const loadLogin = async (req,res) => {
     }
 }
 
-const verifyLogin = async (req,res) => {
+const verifyLogin = async (req,res) => { 
     try {
         const {email,password} = req.body
-        const findUser = await User.findOne({isAdmin:0,email:email})
+        const findUser = await User.findOne({email:email})
 
         if(!findUser){
             return res.json({status:false,message : "User not found"})
@@ -52,7 +52,9 @@ const verifyLogin = async (req,res) => {
             return res.json({status:false, message : "Incorrect Password"}) 
         }
 
-        req,session.user = findUser._id
+        req.session.user = findUser._id
+        req.session.userBlocked = false
+        
         return res.json({status:true, message:"Welcome back! Let’s get started."})
 
     } catch (error) {
@@ -171,6 +173,7 @@ const verifyOtp = async (req,res) => {
         });
         await saveUserData.save();
         req.session.user = saveUserData._id
+        req.session.userBlocked = false
         res.json({success:true})
         
   
@@ -208,6 +211,16 @@ const resendOtp = async (req,res) => {
     }
 }
 
+const blockedUser = async (req,res) => {
+    try {
+        res.render('userBlocked')
+    } 
+    catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error')
+    }
+}
+
 
 module.exports = {
     loadHomePage,
@@ -218,5 +231,6 @@ module.exports = {
     insertSignUp,
     loadVerifyOtp,
     verifyOtp,
-    resendOtp
+    resendOtp,
+    blockedUser
 }

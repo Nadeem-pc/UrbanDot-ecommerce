@@ -98,7 +98,7 @@
         }
 
         .tab.active {
-            border-bottom: 2px solid #232f3e;
+            border-bottom: 2px solid #00a884;
             font-weight: bold;
         }
 
@@ -171,7 +171,9 @@
         }
 
         .btn {
-            background: #232f3e;
+            background: #00a884;
+            background: -webkit-linear-gradient(to right, #00a884, #009688, #00897b, #00796b);
+            background: linear-gradient(to right, #00a884, #009688, #00897b, #00796b);
             color: white;
             border: none;
             padding: 12px 25px;
@@ -182,7 +184,7 @@
         }
 
         .btn:hover {
-            background: #131921;
+            background: #27ae60;
         }
 
         .btn-outline {
@@ -222,7 +224,7 @@
             align-items: center;
         }
 
-        .reward-banner {
+        /* .reward-banner {
             background: linear-gradient(135deg, #232f3e 0%, #131921 100%);
             color: white;
             padding: 15px;
@@ -231,7 +233,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
+        } */
     </style>
 </head>
 <body>
@@ -247,13 +249,13 @@
             <button class="btn" onclick="addMoney()">Add Money</button>
         </div>
 
-        <div class="reward-banner">
+        <!-- <div class="reward-banner">
             <div>
                 <h3>Cashback Rewards</h3>
                 <p>Earn 5% back on fashion purchases</p>
             </div>
             <button class="btn btn-outline">View Rewards</button>
-        </div>
+        </div> -->
 <!-- 
         <div class="quick-actions">
             <div class="action-card" onclick="sendMoney()">

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Account Blocked</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #dc3545;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --secondary-text-color: #6c757d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overscroll-behavior: contain;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--background-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            padding: 15px;
+        }
+
+        .blocked-container {
+            width: 100%;
+            max-width: 400px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .blocked-icon {
+            font-size: 80px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .blocked-message {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .contact-admin {
+            color: var(--secondary-text-color);
+            font-style: italic;
+            font-size: 1rem;
+        }
+
+        /* Enhanced mobile responsiveness */
+        @media (max-width: 375px) {
+            .blocked-container {
+                padding: 20px;
+            }
+
+            .blocked-icon {
+                font-size: 60px;
+            }
+
+            .blocked-message {
+                font-size: 1.25rem;
+            }
+        }
+
+        /* Landscape mobile support */
+        @media (max-height: 500px) {
+            .blocked-container {
+                max-width: 90%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="blocked-container">
+        <!-- Warning Icon -->
+        <div class="blocked-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+        
+        <!-- Main Message -->
+        <h1 class="blocked-message">Account Blocked By Admin</h1>
+        
+        <!-- Contact Information -->
+        <!-- <p class="contact-admin">Please contact administrator</p> -->
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    
+    <script>
+        // Prevent back navigation after block
+        history.pushState(null, document.title, location.href);
+        window.addEventListener('popstate', function() {
+            history.pushState(null, document.title, location.href);
+        });
+
+        // Log blocked access
+        function logBlockedAccess() {
+            console.log('Blocked access logged at: ' + new Date().toISOString());
+            // In a real application, this would send data to your backend
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            logBlockedAccess();
+
+            // Prevent user interactions
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            
+            // Optional: Disable text selection
+            document.body.style.userSelect = 'none';
+        });
+    </script>
+</body>
+</html>

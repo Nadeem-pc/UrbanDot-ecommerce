@@ -8,6 +8,7 @@ const cache = require('nocache')
 const userRouter = require("./Routes/user")
 const adminRouter = require("./Routes/admin")
 const db = require('./Config/db')
+
 db()
 
 app.use(express.json()) 
@@ -35,7 +36,7 @@ app.set("views",[path.join(__dirname,'Views/User'),path.join(__dirname,'Views/Ad
 app.use(express.static(path.join(__dirname,'Public')))
 
 app.use('/',userRouter)
-// app.use('/admin',adminRouter)
+app.use('/admin',adminRouter)
 
 app.listen(process.env.PORT, () => {
     console.log("Server is running...");

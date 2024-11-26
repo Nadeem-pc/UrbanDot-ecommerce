@@ -113,7 +113,7 @@
                 </form>
 
                 <div class="timer text-center mb-3">
-                    Time remaining: <span id="timer">00:30</span>
+                    Time remaining: <span id="timer">01:00</span>
                 </div>
                 <button class="submit-btn w-100 mb-3" id="submitBtn"type="submit" >
                     Verify Code
@@ -136,22 +136,23 @@
             const submitBtn = document.getElementById('submitBtn');
             const resendBtn = document.getElementById('resendBtn');
             const timerDisplay = document.getElementById('timer');
-            let timeLeft = 30;
+            let timeLeft = 60;
             let timerInterval;
 
             function startTimer() {
-                timeLeft = 30;
+                timeLeft = 60;
                 resendBtn.disabled = true;
                 
                 timerInterval = setInterval(() => {
                     timeLeft--;
-                    const minutes = Math.floor(timeLeft / 30);
-                    const seconds = timeLeft % 30;
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
                     timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                     
                     if (timeLeft <= 0) {
                         clearInterval(timerInterval);
                         resendBtn.disabled = false;
+                        submitBtn.disabled = true
                         timerDisplay.textContent = "00:00";
                     }
                 }, 1000);
@@ -196,7 +197,7 @@
             function checkComplete() {
                 const values = [...inputs].map(input => input.value);
                 otpStr = values.join("");
-                submitBtn.disabled = values.some(value => !value);
+                // submitBtn.disabled = values.some(value => !value);
             }
 
             resendBtn.addEventListener('click', () => {
@@ -204,7 +205,7 @@
                 startTimer();
                 inputs.forEach(input => input.value = '');
                 inputs[0].focus();
-                submitBtn.disabled = true;
+                submitBtn.disabled = false;
                 
                 const message = document.querySelector('.message');
                 message.textContent = 'New verification code sent!';
@@ -248,8 +249,6 @@
                         });
                         inputs[0].focus();
                 
-                        // Disable submit button
-                        document.getElementById('submitBtn').disabled = true
                     }
                 })()   
 

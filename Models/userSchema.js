@@ -15,7 +15,6 @@ const userSchema =  mongoose.Schema({
     phone : {
         type : String,
         required : false,
-        unique : true,
         sparse : true,
         default : null
     },
@@ -35,12 +34,7 @@ const userSchema =  mongoose.Schema({
         default : false
     },
 
-    isAdmin : {
-        type : Boolean,
-        default : false 
-    },
-
-}, {timestamps: true})
+},  )
 
 const User = mongoose.model("User",userSchema)
 module.exports = User
