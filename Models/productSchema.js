@@ -14,11 +14,6 @@ const productSchema = mongoose.Schema({
         required : true
     },
 
-    brand : {
-        type : String,
-        required : true
-    },
-
     category : {
         type : ObjectId,
         ref : "Category",
@@ -30,10 +25,11 @@ const productSchema = mongoose.Schema({
         required: true
     },
 
-    offerPrice : {
-        type: Number,
-        default : 0
-    },
+    // offerPrice : {
+    //     type: Number,
+    //     default : 0
+    // },
+
 
     stock : {
         type: Number,

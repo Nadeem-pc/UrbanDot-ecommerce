@@ -7,13 +7,14 @@ const passport = require('./Config/passport')
 const cache = require('nocache') 
 const userRouter = require("./Routes/user")
 const adminRouter = require("./Routes/admin")
+const loger = require('morgan')
 const db = require('./Config/db')
 
 db()
 
 app.use(express.json()) 
 app.use(express.urlencoded({extended:true}))
-
+app.use(loger('common'))
 app.use(session({
     secret : process.env.SESSION_SECRET,
     resave : false,

@@ -4,6 +4,9 @@ const adminController = require('../Controllers/adminController')
 const categoryController = require('../Controllers/categoryController')
 const productController = require('../Controllers/productController')
 const authMiddleware = require('../Middlewares/Admin/adminAuth')
+const multer = require('multer') 
+const storage = require('../Middlewares/Admin/multer')
+const upload = multer({storage:storage})
 
 // AUTHENTICATION MANAGEMENT 
 admin.get('/login', authMiddleware.isLogout, adminController.loadAdminLogin)
@@ -25,8 +28,8 @@ admin.post('/editCategory',categoryController.editCategory)
 
 // PRODUCT MANAGEMENT 
 admin.get('/products', authMiddleware.isLogin, productController.loadProducts)
-admin.get('/addProduct', authMiddleware.isLogin, productController.loadAddProduct)
-admin.post('/addProduct', productController.addProduct)
+admin.get('/addProduct', productController.loadAddProduct)
+admin.post('/addProduct', upload.array("images",3), productController.addProduct)
 
 
 module.exports = admin
