@@ -16,6 +16,12 @@
         <link href="/Admin/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
     </head>
 
+    <style>
+        .edit-btn{
+            background-color: #3bb77e;
+        }
+    </style>
+
     <body>
         <div class="screen-overlay"></div>
         <aside class="navbar-aside" id="offcanvas_aside">
@@ -41,10 +47,8 @@
                             <span class="text">Products</span>
                         </a>
                         <div class="submenu">
-                            <a href="page-products-list.html">Product List</a>
-                            <a href="page-products-grid.html">Product grid</a>
-                            <a href="page-products-grid-2.html" class="active">Product grid 2</a>
-                            <a href="page-categories.html">Categories</a>
+                            <a href="page-products-grid-2.html" class="active">Product List</a>
+                            <a href="page-products-grid.html">Add product</a>
                         </div>
                     </li>
                     <li class="menu-item has-submenu">
@@ -91,17 +95,7 @@
                             <a href="page-transactions-2.html">Transaction 2</a>
                         </div>
                     </li>
-                    <li class="menu-item has-submenu">
-                        <a class="menu-link" href="#">
-                            <i class="icon material-icons md-person"></i>
-                            <span class="text">Account</span>
-                        </a>
-                        <div class="submenu">
-                            <a href="page-account-login.html">User login</a>
-                            <a href="page-account-register.html">User registration</a>
-                            <a href="page-error-404.html">Error 404</a>
-                        </div>
-                    </li>
+            
                     <li class="menu-item">
                         <a class="menu-link" href="page-reviews.html">
                             <i class="icon material-icons md-comment"></i>
@@ -199,8 +193,8 @@
             <section class="content-main">
                 <div class="content-header">
                     <div>
-                        <h2 class="content-title card-title">Products grid</h2>
-                        <p>Lorem ipsum dolor sit amet.</p>
+                        <h2 class="content-title card-title">Products list</h2>
+                        <!-- <p>Lorem ipsum dolor sit amet.</p> -->
                     </div>
                     <div>
                         <a href="#" class="btn btn-light rounded font-md">Export</a>
@@ -232,171 +226,49 @@
                 </header>
                 <!-- card-header end// -->
                 <div class="row">
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="card card-product-grid">
-                            <a href="#" class="img-wrap"> <img src="/Admin/imgs/items/1.jpg" alt="Product" /> </a>
-                            <div class="info-wrap">
-                                <div class="dropdown float-end">
-                                    <a href="#" class="btn btn-sm btn-brand rounded"> <i class="material-icons md-edit mr-5"></i>Edit </a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <a class="dropdown-item" href="#">Edit info</a>
-                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                    </div>
+                    <% for(let i = data.length-1; i >= 0; i--){ %>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="card card-product-grid">
+                                <!-- <a href="#" class="img-wrap"> <img src="/Admin/imgs/items/1.jpg" alt="Product" /> </a> -->
+                                <a href="#" class="img-wrap"> <img src="/uploads/product-images/<%= data[i].images[0] %>" > </a>
+                                <div class="info-wrap">
+                                    <!-- <div class="dropdown float-end">
+                                        <a href="#" class="btn btn-sm btn-brand rounded"> <i class="material-icons md-edit mr-5"></i>Edit </a>
+                                        <div class="dropdown-menu dropdown-menu-end">
+                                            <a class="dropdown-item" href="#">Edit info</a>
+                                            <a class="dropdown-item text-danger" href="#">Delete</a>
+                                        </div>
+                                    </div> -->
+                                    <a href="#" class="title"> <%= data[i].productName %> </a>
+                                    <div class="price mt-1">₹<%= data[i].regularPrice %> </div>
+                    
+                               
+                                    <!-- price-wrap.// -->
                                 </div>
-                                <a href="#" class="title">Haagen-Dazs Caramel Cone Ice</a>
-                                <div class="price mt-1">$179.00</div>
-                                <!-- price-wrap.// -->
-                            </div>
-                        </div>
-                        <!-- card-product  end// -->
-                    </div>
-                    <!-- col.// -->
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="card card-product-grid">
-                            <a href="#" class="img-wrap"> <img src="/Admin/imgs/items/2.jpg" alt="Product" /> </a>
-                            <div class="info-wrap">
-                                <div class="dropdown float-end">
-                                    <a href="#" class="btn btn-sm btn-brand rounded"> <i class="material-icons md-edit mr-5"></i>Edit </a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <a class="dropdown-item" href="#">Edit info</a>
-                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                    </div>
+
+                                <div class="row ">
+                                    <button class="edit-btn border border-radius-0 text-white" onclick="location.href='/admin/editProduct/<%=data[i]._id%>'"> <!-- <i class="material-icons md-edit "></i>  --> Edit</button>
+                                    <% if(data[i].isBlocked === false){ %>
+                                        <button class="border border-radius-0 " onclick="location.href='/admin/toogleProductBlock/<%=data[i]._id%>/true'">Block</button>
+                                    <%}else{%>    
+                                        <button class="border border-radius-0 " onclick="location.href='/admin/toogleProductBlock/<%=data[i]._id%>/false'"> Unblock </button>
+                                    <%}%>    
                                 </div>
-                                <a href="#" class="title">Seeds of Change Organic Quinoa</a>
-                                <div class="price mt-1">$179.00</div>
-                                <!-- price-wrap.// -->
                             </div>
+                            
+                            <!-- card-product  end// -->
                         </div>
-                        <!-- card-product  end// -->
-                    </div>
-                    <!-- col.// -->
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="card card-product-grid">
-                            <a href="#" class="img-wrap"> <img src="/Admin/imgs/items/3.jpg" alt="Product" /> </a>
-                            <div class="info-wrap">
-                                <div class="dropdown float-end">
-                                    <a href="#" class="btn btn-sm btn-brand rounded"> <i class="material-icons md-edit mr-5"></i>Edit </a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <a class="dropdown-item" href="#">Edit info</a>
-                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                    </div>
-                                </div>
-                                <a href="#" class="title">All Natural Italian-Style</a>
-                                <div class="price mt-1">$179.00</div>
-                                <!-- price-wrap.// -->
-                            </div>
-                        </div>
-                        <!-- card-product  end// -->
-                    </div>
-                    <!-- col.// -->
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="card card-product-grid">
-                            <a href="#" class="img-wrap"> <img src="/Admin/imgs/items/4.jpg" alt="Product" /> </a>
-                            <div class="info-wrap">
-                                <div class="dropdown float-end">
-                                    <a href="#" class="btn btn-sm btn-brand rounded"> <i class="material-icons md-edit mr-5"></i>Edit </a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <a class="dropdown-item" href="#">Edit info</a>
-                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                    </div>
-                                </div>
-                                <a href="#" class="title">Boomchick apop Sweet & Salty</a>
-                                <div class="price mt-1">$179.00</div>
-                                <!-- price-wrap.// -->
-                            </div>
-                        </div>
-                        <!-- card-product  end// -->
-                    </div>
-                    <!-- col.// -->
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="card card-product-grid">
-                            <a href="#" class="img-wrap"> <img src="/Admin/imgs/items/5.jpg" alt="Product" /> </a>
-                            <div class="info-wrap">
-                                <div class="dropdown float-end">
-                                    <a href="#" class="btn btn-sm btn-brand rounded"> <i class="material-icons md-edit mr-5"></i>Edit </a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <a class="dropdown-item" href="#">Edit info</a>
-                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                    </div>
-                                </div>
-                                <a href="#" class="title">Haagen-Dazs Caramel Cone Ice</a>
-                                <div class="price mt-1">$179.00</div>
-                                <!-- price-wrap.// -->
-                            </div>
-                        </div>
-                        <!-- card-product  end// -->
-                    </div>
-                    <!-- col.// -->
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="card card-product-grid">
-                            <a href="#" class="img-wrap"> <img src="/Admin/imgs/items/6.jpg" alt="Product" /> </a>
-                            <div class="info-wrap">
-                                <div class="dropdown float-end">
-                                    <a href="#" class="btn btn-sm btn-brand rounded"> <i class="material-icons md-edit mr-5"></i>Edit </a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <a class="dropdown-item" href="#">Edit info</a>
-                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                    </div>
-                                </div>
-                                <a href="#" class="title">Haagen-Dazs Caramel Cone Ice</a>
-                                <div class="price mt-1">$179.00</div>
-                                <!-- price-wrap.// -->
-                            </div>
-                        </div>
-                        <!-- card-product  end// -->
-                    </div>
-                    <!-- col.// -->
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="card card-product-grid">
-                            <a href="#" class="img-wrap"> <img src="/Admin/imgs/items/7.jpg" alt="Product" /> </a>
-                            <div class="info-wrap">
-                                <div class="dropdown float-end">
-                                    <a href="#" class="btn btn-sm btn-brand rounded"> <i class="material-icons md-edit mr-5"></i>Edit </a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <a class="dropdown-item" href="#">Edit info</a>
-                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                    </div>
-                                </div>
-                                <a href="#" class="title">Haagen-Dazs Caramel Cone Ice</a>
-                                <div class="price mt-1">$179.00</div>
-                                <!-- price-wrap.// -->
-                            </div>
-                        </div>
-                        <!-- card-product  end// -->
-                    </div>
-                    <!-- col.// -->
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="card card-product-grid">
-                            <a href="#" class="img-wrap"> <img src="/Admin/imgs/items/8.jpg" alt="Product" /> </a>
-                            <div class="info-wrap">
-                                <div class="dropdown float-end">
-                                    <a href="#" class="btn btn-sm btn-brand rounded"> <i class="material-icons md-edit mr-5"></i>Edit </a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <a class="dropdown-item" href="#">Edit info</a>
-                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                    </div>
-                                </div>
-                                <a href="#" class="title">Apple Airpods CB-133</a>
-                                <div class="price mt-1">$179.00</div>
-                                <!-- price-wrap.// -->
-                            </div>
-                        </div>
-                        <!-- card-product  end// -->
-                    </div>
-                    <!-- col.// -->
+                        <!-- col.// -->
+  
+                    <% } %>
                 </div>
                 <!-- row.// -->
                 <div class="pagination-area mt-15 mb-50">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-start">
-                            <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                            <li class="page-item"><a class="page-link" href="#">02</a></li>
-                            <li class="page-item"><a class="page-link" href="#">03</a></li>
-                            <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                            <li class="page-item"><a class="page-link" href="#">16</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
-                            </li>
+                            <%for(let i = 1; i <= totalPages; i++){%>
+                                <li class="page-item <%=(i===currentPage)? 'active' : '' %>"><a class="page-link" href="?page=<%=i%>"> <%=i%> </a></li>
+                           <%}%>
                         </ul>
                     </nav>
                 </div>
@@ -408,7 +280,7 @@
                         <script>
                             document.write(new Date().getFullYear());
                         </script>
-                        &copy; Nest - HTML Ecommerce Template .
+                        &copy; UrbanDot.
                     </div>
                     <div class="col-sm-6">
                         <div class="text-sm-end">All rights reserved</div>

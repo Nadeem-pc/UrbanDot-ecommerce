@@ -21,15 +21,18 @@ admin.put('/toogleBlock', adminController.blockUser)
 admin.get('/category', authMiddleware.isLogin, categoryController.loadCategories)
 admin.get('/addCategory', authMiddleware.isLogin, categoryController.loadAddCategory)
 admin.post('/addCategory', categoryController.addCategory)
-admin.get('/listCategory', categoryController.listCategory)
+admin.get('/listCategory',authMiddleware.isLogin, categoryController.listCategory)
 admin.get('/unlistCategory', categoryController.unlistCategory)
 admin.get('/editCategory/:id', authMiddleware.isLogin, categoryController.loadEditCategory)
 admin.post('/editCategory',categoryController.editCategory)
 
 // PRODUCT MANAGEMENT 
-admin.get('/products', authMiddleware.isLogin, productController.loadProducts)
-admin.get('/addProduct', productController.loadAddProduct)
+admin.get('/products',authMiddleware.isLogin, productController.loadProducts)
+admin.get('/addProduct',authMiddleware.isLogin, productController.loadAddProduct)
 admin.post('/addProduct', upload.array("images",3), productController.addProduct)
+admin.get('/toogleProductBlock/:id/:status',productController.productBlockAndUnblock)
+admin.get('/editProduct/:id',authMiddleware.isLogin, productController.loadEditProduct)
+
 
 
 module.exports = admin

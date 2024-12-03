@@ -240,7 +240,7 @@
                                 <h4>Basic</h4>
                             </div> -->
                             <div class="card-body">
-                                <form method="post" id="product_form" enctype="multipart/form-data">
+                                <form  id="product_form" enctype="multipart/form-data">
                                     <div class="mb-4">
                                         <label for="product_name" class="form-label">Product name</label>
                                         <input type="text" placeholder="Type here" class="form-control" id="product_name" name="name" />
@@ -262,8 +262,8 @@
                                         </select>
                                     </div>
 
-                                    <div class="row d-flex justify-content-center pt-30">
-                                        <div class="col-lg-6">
+                                    <div class="row d-flex justify-content-center pt-35">
+                                        <div class="col-lg-4">
                                             <div class="mb-4">
                                                 <label class="form-label">Quantity</label>
                                                 <div class="row gx-2">
@@ -272,12 +272,21 @@
                                             </div>
 
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-4">
                                             <div class="mb-4">
-                                                <label class="form-label">Price</label>
+                                                <label class="form-label">Regular Price</label>
                                                 <input placeholder="₹" type="text" class="form-control" name="price"/>
                                             </div>
                                         </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-4">
+                                                <label class="form-label">Current Price/Offer Price</label>
+                                                <input placeholder="₹" type="text" class="form-control" name="price"/>
+                                            </div>
+                                        </div>
+                                          
+
+                                    
                                         <!-- <div class="col-lg-4">
                                             <label class="form-label">Currency</label>
                                             <select class="form-select">
@@ -287,19 +296,10 @@
                                             </select>
                                         </div> -->
                                     </div>
-                                    <!-- <div class="mb-4">
-                                        <label class="form-label">Tax rate</label>
-                                        <input type="text" placeholder="%" class="form-control" id="product_name" />
-                                    </div> -->
+                    
+                                    <div class="row col-12 mt-25 ">
 
-                                    <!-- <label class="form-check mb-4">
-                                        <input class="form-check-input" type="checkbox" value="" />
-                                        <span class="form-check-label"> Make a template </span>
-                                    </label> -->
-
-                                    <div class="row col-12 d-flex justify-content-evenly align-items-center mt-25">
-
-                                        <div class="addImg card mb-2 col-4">
+                                        <div class="addImg card mb-2 col-lg-4">
                                             <div class="card-body p-0 d-flex flex-column justify-content-evenly align-items-center">
                                                 <div class="input-upload d-flex justify-content-center">
                                                     <img src="/Admin/imgs/theme/upload.svg" id="defaultImg-1"/>
@@ -313,7 +313,7 @@
                                             </div>
                                         </div>
                     
-                                        <div class="addImg card mb-2 col-4">
+                                        <div class="addImg card mb-2 col-lg-4">
                                             <div class="card-body p-0 d-flex flex-column justify-content-evenly align-items-center">
                                                 <div class="input-upload d-flex justify-content-center">
                                                     <img src="/Admin/imgs/theme/upload.svg" id="defaultImg-2"/>
@@ -327,7 +327,7 @@
                                             </div>
                                         </div>
                                         
-                                        <div class="addImg card mb-2 col-4">
+                                        <div class="addImg card mb-2 col-lg-4">
                                             <div class="card-body p-0 d-flex flex-column justify-content-evenly align-items-center">
                                                 <div class="input-upload d-flex justify-content-center">
                                                     <img src="/Admin/imgs/theme/upload.svg" id="defaultImg-3"/>
@@ -364,39 +364,7 @@
                                 </form>
                             </div>
                         </div>
-                        <!-- card end// -->
-                        <!-- <div class="card mb-4">
-                            <div class="card-header">
-                                <h4>Shipping</h4>
-                            </div>
-                            <div class="card-body">
-                                <form>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-4">
-                                                <label for="product_name" class="form-label">Width</label>
-                                                <input type="text" placeholder="inch" class="form-control" id="product_name" />
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-4">
-                                                <label for="product_name" class="form-label">Height</label>
-                                                <input type="text" placeholder="inch" class="form-control" id="product_name" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mb-4">
-                                        <label for="product_name" class="form-label">Weight</label>
-                                        <input type="text" placeholder="gam" class="form-control" id="product_name" />
-                                    </div>
-                                    <div class="mb-4">
-                                        <label for="product_name" class="form-label">Shipping fees</label>
-                                        <input type="text" placeholder="$" class="form-control" id="product_name" />
-                                    </div>
-                                </form>
-                            </div>
-                        </div> -->
-                        <!-- card end// -->
+          
                     </div>
 
                  
@@ -498,8 +466,8 @@
 
                     });
 
-                    document.getElementById('product_form').addEventListener('submit', async (event) => {
-           
+                    documentetElementById('product_form').addEventListener('submit', async (event) => {
+                        console.log("first");
                         
                         event.preventDefault();
                   
@@ -512,11 +480,9 @@
                             const price = document.getElementsByName('price')[0].value;
                            
                             
-                            
-                            
                             if(validateForm(name,description,category,quantity,price,file)){
-                                
-                                console.log(1);
+                                console.log("second");
+    
                                 
                                 // Append images
                                 const formData = new FormData();
@@ -563,16 +529,16 @@
                         //     console.error('Error submitting form:', error);
                         // }
                         function validateForm(name,description,quantity,price,images) {
-console.log('hello');
+
 
                             if (name.trim() === "") {
                                 let nameError = "Please enter a product name"
                                 return displayErrorMessage(nameError);
                             } 
-                            else if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
-                                let nameError = "Product name should contain only alphabetic characters"
-                                return displayErrorMessage(nameError);
-                            }
+                            // else if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
+                            //     let nameError = "Product name should contain only alphabetic characters"
+                            //     return displayErrorMessage(nameError);
+                            // }
                                         
                             if (description.trim() === "") {
                                 let descriptionError = 'Please enter a product description.'
@@ -600,7 +566,7 @@ console.log('hello');
                             //     return displayErrorMessage(imageError);
                             // }
 
-                            return true;
+                                return true;
                             }
 
                             function displayErrorMessage(message){
@@ -609,6 +575,7 @@ console.log('hello');
                                                 
                     });
                 }  
+                
             }          
             
                     

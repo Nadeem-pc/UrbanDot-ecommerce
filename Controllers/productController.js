@@ -4,11 +4,48 @@ const User = require('../Models/userSchema')
 const fs = require('fs')
 const path = require('path')
 const sharp = require('sharp')
+const { log } = require('console')
 
 
 const loadProducts = async (req,res) => {
     try {
-       return res.render('listProducts') 
+        // const search = req.query.search || ""
+        // let search = ""
+        // if(req.query.search){
+        //     search = req.query.search
+        // }
+        const page = parseInt(req.query.page) || 1
+        const limit = 8
+
+        const productData = await Product.find({
+            // $or:[
+            //     {productName:{$regex:".*"+search+".*"}},
+            //     {category:{$regex:".*"+search+".*"}}
+            // ],
+        })
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
+        .populate('category')
+        .exec(); 
+
+        // const count = await Product.find({
+        //     $or:[
+        //         {productName:{$regex:".*"+search+".*"}},
+        //         {category:{$regex:".*"+search+".*"}}
+        //     ],
+        // }).countDocuments()
+        const count = await Product.countDocuments();
+
+        const category = await Category.find({isListed:true})
+
+        if(category){
+            res.render('listProducts',{
+                data : productData,
+                currentPage : page,
+                totalPages : Math.ceil(count/limit),
+                cat : category
+            }) 
+        }
     }
     catch (error) {
         console.log(error);
@@ -32,7 +69,6 @@ const loadAddProduct = async (req,res) => {
 const addProduct = async (req,res) => {
     try {
         const products = req.body;
-        
         const productExists = await Product.findOne({
             productName  : products.name,
         })
@@ -77,9 +113,35 @@ const addProduct = async (req,res) => {
     }
 }
 
+const productBlockAndUnblock = async (req,res) => {
+    const {id,status} = req.params
+    try {
+        await Product.updateOne({_id:id},{$set:{isBlocked:status}})
+        res.redirect('/admin/products')
+    }
+    catch (error) {
+       console.log(error);
+    } 
+}
+
+const loadEditProduct = async(req,res) => {
+    const {id} = req.params
+    try {
+        let product = await Product.findOne({_id:id})
+        let category = await Category.findOne({name:product.category})
+        return res.render('editProduct',{product,category})
+    }
+    catch (error) {
+       console.log(error);
+    }
+}
+
+
 
 module.exports = {
     loadProducts,
     loadAddProduct,
-    addProduct
+    addProduct,
+    productBlockAndUnblock,
+    loadEditProduct
 }

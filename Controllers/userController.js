@@ -1,14 +1,19 @@
 const User = require("../Models/userSchema") 
+const Product = require("../Models/productSchema")
+const Category = require("../Models/categorySchema")
 const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer');
 const passport = require("passport");
 const env = require("dotenv").config();
-const session = require('express-session')
+const session = require('express-session');
+const express = require("express");
+const { isBlocked } = require("../Middlewares/User/userAuth");
 
  
 const loadHomePage = async (req,res) => {
     try{    
-        return res.render("home")
+        const products = await Product.find({isBlocked:false})
+        return res.render("home",{products})
     }
     catch(error){
         console.log("Something Went Wrong");
@@ -134,6 +139,10 @@ const insertSignUp = async (req,res) => {
         }
          
         req.session.userOtp = otp
+        setTimeout(() => {
+            req.session.userOtp = null
+        },1000*60)
+        
         req.session.userData = {username,phone,email,password}
 
         console.log("otp send",otp);
@@ -221,6 +230,56 @@ const blockedUser = async (req,res) => {
     }
 }
 
+const loadShop = async (req,res) => {
+    try {
+        const limit = 6
+        const page = parseInt(req.query.page) || 1
+        const skip = (page - 1) * limit
+
+        const totalProducts = await Product.countDocuments();
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        const products = await Product.find({isBlocked:false}).skip(skip).limit(limit)
+
+        return res.render('shop',{
+            products,
+            currentPage : page,
+            totalPages
+        })
+    }
+    catch (error) {
+        console.log(error);
+        res.redirect('/pageNotFound')
+    }
+}
+
+const loadProductDetail = async (req,res) => {
+    const {id} = req.params  
+    try {
+        const product = await Product.findOne({_id:id,isBlocked:false})
+        const recommendedProducts = await Product.find({
+            category : product.category,
+            _id : {$ne:id}
+        }).limit(4)
+        res.render('productDetail',{product, recommendedProducts})
+    }
+    catch (error) {
+        console.log(error);
+        res.redirect('/pageNotFound')
+    }
+}
+
+const loadProfilePage = async (req,res) => {
+    try {
+        let id = req.session.user
+        let user = await User.findOne({_id:id})
+        res.render('userProfile',{user})
+    }
+    catch (error) {
+        console.log(error);
+        res.redirect('/pageNotFound')
+    }
+}
 
 module.exports = {
     loadHomePage,
@@ -232,5 +291,8 @@ module.exports = {
     loadVerifyOtp,
     verifyOtp,
     resendOtp,
-    blockedUser
+    blockedUser,
+    loadShop,
+    loadProductDetail,
+    loadProfilePage
 }
