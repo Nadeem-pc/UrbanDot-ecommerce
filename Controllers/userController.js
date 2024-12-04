@@ -302,6 +302,28 @@ const editUserProfile = async (req,res) => {
     }
 }
 
+const changePassword = async (req,res) => {
+    const{password,changedPassword} = req.body
+    const id = req.session.user
+    const user = await User.findOne({_id:id})
+
+    try {
+        const passwordMatch =  await bcrypt.compare(password, user.password)
+        if(!passwordMatch){
+            return res.json({status:false, message : "Incorrect Password"}) 
+        }
+
+        let newPassword = await bcrypt.hash(changedPassword,10)
+        
+        const updatedUser = await User.updateOne({_id:id},{$set:{password:newPassword}})
+        return res.status(200).json({status :true, message:"Password Changed Successfully"})
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Internal Server Error" })
+    }
+}
+
 
 module.exports = {
     loadHomePage,
@@ -317,5 +339,6 @@ module.exports = {
     loadShop,
     loadProductDetail,
     loadProfilePage,
-    editUserProfile
+    editUserProfile,
+    changePassword
 }

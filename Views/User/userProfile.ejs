@@ -3,6 +3,26 @@
 <%-include("../../Views/Partials/user/header")%>
 
     <style>
+
+        .form-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin: 80px 0;
+        }
+        .form-label {
+            font-weight: 600;
+        }
+        #submitBtn{
+            background: #00a884;
+            background: -webkit-linear-gradient(to right, #00a884, #009688, #00897b, #00796b);
+            background: linear-gradient(to right, #00a884, #009688, #00897b, #00796b);
+            color: white;
+        }
+        .footer-area a{
+            text-decoration: none;
+        }
         #icon{
             background-color: beige;
         }
@@ -302,12 +322,11 @@
     </style>
 
 
-
     <div class="profileContainer">
     <!-- Sidebar -->
         <div class="profile-sidebar">
             <div class="profile-picture">
-                <!-- <div class="edit-avatar"></div> -->
+             
             </div>
             <h2 class="user-name"><%=user.username%></h2>
             <p class="user-email"><%=user.email%></p>
@@ -363,6 +382,90 @@
                 </form>
             </div>
 
+
+
+            <!-- <div class="col-md-8 col-lg-6 form-container"> -->
+            <div id="addAddress" class="tab-content">
+                <h2 class="section-title mb-4">Add New Address</h2>
+                <form id="addressForm" >
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="firstName" required>
+                            <div class="invalid-feedback">Please enter your first name.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">Mobile</label>
+                            <input type="tel" class="form-control" id="phone" pattern="[0-9]{10}" required>
+                            <div class="invalid-feedback">Please enter a valid 10-digit phone number.</div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="pincode" class="form-label">Pincode</label>
+                            <input type="text" class="form-control" id="pincode" pattern="[0-9]{6}" required>
+                            <div class="invalid-feedback">Please enter a valid 6-digit pincode.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="city" class="form-label">City</label>
+                            <input type="text" class="form-control" id="city" required>
+                            <div class="invalid-feedback">Please enter your city.</div>
+                        </div>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <textarea class="form-control" id="address" rows="3" required></textarea>
+                        <div class="invalid-feedback">Please enter your address.</div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="country" class="form-label">Country</label>
+                            <select class="form-select" id="country" required>
+                                <option value="India"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="state" class="form-label">State</label>
+                            <select class="form-select" id="state" required>
+                                <option value="">Select State</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a state.</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Address Type</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="addressType" id="home" value="home" required>
+                                <label class="form-check-label" for="home">Home</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="addressType" id="work" value="work">
+                                <label class="form-check-label" for="work">Work</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="defaultAddress">
+                        <label class="form-check-label" for="defaultAddress">
+                            Set as Default Address
+                        </label>
+                    </div> -->
+
+                    <div class="createBtn text-center">
+                        <button type="submit" id="submitBtn" class="btn">Save Address</button>
+                    </div>
+                </form>
+            </div>
+
+
             <!-- Orders Tab -->
             <div id="orders" class="tab-content">
                 <h2 class="section-title">Order History</h2>
@@ -401,26 +504,28 @@
                     <p>New York, NY 10001</p>
                     <p>United States</p>
                 </div>
-                <button class="btn">Add New Address</button>
+                <button class="btn" onclick="changePage('addAddress')">Add New Address</button>
             </div>
 
 
             <!-- Security Tab -->
             <div id="security" class="tab-content">
                 <h2 class="section-title">Security Settings</h2>
-                <div class="form-group">
-                    <label>Current Password</label>
-                    <input type="password">
-                </div>
-                <div class="form-group">
-                    <label>New Password</label>
-                    <input type="password">
-                </div>
-                <div class="form-group">
-                    <label>Confirm New Password</label>
-                    <input type="password">
-                </div>
-                <button class="btn">Update Password</button>
+                <form id="passwordChangingForm">
+                    <div class="form-group">
+                        <label id="currentPassIndication">Current Password</label>
+                        <input type="password" name="password" id="currentPassword">
+                    </div>
+                    <div class="form-group">
+                        <label id="newPassIndication">New Password</label>
+                        <input type="password" name="newPassword" id="newPassword">
+                    </div>
+                    <div class="form-group">
+                        <label id="confirmPassIndication">Confirm New Password</label>
+                        <input type="password" id="confirmPassword">
+                    </div>
+                    <button class="btn">Update Password</button>
+                </form>
             </div>
         </div>
     </div>
@@ -434,6 +539,20 @@
                 item.classList.remove('active');
             });
             document.querySelector(`.menu-item[onclick="showTab('${tabId}')"]`).classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        function changePage(tabId) {
+            // Update menu items
+            document.querySelectorAll('.createBtn').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`.createBtn[onclick="showTab('${tabId}')"]`)
             
             // Update tab content
             document.querySelectorAll('.tab-content').forEach(tab => {
@@ -489,7 +608,6 @@
 
            
            if(!validateForm()) return 
-           console.log("data fetching...");
            
             const response = await fetch('/editUser',{
                 method : "POST",
@@ -497,6 +615,96 @@
                     'Content-Type' : 'application/json'
                 },
                 body : JSON.stringify({name,phone})
+            })
+            let data = await response.json()
+
+            if(!data.status){
+                return Must.failure({time: 3000, content: data.message})
+            }
+            
+            setTimeout(() => {
+                window.location.href = '/profile'
+            },1500)
+
+            Must.success({time: 1500, content: data.message, color:'#27ae60'})
+
+            document.getElementById("icon").style.backgroundColor = 'beige'
+            document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
+
+        })
+
+        function validateForm (){
+
+            const usernameInput = document.getElementById('name')
+            let phoneInput = document.getElementById('phone')
+
+            const usernamePattern = /^[A-Za-z\s]{3,}$/;
+            const phonePattern = /^[0-9]{10}$/;
+
+            if(!usernamePattern.test(usernameInput.value)){
+                document.getElementById('nameIndication').innerHTML = 'Name must be at least 3 characters long and contain only letters and spaces.'
+                document.getElementById('nameIndication').style.color = 'red'
+                return false
+            }else{
+                document.getElementById('nameIndication').innerHTML = 'Name'
+                document.getElementById('nameIndication').style.color = 'black'   
+            }
+
+            if(!phonePattern.test(phoneInput.value)){
+                document.getElementById('phoneIndication').innerHTML = 'Phone number must be exactly 10 digits.'
+                document.getElementById('phoneIndication').style.color = 'red'
+                return false 
+            }else{
+                document.getElementById('phoneIndication').innerHTML = 'Phone'
+                document.getElementById('phoneIndication').style.color = 'black'  
+            }
+
+            return true
+        }
+    
+
+        function passwordValidation(){
+            let password = document.getElementById('currentPassword')
+            let newPassword = document.getElementById('newPassword')
+            let confirmPassword = document.getElementById('confirmPassword')
+
+            const passwordCriteria = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+            if(!passwordCriteria.test(newPassword.value)){
+                document.getElementById('newPassIndication').innerHTML = 'Password must be at least 8 characters long and contain uppercase, lowercase, number and special character.'
+                document.getElementById('newPassIndication').style.color = 'red'
+                return false
+            }else{
+                document.getElementById('newPassIndication').innerHTML = 'Current Password'
+                document.getElementById('newPassIndication').style.color = 'black'
+            }
+
+            if(newPassword.value !== confirmPassword.value){
+                document.getElementById('confirmPassIndication').innerHTML = 'Password does not match. Please re-enter your password.'
+                document.getElementById('confirmPassIndication').style.color = 'red'
+                return false
+            }else{
+                document.getElementById('confirmPassIndication').innerHTML = 'Confirm Password'
+                document.getElementById('confirmPassIndication').style.color = 'black'
+            }
+            
+            return true
+        }
+
+        document.getElementById('passwordChangingForm').addEventListener('submit', async (event) => {
+            event.preventDefault()
+
+            let password = document.getElementById('currentPassword').value
+            let changedPassword = document.getElementById('newPassword').value
+    
+            if(!passwordValidation()) return 
+            console.log("fetching....");
+            const response = await fetch('/changePassword',{ 
+                method : "POST",
+                headers : {
+                    'Content-Type' : "application/json"
+                },
+                body : JSON.stringify({password,changedPassword})
             })
             let data = await response.json()
 
@@ -514,37 +722,51 @@
 
         })
 
-        function validateForm (){
 
-            const usernameInput = document.getElementById('name')
-            let phoneInput = document.getElementById('phone')
+    </script>
 
-            console.log("Form validation working");
 
-            const usernamePattern = /^[A-Za-z\s]{3,}$/;
-            const phonePattern = /^[0-9]{10}$/;
-
-            if(!usernamePattern.test(usernameInput.value)){
-                document.getElementById('nameIndication').innerHTML = 'Name must be at least 3 characters long and contain only letters and spaces.'
-                document.getElementById('nameIndication').style.color = 'red'
-                return false
-            }else{
-                document.getElementById('nameIndication').innerHTML = 'Name'
-                document.getElementById('nameIndication').style.color = 'black'   
+    <script>
+            
+        let options = {
+            headers:{
+                "Accept": "application/json",
+                "Authorization" : `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJfZW1haWwiOiJuYWRlZW1wYzc3N0BnbWFpbC5jb20iLCJhcGlfdG9rZW4iOiJzS2NJWWZxUVJUa05ubFdvQnQ4amVtNC00X25MLUxvYmhRd1NXWDNKcEpYRnd0NEtyRjgza2JzdXpuc3oyV0lOSmVzIn0sImV4cCI6MTczMzM5NjIyOH0.9y1XnYwBErKnOA7LkurSBlJ-UX4dWcL1yIXiqKiF0sE`
             }
-            if(!phonePattern.test(phoneInput.value)){
-                document.getElementById('phoneIndication').innerHTML = 'Phone number must be exactly 10 digits.'
-                document.getElementById('phoneIndication').style.color = 'red'
-                return false
-                
-            }else{
-                document.getElementById('phoneIndication').innerHTML = 'Phone'
-                document.getElementById('phoneIndication').style.color = 'black'  
-            }
-            return true
         }
-    
-
+        
+        
+        fetch("https://www.universal-tutorial.com/api/countries",options)
+        .then(res=> res.json())
+        .then(data=> {
+            let selectCountry = document.getElementById("country")
+            selectCountry.innerHTML = ''
+            data.map(val=>{
+                let {country_name, country_code} = val;
+                let elements = `<option value="${country_name}" id="${country_code}">${country_name}</option>`
+                selectCountry.innerHTML += elements
+            })
+            changeState(data[0].country_name)
+        })
+        
+        function changeState(countryName){
+            fetch(`https://www.universal-tutorial.com/api/states/${countryName}`, options)
+            .then(res=> res.json())
+            .then(data=>{
+                let selectState = document.getElementById("state")
+                selectState.innerHTML = ""
+                data.map(val=>{
+                    let statename = val.state_name
+                    let elements = `<option value="${statename}">${statename}</option>`
+                    selectState.innerHTML += elements
+                })
+                
+            })
+        }
+        document.getElementById("country").addEventListener("change",(e)=>{
+            changeState(e.target.value)
+        })
+        
     </script>
 
 <%-include("../../Views/Partials/user/footer")%>
