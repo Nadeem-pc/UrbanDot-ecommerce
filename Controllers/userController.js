@@ -6,6 +6,7 @@ const nodemailer = require('nodemailer');
 const passport = require("passport");
 const env = require("dotenv").config();
 const session = require('express-session');
+const mongoose = require('mongoose')
 const express = require("express");
 const { isBlocked } = require("../Middlewares/User/userAuth");
 
@@ -281,6 +282,27 @@ const loadProfilePage = async (req,res) => {
     }
 }
 
+const editUserProfile = async (req,res) => {
+    const {name,phone} = req.body
+    const id = new mongoose.Types.ObjectId(req.session.user)
+    
+    try {
+        let phoneExist = await User.findOne({_id:{$ne:id},phone:phone})
+        
+        if(phoneExist){
+            return res.status(400).json({status:false, message:"Phone already exists"})
+        }
+        const updatedUser = await User.updateOne({_id:id},{$set:{username:name,phone}})
+        return res.status(200).json({status:true, message:"Profile updated successfully"})
+
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Internal Server Error" })
+    }
+}
+
+
 module.exports = {
     loadHomePage,
     pageNotFound,
@@ -294,5 +316,6 @@ module.exports = {
     blockedUser,
     loadShop,
     loadProductDetail,
-    loadProfilePage
+    loadProfilePage,
+    editUserProfile
 }

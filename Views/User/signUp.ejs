@@ -340,7 +340,9 @@
             // Form validation
             function validateUsername(username) {
                 return username.length >= 3 &&
-                /[a-zA-Z]/.test(username)
+                // /[a-zA-Z]/.test(username)
+                /^[A-Za-z\s]{3,}$/.test(username)
+                
             }
 
             function validateEmail(email) {
@@ -374,7 +376,7 @@
                     switch(input.id) {
                         case 'username':
                             if (!validateUsername(input.value)) {
-                                errorElement.textContent = 'Name must be at least 3 characters long and contain at least one letter';
+                                errorElement.textContent = 'Username must be at least 3 characters long and contain only letters and spaces.';
                                 errorElement.style.display = 'block';
                             } else {
                                 errorElement.style.display = 'none';

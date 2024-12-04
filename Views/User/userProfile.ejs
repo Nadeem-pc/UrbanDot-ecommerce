@@ -1,7 +1,18 @@
+<script src="https://unpkg.com/must-pop@latest/dist/library.js"></script>
+
 <%-include("../../Views/Partials/user/header")%>
 
     <style>
-        
+        #icon{
+            background-color: beige;
+        }
+
+        .pop-container{
+            background-color: white;
+            margin-top: 80px;
+            z-index: 10;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -297,7 +308,6 @@
         <div class="profile-sidebar">
             <div class="profile-picture">
                 <!-- <div class="edit-avatar"></div> -->
-                
             </div>
             <h2 class="user-name"><%=user.username%></h2>
             <p class="user-email"><%=user.email%></p>
@@ -333,8 +343,8 @@
                 <form id="profile-form">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Name</label>
-                            <input type="text" value="<%=user.username%>">
+                            <label id="nameIndication">Name</label>
+                            <input type="text" id="name" name="name" value="<%=user.username%>">
                         </div>
                         <!-- <div class="form-group">
                             <label>Last Name</label>
@@ -342,14 +352,14 @@
                         </div> -->
                     </div>
                     <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" value="<%=user.email%>">
+                        <label id="phoneIndication">Phone</label>
+                        <input type="tel" id="phone" name="phone" value="<%=user.phone%>">
                     </div>
                     <div class="form-group">
-                        <label>Phone</label>
-                        <input type="tel" value="<%=user.phone%>">
+                        <label>Email</label>
+                        <input type="email" placeholder="<%=user.email%>" disabled>
                     </div>
-                    <button class="btn" onclick="saveProfile(event)">Save Changes</button>
+                    <button class="btn">Save Changes</button>
                 </form>
             </div>
 
@@ -469,6 +479,71 @@
                 card.style.transform = 'translateY(0)';
             });
         });
+
+
+        document.getElementById('profile-form').addEventListener('submit', async (event) => {
+            event.preventDefault()
+
+            let name = document.getElementById('name').value
+            let phone = document.getElementById('phone').value
+
+           
+           if(!validateForm()) return 
+           console.log("data fetching...");
+           
+            const response = await fetch('/editUser',{
+                method : "POST",
+                headers : {
+                    'Content-Type' : 'application/json'
+                },
+                body : JSON.stringify({name,phone})
+            })
+            let data = await response.json()
+
+            if(!data.status){
+                return Must.failure({time: 3000, content: data.message})
+            }
+            setTimeout(() => {
+                window.location.href = '/profile'
+            },1500)
+
+            Must.success({time: 1500, content: data.message, color:'#27ae60'})
+
+            document.getElementById("icon").style.backgroundColor = 'beige'
+            document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
+
+        })
+
+        function validateForm (){
+
+            const usernameInput = document.getElementById('name')
+            let phoneInput = document.getElementById('phone')
+
+            console.log("Form validation working");
+
+            const usernamePattern = /^[A-Za-z\s]{3,}$/;
+            const phonePattern = /^[0-9]{10}$/;
+
+            if(!usernamePattern.test(usernameInput.value)){
+                document.getElementById('nameIndication').innerHTML = 'Name must be at least 3 characters long and contain only letters and spaces.'
+                document.getElementById('nameIndication').style.color = 'red'
+                return false
+            }else{
+                document.getElementById('nameIndication').innerHTML = 'Name'
+                document.getElementById('nameIndication').style.color = 'black'   
+            }
+            if(!phonePattern.test(phoneInput.value)){
+                document.getElementById('phoneIndication').innerHTML = 'Phone number must be exactly 10 digits.'
+                document.getElementById('phoneIndication').style.color = 'red'
+                return false
+                
+            }else{
+                document.getElementById('phoneIndication').innerHTML = 'Phone'
+                document.getElementById('phoneIndication').style.color = 'black'  
+            }
+            return true
+        }
+    
 
     </script>
 

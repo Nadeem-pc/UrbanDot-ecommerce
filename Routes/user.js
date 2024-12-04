@@ -30,6 +30,8 @@ user.get('/product/:id',userController.loadProductDetail)
 
 user.get('/profile',userAuth, userController.loadProfilePage)
 
+user.post('/editUser',userController.editUserProfile)
+
 user.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}))
 user.get('/google/callback',passport.authenticate('google',{failureRedirect:'/signup'}),(req,res) => {
     res.redirect('/')
