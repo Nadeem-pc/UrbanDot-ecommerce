@@ -28,11 +28,13 @@ user.get('/shop',userController.loadShop)
 
 user.get('/product/:id',userController.loadProductDetail)
 
-user.get('/profile', userController.loadProfilePage)
+user.get('/profile',userAuth, userController.loadProfilePage)
 
 user.post('/editUser',userController.editUserProfile)
 
 user.post('/changePassword',userController.changePassword)
+
+user.post('/addAddress',userController.addAddress)
 
 user.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}))
 user.get('/google/callback',passport.authenticate('google',{failureRedirect:'/signup'}),(req,res) => {

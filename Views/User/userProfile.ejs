@@ -323,21 +323,21 @@
 
 
     <div class="profileContainer">
-    <!-- Sidebar -->
-        <div class="profile-sidebar">
-            <div class="profile-picture">
-             
-            </div>
-            <h2 class="user-name"><%=user.username%></h2>
-            <p class="user-email"><%=user.email%></p>
-            
-            <ul class="menu-items">
-                <li class="menu-item active" onclick="showTab('profile')"> Profile</li>
-                <li class="menu-item" onclick="showTab('orders')"> Orders</li>
-                <li class="menu-item" onclick="showTab('addresses')"> Addresses</li>
-                <li class="menu-item" onclick="showTab('security')"> Security</li>
-            </ul>
-        </div> 
+        <!-- Sidebar -->
+            <div class="profile-sidebar">
+                <div class="profile-picture">
+                
+                </div>
+                <h2 class="user-name"><%=user.username%></h2>
+                <p class="user-email"><%=user.email%></p>
+                
+                <ul class="menu-items">
+                    <li class="menu-item active" onclick="showTab('profile')"> Profile</li>
+                    <li class="menu-item" onclick="showTab('orders')"> Orders</li>
+                    <li class="menu-item" onclick="showTab('addresses')"> Addresses</li>
+                    <li class="menu-item" onclick="showTab('security')"> Security</li>
+                </ul>
+            </div> 
 
         <!-- Main Content -->
         <div class="profile-main">
@@ -387,28 +387,28 @@
             <!-- <div class="col-md-8 col-lg-6 form-container"> -->
             <div id="addAddress" class="tab-content">
                 <h2 class="section-title mb-4">Add New Address</h2>
-                <form id="addressForm" >
+                <form id="addressForm">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="firstName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="firstName" required>
+                            <label for="firstName" class="form-label" id="nameLabel">Name</label>
+                            <input type="text" class="form-control" id="nameAtAddress" required>
                             <div class="invalid-feedback">Please enter your first name.</div>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="phone" class="form-label">Mobile</label>
-                            <input type="tel" class="form-control" id="phone" pattern="[0-9]{10}" required>
+                            <label for="phone" class="form-label" id="mobLabel">Mobile</label>
+                            <input type="tel" class="form-control" id="phoneAtAddress" required>
                             <div class="invalid-feedback">Please enter a valid 10-digit phone number.</div>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="pincode" class="form-label">Pincode</label>
-                            <input type="text" class="form-control" id="pincode" pattern="[0-9]{6}" required>
+                            <label for="pincode" class="form-label" id="pincodeLabel">Pincode</label>
+                            <input type="text" class="form-control" id="pincode" required>
                             <div class="invalid-feedback">Please enter a valid 6-digit pincode.</div>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="city" class="form-label">City</label>
+                            <label for="city" class="form-label" id="cityLabel">City</label>
                             <input type="text" class="form-control" id="city" required>
                             <div class="invalid-feedback">Please enter your city.</div>
                         </div>
@@ -439,10 +439,10 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Address Type</label>
+                        <label class="form-label" id="typeLabel">Address Type</label>
                         <div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="addressType" id="home" value="home" required>
+                                <input class="form-check-input" type="radio" name="addressType" id="home" value="home" >
                                 <label class="form-check-label" for="home">Home</label>
                             </div>
                             <div class="form-check form-check-inline">
@@ -526,6 +526,7 @@
                     </div>
                     <button class="btn">Update Password</button>
                 </form>
+                <a class="d-flex align-items-center justify-content-center" href="">Forgot password</a>
             </div>
         </div>
     </div>
@@ -698,7 +699,7 @@
             let changedPassword = document.getElementById('newPassword').value
     
             if(!passwordValidation()) return 
-            console.log("fetching....");
+
             const response = await fetch('/changePassword',{ 
                 method : "POST",
                 headers : {
@@ -706,11 +707,13 @@
                 },
                 body : JSON.stringify({password,changedPassword})
             })
+
             let data = await response.json()
 
             if(!data.status){
                 return Must.failure({time: 3000, content: data.message})
             }
+
             setTimeout(() => {
                 window.location.href = '/profile'
             },1500)
@@ -720,6 +723,109 @@
             document.getElementById("icon").style.backgroundColor = 'beige'
             document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
 
+        })
+
+        function validateAddress(name,phone,pincode,city,isSelected){
+
+            const usernamePattern = /^[A-Za-z\s]{3,}$/;
+            const phonePattern = /^[0-9]{10}$/;
+
+            let isValid = true
+
+            if(!usernamePattern.test(name)){
+                document.getElementById('nameLabel').innerHTML = 'Name must be at least 3 characters long and contain only letters and spaces.'
+                document.getElementById('nameLabel').style.color = 'red'
+                isValid = false
+            }else{
+                document.getElementById('nameLabel').innerHTML = 'Name'
+                document.getElementById('nameLabel').style.color = 'black'   
+            }
+
+            if(!phonePattern.test(phone)){
+                document.getElementById('mobLabel').innerHTML = 'Phone number must be exactly 10 digits.'
+                document.getElementById('mobLabel').style.color = 'red'
+                isValid = false
+            }else{
+                document.getElementById('mobLabel').innerHTML = 'Mobile'
+                document.getElementById('mobLabel').style.color = 'black'  
+            }
+
+            if (!/^\d{6}$/.test(pincode)) {
+               document.getElementById('pincodeLabel').innerHTML = "Pincode must be exactly 6 digits.";
+               document.getElementById('pincodeLabel').style.color = 'red'
+                isValid = false;
+            }else{
+                document.getElementById('pincodeLabel').innerHTML = 'Pincode'
+                document.getElementById('pincodeLabel').style.color = 'black'  
+            }
+            
+            if (!/^[A-Za-z\s]+$/.test(city)) {
+                document.getElementById('cityLabel').innerHTML = "City name contain only alphabets.";
+                document.getElementById('cityLabel').style.color = 'red'
+                isValid = false;
+            }else{
+                document.getElementById('cityLabel').innerHTML = 'City'
+                document.getElementById('cityLabel').style.color = 'black'  
+            }
+
+            if(!isSelected){
+                document.getElementById('typeLabel').innerHTML = "Please select an address type before submitting.";
+                document.getElementById('typeLabel').style.color = 'red'
+                isValid = false;
+            }else{
+                document.getElementById('typeLabel').innerHTML = 'Address Type'
+                document.getElementById('typeLabel').style.color = 'black'  
+            }
+
+            return isValid
+        }
+
+        document.getElementById('addressForm').addEventListener('submit', async (event) => {
+            event.preventDefault()
+
+            const name = document.getElementById('nameAtAddress').value
+            const phone = document.getElementById('phoneAtAddress').value
+            const pincode = document.getElementById('pincode').value
+            const city = document.getElementById('city').value
+            const fullAddress = document.getElementById('address').value
+            const country = document.getElementById('country').value
+            const state = document.getElementById('state').value
+            const radios = document.getElementsByName('addressType')
+
+            let addressType = null
+            let isSelected = false
+            for(const radio of radios){
+                if(radio.checked){
+                    addressType = radio.value
+                    isSelected = true
+                    break
+                }
+            }
+
+            if(!validateAddress(name,phone,pincode,city,isSelected)) return 
+            console.log('fetch working..');
+            let response = await fetch('/addAddress',{
+                method : "POST",
+                headers : {
+                    'Content-Type' : "application/json"
+                },
+                body : JSON.stringify({name,phone,pincode,city,fullAddress,country,state,addressType})
+            })
+
+            let data = await response.json()
+
+            if(!data.status){
+                return Must.failure({time: 3000, content: data.message})
+            }
+            
+            setTimeout(() => {
+                window.location.href = '/profile'
+            },1500)
+
+            Must.success({time: 1500, content: data.message, color:'#27ae60'})
+
+            document.getElementById("icon").style.backgroundColor = 'beige'
+            document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
         })
 
 

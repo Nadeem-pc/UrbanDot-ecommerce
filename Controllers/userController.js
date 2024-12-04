@@ -1,6 +1,7 @@
 const User = require("../Models/userSchema") 
 const Product = require("../Models/productSchema")
 const Category = require("../Models/categorySchema")
+const Address = require("../Models/addressSchema");
 const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer');
 const passport = require("passport");
@@ -324,6 +325,35 @@ const changePassword = async (req,res) => {
     }
 }
 
+const addAddress = async (req,res) => {
+    const {name,phone,pincode,city,fullAddress,country,state,addressType} = req.body
+    const userId = req.session.user
+
+    try {
+        const userData = await User.findOne({_id:userId})
+        const userAddress = await Address.findOne({user:userData._id})
+
+        if(!userAddress){
+            const newAddress = new Address({
+                user : userData._id,
+                address : [{addressType,name,city,pincode,phone,country,state,fullAddress}]
+            });
+
+            await newAddress.save()
+            return res.status(200).json({status:true, message:"Address added successfully"})
+        }
+        // else{
+        //     userAddress.address.push({addressType,name,city,pincode,phone,country,state,fullAddress})
+        //     await userAddress.save()
+        // }
+
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Internal Server Error" })
+    }
+}
+
 
 module.exports = {
     loadHomePage,
@@ -340,5 +370,6 @@ module.exports = {
     loadProductDetail,
     loadProfilePage,
     editUserProfile,
-    changePassword
+    changePassword,
+    addAddress
 }
