@@ -378,6 +378,7 @@ const deleteAddress = async (req,res) => {
 }
 
 
+
 module.exports = {
     loadHomePage,
     pageNotFound,
@@ -395,5 +396,5 @@ module.exports = {
     editUserProfile,
     changePassword,
     addAddress,
-    deleteAddress
+    deleteAddress,
 }

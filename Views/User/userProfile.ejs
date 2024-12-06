@@ -541,7 +541,7 @@
                     <% address.address.map((val)=>{ %>
                         <div class="address-card">
                             <div class="address-actions">
-                                <button class="btn btn-outline" onclick="editPage('editAddress',`<%=JSON.stringify(val)%>`)">Edit</button>
+                                <button class="btn btn-outline" onclick="editPage('editAddress', `<%= JSON.stringify(val).replace(/'/g, '&quot;') %>`)">Edit</button>
                                 <button class="btn btn-outline" onclick="location.href='/deleteAddress/<%=address._id%>/<%=val._id%>'">Delete</button>
                             </div>
                             <div class="type d-flex "> 
@@ -727,16 +727,9 @@
             });
             document.getElementById(tabId).classList.add('active');
 
-            let name = document.getElementById('nameAtEditAddress')
-            let phone =  document.getElementById('phoneAtEditAddress')
-            let pincode =  document.getElementById('editPincode')
-            let city =  document.getElementById('editCity')
-            let country =  document.getElementById('editCountry')
-            let state =  document.getElementById('editState')
-            let fullAddress =  document.getElementById('editAddress')
-            let addressType =  document.getElementsByName('editAddressType') 
+          
 
-            editAddress(name,phone,pincode,city,country,state,addressType,fullAddress,JSON.parse(obj))
+            editAddress(obj)
         }
 
         // Size preference selection
@@ -777,8 +770,24 @@
             });
         });
 
-        function editAddress (name,phone,pincode,city,country,state,addressType,fullAddress,obj){
-            console.log(obj);
+        function editAddress (obj){
+            console.log(obj, typeof obj)
+            let n = {
+                name: "sajjad@dsjnd",
+                sdl:223
+            }
+            console.log(JSON.stringify(n))
+            let newObj = JSON.parse(`${obj}`)
+            let name = document.getElementById('nameAtEditAddress')
+            let phone =  document.getElementById('phoneAtEditAddress')
+            let pincode =  document.getElementById('editPincode')
+            let city =  document.getElementById('editCity')
+            let country =  document.getElementById('editCountry')
+            let state =  document.getElementById('editState')
+            let fullAddress =  document.getElementById('editAddress')
+            let addressType =  document.getElementsByName('editAddressType') 
+            console.log(obj, name);
+            name.value = newObj.name ?? "Guest"
             
         }
 

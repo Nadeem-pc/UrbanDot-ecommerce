@@ -1,6 +1,7 @@
 const express = require("express")
 const user = express.Router()
 const userController = require('../Controllers/userController')
+const cartController = require('../Controllers/cartController')
 const {isBlocked, isLogout, userAuth} = require('../Middlewares/User/userAuth')
 const passport  = require("passport")
 
@@ -37,6 +38,10 @@ user.post('/changePassword',userController.changePassword)
 user.post('/addAddress',userController.addAddress)
 
 user.get('/deleteAddress/:mainId/:id',userController.deleteAddress)
+
+user.get('/cart', userAuth, cartController.loadCart)
+
+user.post('/addToCart/:id',cartController.addToCart)
 
 user.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}))
 user.get('/google/callback',passport.authenticate('google',{failureRedirect:'/signup'}),(req,res) => {
