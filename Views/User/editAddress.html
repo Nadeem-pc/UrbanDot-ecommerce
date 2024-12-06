@@ -1,6 +1,6 @@
 <script src="https://unpkg.com/must-pop@latest/dist/library.js"></script>
 
-<%-include("../../Views/Partials/user/header")%>
+<!-- <%-include("../../Views/Partials/user/header")%> -->
 
     <style>
 
@@ -401,113 +401,6 @@
 
 
 
-            <!-- <div class="col-md-8 col-lg-6 form-container"> -->
-            <div id="addAddress" class="tab-content">
-                <h2 class="section-title mb-4">Add New Address</h2>
-                <form id="addressForm">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="firstName" class="form-label" id="nameLabel">Name</label>
-                            <input type="text" class="form-control" id="nameAtAddress" required>
-                            <div class="invalid-feedback">Please enter your first name.</div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="phone" class="form-label" id="mobLabel">Mobile</label>
-                            <input type="tel" class="form-control" id="phoneAtAddress" required>
-                            <div class="invalid-feedback">Please enter a valid 10-digit phone number.</div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="pincode" class="form-label" id="pincodeLabel">Pincode</label>
-                            <input type="text" class="form-control" id="pincode" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="city" class="form-label" id="cityLabel">City</label>
-                            <input type="text" class="form-control" id="city" required>
-                        </div>
-                    </div>
-
-
-                    <div class="mb-3">
-                        <label for="address" class="form-label">Address</label>
-                        <textarea class="form-control" id="address" rows="3" required></textarea>
-                    </div>
-
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="country" class="form-label">Country</label>
-                            <select class="form-select" id="country" >
-                                <option value="">Select Country</option>
-                                <option value="India">India</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="state" class="form-label">State</label>
-                            <select class="form-select" id="state" required>
-                                <option value="" >Select State</option>
-                                <option value="Andhra Pradesh">Andhra Pradesh</option>
-                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                                <option value="Assam">Assam</option>
-                                <option value="Bihar">Bihar</option>
-                                <option value="Chhattisgarh">Chhattisgarh</option>
-                                <option value="Goa">Goa</option>
-                                <option value="Gujarat">Gujarat</option>
-                                <option value="Haryana">Haryana</option>
-                                <option value="Himachal Pradesh">Himachal Pradesh</option>
-                                <option value="Jharkhand">Jharkhand</option>
-                                <option value="Karnataka">Karnataka</option>
-                                <option value="Kerala">Kerala</option>
-                                <option value="Madhya Pradesh">Madhya Pradesh</option>
-                                <option value="Maharashtra">Maharashtra</option>
-                                <option value="Manipur">Manipur</option>
-                                <option value="Meghalaya">Meghalaya</option>
-                                <option value="Mizoram">Mizoram</option>
-                                <option value="Nagaland">Nagaland</option>
-                                <option value="Odisha">Odisha</option>
-                                <option value="Punjab">Punjab</option>
-                                <option value="Rajasthan">Rajasthan</option>
-                                <option value="Sikkim">Sikkim</option>
-                                <option value="Tamil Nadu">Tamil Nadu</option>
-                                <option value="Telangana">Telangana</option>
-                                <option value="Tripura">Tripura</option>
-                                <option value="Uttar Pradesh">Uttar Pradesh</option>
-                                <option value="Uttarakhand">Uttarakhand</option>
-                                <option value="West Bengal">West Bengal</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label" id="typeLabel">Address Type</label>
-                        <div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="addressType" id="home" value="home" >
-                                <label class="form-check-label" for="home">Home</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="addressType" id="work" value="work">
-                                <label class="form-check-label" for="work">Work</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="defaultAddress">
-                        <label class="form-check-label" for="defaultAddress">
-                            Set as Default Address
-                        </label>
-                    </div> -->
-
-                    <div class="createBtn text-center">
-                        <button type="submit" id="submitBtn" class="btn">Save Address</button>
-                    </div>
-                </form>
-            </div>
-
-
 
             <!-- Orders Tab -->
             <div id="orders" class="tab-content">
@@ -536,36 +429,30 @@
 
             <!-- Addresses Tab -->
             <div id="addresses" class="tab-content">
-                <% if(address !== null){ %>
-                    <h2 class="section-title">Saved Addresses</h2>
-                    <% address.address.map((val)=>{ %>
-                        <div class="address-card">
-                            <div class="address-actions">
-                                <button class="btn btn-outline" onclick="editPage('editAddress',`<%=JSON.stringify(val)%>`)">Edit</button>
-                                <button class="btn btn-outline" onclick="location.href='/deleteAddress/<%=address._id%>/<%=val._id%>'">Delete</button>
-                            </div>
-                            <div class="type d-flex "> 
-                                <h3><%= val.name %></h3>
-                                <h5 id="address-type"> <%=val.addressType%> </h5>
-                            </div>
-                            <p><%= val.fullAddress %></p>
-                            <!-- <p><%= val.city %></p> -->
-                            <p> <%=val.pincode%> </p>
-                            <p> <%=val.phone%> </p>
-                            <p> <%= val.state%></p>
-                            <p> <%= val.country%></p>
+                <h2 class="section-title">Saved Addresses</h2>
+                <% address.address.map((val)=>{ %>
+                    <div class="address-card">
+                        <div class="address-actions">
+                            <button class="btn btn-outline" onclick="editPage('editAddress',`<%=JSON.stringify(val)%>`)">Edit</button>
                         </div>
-                    <%})%>
-                <%}else{%>
-                    <h2 class="section-title">Add Address</h2>
-                      
-                <%}%>
+                        <div class="type d-flex "> 
+                            <h3><%= val.name %></h3>
+                            <h5 id="address-type"> <%=val.addressType%> </h5>
+                        </div>
+                        <p><%= val.fullAddress %></p>
+                        <!-- <p><%= val.city %></p> -->
+                        <p> <%=val.pincode%> </p>
+                        <p> <%=val.phone%> </p>
+                        <p> <%= val.state%></p>
+                        <p> <%= val.country%></p>
+                    </div>
+                <%})%>
                 <button class="btn" onclick="changePage('addAddress')">Add New Address</button>
             </div>
 
             <div id="editAddress" class="tab-content">
                 <h2 class="section-title mb-4">Edit Address</h2>
-                <form id="editAddressForm">
+                <form id="addressForm">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="firstName" class="form-label" id="nameLabel">Name</label>
@@ -599,42 +486,13 @@
                         <div class="col-md-6 mb-3">
                             <label for="country" class="form-label">Country</label>
                             <select class="form-select" id="editCountry" required>
-                                <option value="">Select Country</option>
-                                <option value="India">India</option>
+                                <option value="India"></option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="state" class="form-label">State</label>
                             <select class="form-select" id="editState" required>
                                 <option value="">Select State</option>
-                                <option value="Andhra Pradesh">Andhra Pradesh</option>
-                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                                <option value="Assam">Assam</option>
-                                <option value="Bihar">Bihar</option>
-                                <option value="Chhattisgarh">Chhattisgarh</option>
-                                <option value="Goa">Goa</option>
-                                <option value="Gujarat">Gujarat</option>
-                                <option value="Haryana">Haryana</option>
-                                <option value="Himachal Pradesh">Himachal Pradesh</option>
-                                <option value="Jharkhand">Jharkhand</option>
-                                <option value="Karnataka">Karnataka</option>
-                                <option value="Kerala">Kerala</option>
-                                <option value="Madhya Pradesh">Madhya Pradesh</option>
-                                <option value="Maharashtra">Maharashtra</option>
-                                <option value="Manipur">Manipur</option>
-                                <option value="Meghalaya">Meghalaya</option>
-                                <option value="Mizoram">Mizoram</option>
-                                <option value="Nagaland">Nagaland</option>
-                                <option value="Odisha">Odisha</option>
-                                <option value="Punjab">Punjab</option>
-                                <option value="Rajasthan">Rajasthan</option>
-                                <option value="Sikkim">Sikkim</option>
-                                <option value="Tamil Nadu">Tamil Nadu</option>
-                                <option value="Telangana">Telangana</option>
-                                <option value="Tripura">Tripura</option>
-                                <option value="Uttar Pradesh">Uttar Pradesh</option>
-                                <option value="Uttarakhand">Uttarakhand</option>
-                                <option value="West Bengal">West Bengal</option>
                             </select>
                         </div>
                     </div>
@@ -692,20 +550,6 @@
                 item.classList.remove('active');
             });
             document.querySelector(`.menu-item[onclick="showTab('${tabId}')"]`).classList.add('active');
-            
-            // Update tab content
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.getElementById(tabId).classList.add('active');
-        }
-
-        function changePage(tabId) {
-            // Update menu items
-            document.querySelectorAll('.createBtn').forEach(item => {
-                item.classList.remove('active');
-            });
-            document.querySelector(`.createBtn[onclick="showTab('${tabId}')"]`)
             
             // Update tab content
             document.querySelectorAll('.tab-content').forEach(tab => {
@@ -778,135 +622,11 @@
         });
 
         function editAddress (name,phone,pincode,city,country,state,addressType,fullAddress,obj){
-            console.log(obj);
+            console.log(typeof obj);
+            
             
         }
 
-
-        // User Profile Edit
-        document.getElementById('profile-form').addEventListener('submit', async (event) => {
-            event.preventDefault()
-
-            let name = document.getElementById('name').value
-            let phone = document.getElementById('phone').value
-
-           
-           if(!validateForm()) return 
-           
-            const response = await fetch('/editUser',{
-                method : "POST",
-                headers : {
-                    'Content-Type' : 'application/json'
-                },
-                body : JSON.stringify({name,phone})
-            })
-            let data = await response.json()
-
-            if(!data.status){
-                return Must.failure({time: 3000, content: data.message})
-            }
-            
-            setTimeout(() => {
-                window.location.href = '/profile'
-            },1500)
-
-            Must.success({time: 1500, content: data.message, color:'#27ae60'})
-
-            document.getElementById("icon").style.backgroundColor = 'beige'
-            document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
-
-        })
-
-        function validateForm (){
-
-            const usernameInput = document.getElementById('name')
-            let phoneInput = document.getElementById('phone')
-
-            const usernamePattern = /^[A-Za-z\s]{3,}$/;
-            const phonePattern = /^[0-9]{10}$/;
-
-            if(!usernamePattern.test(usernameInput.value)){
-                document.getElementById('nameIndication').innerHTML = 'Name must be at least 3 characters long and contain only letters and spaces.'
-                document.getElementById('nameIndication').style.color = 'red'
-                return false
-            }else{
-                document.getElementById('nameIndication').innerHTML = 'Name'
-                document.getElementById('nameIndication').style.color = 'black'   
-            }
-
-            if(!phonePattern.test(phoneInput.value)){
-                document.getElementById('phoneIndication').innerHTML = 'Phone number must be exactly 10 digits.'
-                document.getElementById('phoneIndication').style.color = 'red'
-                return false 
-            }else{
-                document.getElementById('phoneIndication').innerHTML = 'Phone'
-                document.getElementById('phoneIndication').style.color = 'black'  
-            }
-
-            return true
-        }
-    
-        // Change Password
-        function passwordValidation(){
-            let password = document.getElementById('currentPassword')
-            let newPassword = document.getElementById('newPassword')
-            let confirmPassword = document.getElementById('confirmPassword')
-
-            const passwordCriteria = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-            if(!passwordCriteria.test(newPassword.value)){
-                document.getElementById('newPassIndication').innerHTML = 'Password must be at least 8 characters long and contain uppercase, lowercase, number and special character.'
-                document.getElementById('newPassIndication').style.color = 'red'
-                return false
-            }else{
-                document.getElementById('newPassIndication').innerHTML = 'Current Password'
-                document.getElementById('newPassIndication').style.color = 'black'
-            }
-
-            if(newPassword.value !== confirmPassword.value){
-                document.getElementById('confirmPassIndication').innerHTML = 'Password does not match. Please re-enter your password.'
-                document.getElementById('confirmPassIndication').style.color = 'red'
-                return false
-            }else{
-                document.getElementById('confirmPassIndication').innerHTML = 'Confirm Password'
-                document.getElementById('confirmPassIndication').style.color = 'black'
-            }
-            
-            return true
-        }
-
-        document.getElementById('passwordChangingForm').addEventListener('submit', async (event) => {
-            event.preventDefault()
-
-            let password = document.getElementById('currentPassword').value
-            let changedPassword = document.getElementById('newPassword').value
-    
-            if(!passwordValidation()) return 
-
-            const response = await fetch('/changePassword',{ 
-                method : "POST",
-                headers : {
-                    'Content-Type' : "application/json"
-                },
-                body : JSON.stringify({password,changedPassword})
-            })
-
-            let data = await response.json()
-
-            if(!data.status){
-                return Must.failure({time: 3000, content: data.message})
-            }
-
-            setTimeout(() => {
-                window.location.href = '/profile'
-            },1500)
-
-            Must.success({time: 1500, content: data.message, color:'#27ae60'})
-
-            document.getElementById("icon").style.backgroundColor = 'beige'
-            document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
-
-        })
 
         // Add address
         function validateAddress(name,phone,pincode,city,isSelected){
@@ -975,7 +695,7 @@
             const country = document.getElementById('country').value
             const state = document.getElementById('state').value
             const radios = document.getElementsByName('addressType')
-            console.log()
+
             let addressType = null
             let isSelected = false
             for(const radio of radios){
@@ -997,15 +717,16 @@
             })
 
             let data = await response.json()
-            
-            if(!data.status){
-                return Must.failure({time: 3000, content:"Something went wrong"})
-            }
-            Must.success({time: 1500, content: data.message, color:'#27ae60'})
 
+            if(!data.status){
+                return Must.failure({time: 3000, content: data.message})
+            }
+            
             setTimeout(() => {
                 window.location.href = '/profile'
             },1500)
+
+            Must.success({time: 1500, content: data.message, color:'#27ae60'})
 
             document.getElementById("icon").style.backgroundColor = 'beige'
             document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
@@ -1014,8 +735,48 @@
 
     </script>
 
-    <script>
 
+    <script>
+            
+        let options = {
+            headers:{
+                "Accept": "application/json",
+                "Authorization" : `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJfZW1haWwiOiJuYWRlZW1wYzc3N0BnbWFpbC5jb20iLCJhcGlfdG9rZW4iOiJzS2NJWWZxUVJUa05ubFdvQnQ4amVtNC00X25MLUxvYmhRd1NXWDNKcEpYRnd0NEtyRjgza2JzdXpuc3oyV0lOSmVzIn0sImV4cCI6MTczMzM5NjIyOH0.9y1XnYwBErKnOA7LkurSBlJ-UX4dWcL1yIXiqKiF0sE`
+            }
+        }
+        
+        
+        fetch("https://www.universal-tutorial.com/api/countries",options)
+        .then(res=> res.json())
+        .then(data=> {
+            let selectCountry = document.getElementById("country")
+            selectCountry.innerHTML = ''
+            data.map(val=>{
+                let {country_name, country_code} = val;
+                let elements = `<option value="${country_name}" id="${country_code}">${country_name}</option>`
+                selectCountry.innerHTML += elements
+            })
+            changeState(data[0].country_name)
+        })
+        
+        function changeState(countryName){
+            fetch(`https://www.universal-tutorial.com/api/states/${countryName}`, options)
+            .then(res=> res.json())
+            .then(data=>{
+                let selectState = document.getElementById("state")
+                selectState.innerHTML = ""
+                data.map(val=>{
+                    let statename = val.state_name
+                    let elements = `<option value="${statename}">${statename}</option>`
+                    selectState.innerHTML += elements
+                })
+                
+            })
+        }
+        document.getElementById("country").addEventListener("change",(e)=>{
+            changeState(e.target.value)
+        })
+        
     </script>
 
-<%-include("../../Views/Partials/user/footer")%>
+<!-- <%-include("../../Views/Partials/user/footer")%> -->

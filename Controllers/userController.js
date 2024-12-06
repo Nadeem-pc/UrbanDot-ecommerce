@@ -1,10 +1,12 @@
 const User = require("../Models/userSchema") 
 const Product = require("../Models/productSchema")
 const Category = require("../Models/categorySchema")
-const Address = require("../Models/addressSchema");
+const Address = require("../Models/addressSchema")
+
 const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer');
 const passport = require("passport");
+
 const env = require("dotenv").config();
 const session = require('express-session');
 const mongoose = require('mongoose')
@@ -275,7 +277,8 @@ const loadProfilePage = async (req,res) => {
     try {
         let id = req.session.user
         let user = await User.findOne({_id:id})
-        res.render('userProfile',{user})
+        const address = await Address.findOne({user:id})
+        return res.render('userProfile',{user, address})
     }
     catch (error) {
         console.log(error);
@@ -311,7 +314,7 @@ const changePassword = async (req,res) => {
     try {
         const passwordMatch =  await bcrypt.compare(password, user.password)
         if(!passwordMatch){
-            return res.json({status:false, message : "Incorrect Password"}) 
+            return res.json({status:false, message : "Current Password is Incorrect"}) 
         }
 
         let newPassword = await bcrypt.hash(changedPassword,10)
@@ -342,12 +345,32 @@ const addAddress = async (req,res) => {
             await newAddress.save()
             return res.status(200).json({status:true, message:"Address added successfully"})
         }
-        // else{
-        //     userAddress.address.push({addressType,name,city,pincode,phone,country,state,fullAddress})
-        //     await userAddress.save()
-        // }
+        else{
+            userAddress.address.push({addressType,name,city,pincode,phone,country,state,fullAddress})
+            await userAddress.save()
+            return res.status(200).json({status:true, message:"Address added successfully"})
+        }
 
 
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Internal Server Error" })
+    }
+}
+
+const deleteAddress = async (req,res) => {
+    const{mainId,id} = req.params    
+    
+    try {
+        await Address.updateOne(
+            { _id: new mongoose.Types.ObjectId(mainId) }, 
+            { $pull: { address: { _id: new mongoose.Types.ObjectId(id) } } } 
+        );
+
+        setTimeout(() => {
+            res.redirect('/profile')
+        },1500)
+ 
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: "Internal Server Error" })
@@ -371,5 +394,6 @@ module.exports = {
     loadProfilePage,
     editUserProfile,
     changePassword,
-    addAddress
+    addAddress,
+    deleteAddress
 }

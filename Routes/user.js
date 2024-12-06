@@ -36,6 +36,8 @@ user.post('/changePassword',userController.changePassword)
 
 user.post('/addAddress',userController.addAddress)
 
+user.get('/deleteAddress/:mainId/:id',userController.deleteAddress)
+
 user.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}))
 user.get('/google/callback',passport.authenticate('google',{failureRedirect:'/signup'}),(req,res) => {
     res.redirect('/')

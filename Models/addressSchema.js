@@ -45,12 +45,12 @@ const addressSchema = mongoose.Schema({
             type : String,
             required : true
         },
-
+        
         fullAddress : {
             type : String,
             required : true
         }
-    }]
+}]
 
 },{ timestamps : true })
 
