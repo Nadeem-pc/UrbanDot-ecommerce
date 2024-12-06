@@ -39,9 +39,9 @@ user.post('/addAddress',userController.addAddress)
 
 user.get('/deleteAddress/:mainId/:id',userController.deleteAddress)
 
-user.get('/cart', userAuth, cartController.loadCart)
+user.post('/cart', userAuth, cartController.addToCart)
 
-user.post('/addToCart/:id',cartController.addToCart)
+user.get('/cart', userAuth, cartController.loadCart)
 
 user.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}))
 user.get('/google/callback',passport.authenticate('google',{failureRedirect:'/signup'}),(req,res) => {

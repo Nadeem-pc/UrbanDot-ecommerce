@@ -9,7 +9,7 @@ const userRouter = require("./Routes/user")
 const adminRouter = require("./Routes/admin")
 // const loger = require('morgan')
 const db = require('./Config/db')
-
+const MongoStore = require('connect-mongo')
 db()
 
 app.use(express.json()) 
@@ -23,7 +23,8 @@ app.use(session({
         secure : false,
         httpOnly : true,
         maxAge : 48*60*60*1000
-    }
+    },
+    store :  MongoStore.create({mongoUrl: process.env.MONGODB_URI})
 }))
 
 app.use(passport.initialize())

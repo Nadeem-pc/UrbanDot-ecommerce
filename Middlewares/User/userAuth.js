@@ -3,7 +3,11 @@ const User = require('../../Models/userSchema')
 const userAuth = (req,res,next) => {
     if(req.session.user){
         next()
-    }else{
+    }
+    else if(req.method === "POST"){
+        res.status(409).json({message: "no user in session"})
+    }
+    else{
         res.redirect('/login')
     }
 }
@@ -23,7 +27,7 @@ const isLogout = (req,res,next) => {
     }
 }
 
-5
+
 module.exports = {
     userAuth,
     isLogout,

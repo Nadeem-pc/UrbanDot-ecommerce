@@ -1,492 +1,528 @@
+<script src="https://unpkg.com/must-pop@2.1.1/dist/library.js"></script>  
+
 <%-include("../../Views/Partials/user/header")%>
 
 <style>
-.recommended_products_area {
-  padding: 40px 0;
-}
-.header_area .navbar .nav .nav-item.active .nav-link{
-  color: black;
-}
-.recommended_products_area .section_title {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: bold;
-}
-.single_product_item {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  text-align: center;
-  padding: 15px;
-  margin-bottom: 20px;
-}
-.single_product_item .product_image img {
-  width: 100%;
-  height: auto;
-  border-radius: 5px;
-}
-.single_product_item .product_details h4 {
-  margin: 10px 0;
-  font-size: 18px;
-  font-weight: 600;
-}
-.single_product_item .product_details p {
-  color: #555;
-  font-size: 16px;
-}
-.single_product_item .btn {
-  margin-top: 10px;
-}
-#applyBtn{
-  background-color: #71cd14;
-  color: white;
-}
-.carousel,.carousel-inner,.carousel-item{
-  height: 100%;
-  width: 100%;
-}
-.hi {
-  height: 100% !important;
-}
-.hi img{
-  height: 100% !important;
-}
-#imageZoom{
-  position: relative;
-}
-#imageZoom img{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 0 0;
-}
-#imageZoom::after{
-  display: var(--display);
-  content: "";
-  width: 100%;
-  height: 100%;
-  background-color: black;
-  background-image: var(--url);
-  background-size: 200%;
-  background-position : var(--zoom-x)var(--zoom-y);
-  position: absolute;
-  top: 0;
-  left: 0;
-}
+  .recommended_products_area {
+    padding: 40px 0;
+  }
+  .header_area .navbar .nav .nav-item.active .nav-link{
+    color: black;
+  }
+  .recommended_products_area .section_title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  .single_product_item {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  .single_product_item .product_image img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+  }
+  .single_product_item .product_details h4 {
+    margin: 10px 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .single_product_item .product_details p {
+    color: #555;
+    font-size: 16px;
+  }
+  .single_product_item .btn {
+    margin-top: 10px;
+  }
+  #applyBtn{
+    background-color: #71cd14;
+    color: white;
+  }
+  .carousel,.carousel-inner,.carousel-item{
+    height: 100%;
+    width: 100%;
+  }
+  .hi {
+    height: 100% !important;
+  }
+  .hi img{
+    height: 100% !important;
+  }
+  #imageZoom{
+    position: relative;
+  }
+  #imageZoom img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 0 0;
+  }
+  #imageZoom::after{
+    display: var(--display);
+    content: "";
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    background-image: var(--url);
+    background-size: 200%;
+    background-position : var(--zoom-x)var(--zoom-y);
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  #icon{
+    background-color: beige;
+  }
+  .pop-container{
+    background-color: white;
+    margin-top: 80px;
+    z-index: 10;
+  }
 
 </style>
-    <!--================Home Banner Area =================-->
-    <section class="banner_area">
-      <div class="banner_inner d-flex align-items-center">
-        <div class="container">
-          <div
-            class="banner_content d-md-flex justify-content-between align-items-center"
-          >
-            <div class="mb-3 mb-md-0">
-              <h2>Product Details</h2>
-              <p>Very us move be blessed multiply night</p>
-            </div>
-            <div class="page_link">
-              <a href="/">Home</a>
-              <a href="/product">Product Details</a>
-            </div>
+
+<!--================Home Banner Area =================-->
+  <section class="banner_area">
+    <div class="banner_inner d-flex align-items-center">
+      <div class="container">
+        <div
+          class="banner_content d-md-flex justify-content-between align-items-center"
+        >
+          <div class="mb-3 mb-md-0">
+            <h2>Product Details</h2>
+            <p>Very us move be blessed multiply night</p>
+          </div>
+          <div class="page_link">
+            <a href="/">Home</a>
+            <a href="/product">Product Details</a>
           </div>
         </div>
       </div>
-    </section>
-    <!--================End Home Banner Area =================-->
+    </div>
+  </section>
+<!--================End Home Banner Area =================-->
 
-    <!--================Single Product Area =================-->
-    <div class="product_image_area">
-      <div class="container">
-        <div class="row s_product_inner">
-         
-          <div class="col-lg-6">
-            <div id="productCarousel" class="carousel slide" data-ride="carousel">
-              <div class="carousel-inner">
-                <div class="hi" id="imageZoom" style="--url:url('/uploads/product-images/<%= product.images[0] %>'); --zoom-x : 0%; --zoom-y : 0%; --display:none">
-                  <img class="d-block w-100 active carousel-item" id="image" src="/uploads/product-images/<%= product.images[0] %>" alt="Product Image">
-                </div>
+<!--================Single Product Area =================-->
+  <div class="product_image_area">
+    <div class="container">
+      <div class="row s_product_inner">
+        
+        <div class="col-lg-6">
+          <div id="productCarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+              <div class="hi" id="imageZoom" style="--url:url('/uploads/product-images/<%= product.images[0] %>'); --zoom-x : 0%; --zoom-y : 0%; --display:none">
+                <img class="d-block w-100 active carousel-item" id="image" src="/uploads/product-images/<%= product.images[0] %>" alt="Product Image">
               </div>
-              
-              <% if (product.images.length > 1) { %>
-                <a class="carousel-control-prev"  role="button" data-slide="prev" onclick="prevImg('<%= JSON.stringify(product.images)%>')">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" onclick="nextImg('<%= JSON.stringify(product.images)%>')" role="button" data-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="sr-only" >Next</span>
-                </a>
-              <% } %>
             </div>
+            
+            <% if (product.images.length > 1) { %>
+              <a class="carousel-control-prev"  role="button" data-slide="prev" onclick="prevImg('<%= JSON.stringify(product.images)%>')">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+              </a>
+              <a class="carousel-control-next" onclick="nextImg('<%= JSON.stringify(product.images)%>')" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only" >Next</span>
+              </a>
+            <% } %>
           </div>
-          
-          <div class="col-lg-5 offset-lg-1">
-            <div class="s_product_text">
-              <h3><%=product.productName%></h3>
-              <h2>₹<%=product.regularPrice%></h2>
-              <ul class="list">
-                <!-- <li>
-                  <a class="active" href="#">
-                    <span>Category</span> :<%=product.category%></a
-                  >
-                </li> -->
-                <li>
-                  <a href="#"> <span>Availibility</span>
-                    <% if(product.stock >= 30){ %>
-                       : In Stock
-                       <%}else if(product.stock === 0){%>
-                        : Out of stock
-                      <%}else if(product.stock<= 15 ){%> 
-                        : Only few left
-                    <%}%>
-                  </a>
-                </li>
-              </ul>
-              <p> <%=product.description%> </p>
-              <div class="product_count w-100 d-flex justify-content-between align-items-center">
-                <label for="qty">Quantity:</label>
-                <input
-                  type="text"
-                  name="qty"
-                  id="sst"
-                  maxlength="12"
-                  value="1"
-                  title="Quantity:"
-                  class="input-text qty"
-                />
-                <button
-                  onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-                  class="increase items-count"
-                  type="button"
+        </div>
+        
+        <div class="col-lg-5 offset-lg-1">
+          <div class="s_product_text">
+            <h3><%=product.productName%></h3>
+            <h2>₹<%=product.regularPrice%></h2>
+            <ul class="list">
+              <!-- <li>
+                <a class="active" href="#">
+                  <span>Category</span> :<%=product.category%></a
                 >
-                  <i class="lnr lnr-chevron-up"></i>
-                </button>
-                <button
-                  onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp &amp; sst > 0 ) result.value--;return false;"
-                  class="reduced items-count"
-                  type="button"
-                >
-                  <i class="lnr lnr-chevron-down"></i>
-                </button>
-                
+              </li> -->
+              <li>
+                <a href="#"> <span>Availibility</span>
+                  <% if(product.stock >= 30){ %>
+                      : In Stock
+                      <%}else if(product.stock === 0){%>
+                      : Out of stock
+                    <%}else if(product.stock<= 15 ){%> 
+                      : Only few left
+                  <%}%>
+                </a>
+              </li>
+            </ul>
+            <p> <%=product.description%> </p>
+            <div class="product_count w-100 d-flex justify-content-between align-items-center">
+              <label for="qty">Quantity:</label>
+              <input
+                type="text"
+                name="qty"
+                id="sst"
+                maxlength="12"
+                value="1"
+                title="Quantity:"
+                class="input-text qty"
+              />
+              <!-- <button
+                onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                class="increase items-count"
+                type="button"
+              >
+                <i class="lnr lnr-chevron-up"></i>
+              </button>
+              <button
+                onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp &amp; sst > 0 ) result.value--;return false;"
+                class="reduced items-count"
+                type="button"
+              > -->
+                <!-- <i class="lnr lnr-chevron-down"></i>
+              </button> -->
+              
+              <input type="text" class="w-50" placeholder="Having a coupon?"> <button class="applyBtn border border-radius-1" id="applyBtn">Apply</button>
 
-                  <input type="text" class="w-50" placeholder="Having a coupon?"> <button class="applyBtn border border-radius-1" id="applyBtn">Apply</button>
-               
-
-              </div>
-              <div class="card_area">
-                <% if(product.stock === 0){%>
-                
-                <%}else{%>  
-                  <a class="main_btn" id="buyNow-btn" href="#">Buy now</a>
-                  <a class="main_btn" id="cart-btn" href="/addToCart/<%=product._id%>">Add to Cart</a>
-                <%}%>    
-                <!-- <a class="icon_btn" href="#">
-                  <i class="lnr lnr lnr-diamond"></i>
-                </a> -->
-                <!-- <a class="icon_btn" href="#">
-                  <i class="lnr lnr lnr-heart"></i>
-                </a> -->
-              </div>
+            </div>
+            <div class="card_area">
+              <% if(product.stock === 0){%>
+              
+              <%}else{%>  
+                <a class="main_btn" id="buyNow-btn" href="#">Buy now</a>
+                <button class="main_btn" id="cart-btn" onclick="fetchId(`<%= product._id %>`)">Add to Cart</button>
+              <%}%>    
+              <!-- <a class="icon_btn" href="#">
+                <i class="lnr lnr lnr-diamond"></i>
+              </a> -->
+              <!-- <a class="icon_btn" href="#">
+                <i class="lnr lnr lnr-heart"></i>
+              </a> -->
             </div>
           </div>
         </div>
       </div>
     </div>
-    <!--================End Single Product Area =================-->
+  </div>
+<!--================End Single Product Area =================-->
 
-    <!--================Product Description Area =================-->
-    <section class="product_description_area">
-      <div class="container">
-        <ul class="nav nav-tabs" id="myTab" role="tablist" >
+<!--================Product Description Area =================-->
+  <section class="product_description_area">
+    <div class="container">
+      <ul class="nav nav-tabs" id="myTab" role="tablist" >
 
-          <li class="nav-item" id="specBtn" onclick="changeTab('spec','review')">
-            <a class="nav-link">Specification </a>
-          </li>
-  
-          <li class="nav-item" id="reviewBtn" onclick="changeTab('review','spec')">
-            <a class="nav-link">Reviews</a>
-          </li>
+        <li class="nav-item" id="specBtn" onclick="changeTab('spec','review')">
+          <a class="nav-link">Specification </a>
+        </li>
 
-        </ul>
-        <div class="tab-content" id="myTabContent">
+        <li class="nav-item" id="reviewBtn" onclick="changeTab('review','spec')">
+          <a class="nav-link">Reviews</a>
+        </li>
 
-            <div class="table-responsive" id="spec" >
-              <p> <%=product.description%> </p>
+      </ul>
+      <div class="tab-content" id="myTabContent">
 
-              <!-- <table class="table">
-                <tbody>
-                  <tr>
-                    <td>
-                      <h5>Width</h5>
-                    </td>
-                    <td>
-                      <h5>128mm</h5>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <h5>Height</h5>
-                    </td>
-                    <td>
-                      <h5>508mm</h5>
-                    </td>
-                  </tr>
-           
-                  <tr>
-                    <td>
-                      <h5>Weight</h5>
-                    </td>
-                    <td>
-                      <h5>52gm</h5>
-                    </td>
-                  </tr>
+          <div class="table-responsive" id="spec" >
+            <p> <%=product.description%> </p>
+
+            <!-- <table class="table">
+              <tbody>
+                <tr>
+                  <td>
+                    <h5>Width</h5>
+                  </td>
+                  <td>
+                    <h5>128mm</h5>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <h5>Height</h5>
+                  </td>
+                  <td>
+                    <h5>508mm</h5>
+                  </td>
+                </tr>
+          
+                <tr>
+                  <td>
+                    <h5>Weight</h5>
+                  </td>
+                  <td>
+                    <h5>52gm</h5>
+                  </td>
+                </tr>
+    
+                <tr>
+                  <td>
+                    <h5>When packeting</h5>
+                  </td>
+                  <td>
+                    <h5>Without touch of hand</h5>
+                  </td>
+                </tr>
       
-                  <tr>
-                    <td>
-                      <h5>When packeting</h5>
-                    </td>
-                    <td>
-                      <h5>Without touch of hand</h5>
-                    </td>
-                  </tr>
-        
-                </tbody>
-              </table> -->
-            </div>
+              </tbody>
+            </table> -->
+          </div>
 
-            <div class="row">
-              <div class="col-lg-12" id="review" style="display: none;"> 
-                <div class="row total_rate">
-                  <div class="col-12">
-                    <div class="box_total">
-                      <h5>Overall</h5>
-                      <h4>4.0</h4>
-                      <h6>(03 Reviews)</h6>
-                    </div>
+          <div class="row">
+            <div class="col-lg-12" id="review" style="display: none;"> 
+              <div class="row total_rate">
+                <div class="col-12">
+                  <div class="box_total">
+                    <h5>Overall</h5>
+                    <h4>4.0</h4>
+                    <h6>(03 Reviews)</h6>
                   </div>
-                  <!-- <div class="col-6"> -->
-                    <!-- <div class="rating_list">
-                      <h3>Based on 3 Reviews</h3>
-                      <ul class="list">
-                        <li>
-                          <a href="#"
-                            >5 Star
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i> 01</a
-                          >
-                        </li>
-                        <li>
-                          <a href="#"
-                            >4 Star
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i> 01</a
-                          >
-                        </li>
-                        <li>
-                          <a href="#"
-                            >3 Star
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i> 01</a
-                          >
-                        </li>
-                        <li>
-                          <a href="#"
-                            >2 Star
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i> 01</a
-                          >
-                        </li>
-                        <li>
-                          <a href="#"
-                            >1 Star
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i> 01</a
-                          >
-                        </li>
-                      </ul>
-                    </div> -->
-                  <!-- </div> -->
                 </div>
-                <div class="review_list mt-40">
-                  <div class="review_item">
-                    <div class="media">
-                      <div class="d-flex">
-                        <img
-                          src="img/product/single-product/review-1.png"
-                          alt=""
-                        />
-                      </div>
-                      <div class="media-body">
-                        <h4>John Doe</h4>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                      </div>
+                <!-- <div class="col-6"> -->
+                  <!-- <div class="rating_list">
+                    <h3>Based on 3 Reviews</h3>
+                    <ul class="list">
+                      <li>
+                        <a href="#"
+                          >5 Star
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i> 01</a
+                        >
+                      </li>
+                      <li>
+                        <a href="#"
+                          >4 Star
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i> 01</a
+                        >
+                      </li>
+                      <li>
+                        <a href="#"
+                          >3 Star
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i> 01</a
+                        >
+                      </li>
+                      <li>
+                        <a href="#"
+                          >2 Star
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i> 01</a
+                        >
+                      </li>
+                      <li>
+                        <a href="#"
+                          >1 Star
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i> 01</a
+                        >
+                      </li>
+                    </ul>
+                  </div> -->
+                <!-- </div> -->
+              </div>
+              <div class="review_list mt-40">
+                <div class="review_item">
+                  <div class="media">
+                    <div class="d-flex">
+                      <img
+                        src="img/product/single-product/review-1.png"
+                        alt=""
+                      />
                     </div>
-                    <p>
-                      Comfortable, trendy, and perfect for everyday wear. A must-have!
-                  </div>
-                  <div class="review_item">
-                    <div class="media">
-                      <div class="d-flex">
-                        <img
-                          src="img/product/single-product/review-2.png"
-                          alt=""
-                        />
-                      </div>
-                      <div class="media-body">
-                        <h4>Rahul</h4>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                      </div>
+                    <div class="media-body">
+                      <h4>John Doe</h4>
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
                     </div>
-                    <p>
-                      Great quality and stylish design! Fits perfectly and feels comfortable throughout the day.
-                      A versatile addition to any wardrobe. Highly recommend for anyone looking to elevate their look
-                    </p>
-                    </p>
                   </div>
-                  <div class="review_item">
-                    <div class="media">
-                      <div class="d-flex">
-                        <img
-                          src="img/product/single-product/review-3.png"
-                          alt=""
-                        />
-                      </div>
-                      <div class="media-body">
-                        <h4>Blake Ruiz</h4>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                      </div>
+                  <p>
+                    Comfortable, trendy, and perfect for everyday wear. A must-have!
+                </div>
+                <div class="review_item">
+                  <div class="media">
+                    <div class="d-flex">
+                      <img
+                        src="img/product/single-product/review-2.png"
+                        alt=""
+                      />
                     </div>
-                    <p>
-                      This item combines style and comfort effortlessly. The material feels premium,
-                      and the fit is just right—neither too tight nor too loose. It works well for casual outings or semi-formal settings. 
-                      Definitely a go-to choice for anyone aiming to blend fashion with function.
-                    </p>
+                    <div class="media-body">
+                      <h4>Rahul</h4>
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
+                    </div>
                   </div>
+                  <p>
+                    Great quality and stylish design! Fits perfectly and feels comfortable throughout the day.
+                    A versatile addition to any wardrobe. Highly recommend for anyone looking to elevate their look
+                  </p>
+                  </p>
+                </div>
+                <div class="review_item">
+                  <div class="media">
+                    <div class="d-flex">
+                      <img
+                        src="img/product/single-product/review-3.png"
+                        alt=""
+                      />
+                    </div>
+                    <div class="media-body">
+                      <h4>Blake Ruiz</h4>
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
+                    </div>
+                  </div>
+                  <p>
+                    This item combines style and comfort effortlessly. The material feels premium,
+                    and the fit is just right—neither too tight nor too loose. It works well for casual outings or semi-formal settings. 
+                    Definitely a go-to choice for anyone aiming to blend fashion with function.
+                  </p>
                 </div>
               </div>
-       
             </div>
+      
           </div>
         </div>
       </div>
-    </section>
-
-
-    <section class="recommended_products_area">
-      <div class="container ">
-          <h3 class="section_title">Related Products</h3>
-          <div class="row ">
-              <% recommendedProducts.forEach((recommendedProduct) => { %>
-                  <div class="col-lg-3 col-md-4 col-sm-6 ">
-                      <div class="single_product_item ">
-                          <div class="product_image">
-                              <a href="/product/<%= recommendedProduct._id%>"><img src="/uploads/product-images/<%= recommendedProduct.images[0] %>" alt="<%= recommendedProduct.productName %>"></a>
-                          </div>
-                          <div class="product_details">
-                              <h4><%= recommendedProduct.productName %></h4>
-                              <p>₹<%= recommendedProduct.regularPrice %></p>
-                          </div>
-                      </div>
-                  </div>
-              <% }); %>
-          </div>
-      </div>
+    </div>
   </section>
-    <!--================End Product Description Area =================-->
+
+
+  <section class="recommended_products_area">
+    <div class="container ">
+        <h3 class="section_title">Related Products</h3>
+        <div class="row ">
+            <% recommendedProducts.forEach((recommendedProduct) => { %>
+                <div class="col-lg-3 col-md-4 col-sm-6 ">
+                    <div class="single_product_item ">
+                        <div class="product_image">
+                            <a href="/product/<%= recommendedProduct._id%>"><img src="/uploads/product-images/<%= recommendedProduct.images[0] %>" alt="<%= recommendedProduct.productName %>"></a>
+                        </div>
+                        <div class="product_details">
+                            <h4><%= recommendedProduct.productName %></h4>
+                            <p>₹<%= recommendedProduct.regularPrice %></p>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+  </section>
+<!--================End Product Description Area =================-->
  
+  
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="User/js/jquery-3.2.1.min.js"></script>
+<script src="User/js/popper.js"></script>
+<script src="User/js/bootstrap.min.js"></script>
+<script src="User/js/stellar.js"></script>
+<script src="User/vendors/lightbox/simpleLightbox.min.js"></script>
+<script src="User/vendors/nice-select/js/jquery.nice-select.min.js"></script>
+<script src="User/vendors/isotope/imagesloaded.pkgd.min.js"></script>
+<script src="User/vendors/owl-carousel/owl.carousel.min.js"></script>
+<script src="User/js/jquery.ajaxchimp.min.js"></script>
+<script src="User/js/mail-script.js"></script>
+<script src="User/vendors/jquery-ui/jquery-ui.js"></script>
+<script src="User/vendors/counter-up/jquery.waypoints.min.js"></script>
+<script src="User/vendors/counter-up/jquery.counterup.js"></script>
+<script src="User/js/theme.js"></script>
+
+<script>
+
+  let count = 0
+  
+  function nextImg(Jsonimages){
+    let images = JSON.parse(Jsonimages)
+    if(count+1 >= images.length || count < 0) return ;
+    let instance = '/uploads/product-images/'
+    document.getElementById('image').src = instance+images[++count]
+  }
+
+  function prevImg(Jsonimages){
+    let images = JSON.parse(Jsonimages)
+    if(count <= 0) return ;
+    let instance = '/uploads/product-images/'
+    document.getElementById('image').src = instance+images[--count]
+  }
+
+  const imageZoom = document.getElementById('imageZoom');
+
+  imageZoom.addEventListener('mousemove', (e) => {
+    const { left, top, width, height } = imageZoom.getBoundingClientRect();
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
+
+    imageZoom.style.setProperty('--zoom-x', `${x}%`);
+    imageZoom.style.setProperty('--zoom-y', `${y}%`);
+    imageZoom.style.setProperty('--display', 'block');
+  });
+
+  imageZoom.addEventListener('mouseleave', () => {
+    imageZoom.style.setProperty('--display', 'none');
+  });
+
+  function changeTab(tabName,old){
+    document.getElementById(old).style.display = 'none'
+
+    console.log(document.getElementById(old),document.getElementById(tabName));
+    // document.getElementById(`${old}Btn`).style.backgroundColor = "white"
     
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="User/js/jquery-3.2.1.min.js"></script>
-    <script src="User/js/popper.js"></script>
-    <script src="User/js/bootstrap.min.js"></script>
-    <script src="User/js/stellar.js"></script>
-    <script src="User/vendors/lightbox/simpleLightbox.min.js"></script>
-    <script src="User/vendors/nice-select/js/jquery.nice-select.min.js"></script>
-    <script src="User/vendors/isotope/imagesloaded.pkgd.min.js"></script>
-    <script src="User/vendors/owl-carousel/owl.carousel.min.js"></script>
-    <script src="User/js/jquery.ajaxchimp.min.js"></script>
-    <script src="User/js/mail-script.js"></script>
-    <script src="User/vendors/jquery-ui/jquery-ui.js"></script>
-    <script src="User/vendors/counter-up/jquery.waypoints.min.js"></script>
-    <script src="User/vendors/counter-up/jquery.counterup.js"></script>
-    <script src="User/js/theme.js"></script>
+    document.getElementById(tabName).style.display = 'initial'
+    // event.target.style.backgroundColor = '#27ae60'
 
-    <script>
-      let count = 0
-      function nextImg(Jsonimages){
-        let images = JSON.parse(Jsonimages)
-        console.log(count+1, images.length)
-        if(count+1 >= images.length || count < 0) return ;
-        let instance = '/uploads/product-images/'
-        document.getElementById('image').src = instance+images[++count]
-      }
-      function prevImg(Jsonimages){
-        let images = JSON.parse(Jsonimages)
-        if(count <= 0) return ;
-        let instance = '/uploads/product-images/'
-        document.getElementById('image').src = instance+images[--count]
-      }
+  }
 
-    const imageZoom = document.getElementById('imageZoom');
+  async function fetchId (productId){
+    
+    let response = await fetch('/cart',{
+      method : "POST",
+      headers : {
+        'Content-Type' : 'application/json'
+      },
+      body : JSON.stringify({productId})
+    })
+    
+    const data = await response.json()
 
-    imageZoom.addEventListener('mousemove', (e) => {
-      const { left, top, width, height } = imageZoom.getBoundingClientRect();
-      const x = ((e.clientX - left) / width) * 100;
-      const y = ((e.clientY - top) / height) * 100;
-
-      imageZoom.style.setProperty('--zoom-x', `${x}%`);
-      imageZoom.style.setProperty('--zoom-y', `${y}%`);
-      imageZoom.style.setProperty('--display', 'block');
-    });
-
-    imageZoom.addEventListener('mouseleave', () => {
-      imageZoom.style.setProperty('--display', 'none');
-    });
-
-    function changeTab(tabName,old){
-      document.getElementById(old).style.display = 'none'
-
-      console.log(document.getElementById(old),document.getElementById(tabName));
-      // document.getElementById(`${old}Btn`).style.backgroundColor = "white"
-     
-      document.getElementById(tabName).style.display = 'initial'
-      // event.target.style.backgroundColor = '#27ae60'
-
+    if(!data.status){
+      return Must.failure({time: 3000, content: data.message})
     }
 
-    </script>
-  </body>
-</html>
+    setTimeout(()=>{
+      window.location.href = '/cart'
+    },1300)
+    
+    Must.success({time: 1300, content: data.message, color:'#27ae60'})
+
+    document.getElementById("icon").style.backgroundColor = 'beige'
+    document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
+
+  }
+
+</script>
 
 <%-include("../../Views/Partials/user/footer")%>
