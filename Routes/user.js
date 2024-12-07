@@ -43,6 +43,8 @@ user.post('/cart', userAuth, cartController.addToCart)
 
 user.get('/cart', userAuth, cartController.loadCart)
 
+user.post('/removeProduct',cartController.removeProduct)
+
 user.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}))
 user.get('/google/callback',passport.authenticate('google',{failureRedirect:'/signup'}),(req,res) => {
     res.redirect('/')

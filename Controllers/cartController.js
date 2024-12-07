@@ -30,13 +30,11 @@ const addToCart = async (req,res) => {
             }
             else{
                return res.json({status : false, message:"Product already exist in cart"})
-            }
-            
+            }     
         }
-
         await cart.save();
-        res.status(200).json({ status : true, message: "Product added to cart"});
-        
+        res.status(200).json({ status : true, message: "Product added to cart"}); 
+
     }
     catch (error) {
         console.log(error);
@@ -49,14 +47,14 @@ const loadCart = async (req,res) => {
         const cart = await Cart.findOne({ userId : req.session.user }).populate('items.productId')
 
         if(!cart){
-            return res.render('cart', { cart : { items : [] }})
+            return res.render('cart', { cart })
         }
 
         cart.totalPrice = cart.items.reduce((total, item) => {
-            return total += item.quantity * item.productId.price;
+            return total += item.quantity * item.productId.regularPrice;
         }, 0)
 
-        res.render('cart', { cart : cart})
+        res.render('cart', {cart : cart})
 
     } catch (error) {
         console.log(error);
@@ -64,8 +62,25 @@ const loadCart = async (req,res) => {
     }
 }
 
+const removeProduct = async (req,res) => {
+    try {
+        const{mainId,productId} = req.body
+
+        await Cart.updateOne(
+            { _id: new mongoose.Types.ObjectId(mainId) }, 
+            { $pull: { items: { productId: new mongoose.Types.ObjectId(productId) } } } 
+        );
+        
+        return res.json({status:true,message:"Product removed from cart"})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Internal Server Error" })
+    }
+}
+
 
 module.exports = {
     loadCart,
-    addToCart
+    addToCart,
+    removeProduct
 }

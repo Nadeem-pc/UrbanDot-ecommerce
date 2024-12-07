@@ -5,7 +5,7 @@ const userAuth = (req,res,next) => {
         next()
     }
     else if(req.method === "POST"){
-        res.status(409).json({message: "no user in session"})
+        res.status(409).json({message: "No user in session"})
     }
     else{
         res.redirect('/login')

@@ -1,214 +1,226 @@
 <%-include("../../Views/Partials/user/header")%>
-    
-  <!--================Home Banner Area =================-->
-    <section class="banner_area">
-      <div class="banner_inner d-flex align-items-center">
-        <div class="container">
-          <div
-            class="banner_content d-md-flex justify-content-between align-items-center"
-          >
-            <div class="mb-3 mb-md-0">
-              <h2>Cart</h2>
-              <p>Very us move be blessed multiply night</p>
-            </div>
-            <div class="page_link">
-              <a href="/">Home</a>
-              <a href="/cart">Cart</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!--================End Home Banner Area =================-->
-
-    <!--================Cart Area =================-->
-    <section class="cart_area">
-      <div class="container">
-        <div class="cart_inner">
-          <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Product</th>
-                  <th scope="col">Price</th>
-                  <th scope="col">Quantity</th>
-                  <th scope="col">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <div class="media">
-                      <div class="d-flex">
-                        <img
-                          src="img/shoe.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div class="media-body">
-                        <p>Minimalistic shop for multipurpose use</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <h5>$360.00</h5>
-                  </td>
-                  <td>
-                    <div class="product_count">
-                      <input
-                        type="text"
-                        name="qty"
-                        id="sst"
-                        maxlength="12"
-                        value="1"
-                        title="Quantity:"
-                        class="input-text qty"
-                      />
-                      <button
-                        onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-                        class="increase items-count"
-                        type="button"
-                      >
-                        <i class="lnr lnr-chevron-up"></i>
-                      </button>
-                      <button
-                        onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
-                        class="reduced items-count"
-                        type="button"
-                      >
-                        <i class="lnr lnr-chevron-down"></i>
-                      </button>
-                    </div>
-                  </td>
-                  <td>
-                    <h5>$720.00</h5>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="media">
-                      <div class="d-flex">
-                        <img
-                          src="img/shirtAtCatogories.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div class="media-body">
-                        <p>Minimalistic shop for multipurpose use</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <h5>$360.00</h5>
-                  </td>
-                  <td>
-                    <div class="product_count">
-                      <input
-                        type="text"
-                        name="qty"
-                        id="sst"
-                        maxlength="12"
-                        value="1"
-                        title="Quantity:"
-                        class="input-text qty"
-                      />
-                      <button
-                        onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-                        class="increase items-count"
-                        type="button"
-                      >
-                        <i class="lnr lnr-chevron-up"></i>
-                      </button>
-                      <button
-                        onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
-                        class="reduced items-count"
-                        type="button"
-                      >
-                        <i class="lnr lnr-chevron-down"></i>
-                      </button>
-                    </div>
-                  </td>
-                  
-                    <div class="product_count">
-                      <input
-                        type="text"
-                        name="qty"
-                        id="sst"
-                        maxlength="12"
-                        value="1"
-                        title="Quantity:"
-                        class="input-text qty"
-                      />
-                      <button
-                        onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-                        class="increase items-count"
-                        type="button"
-                      >
-                        <i class="lnr lnr-chevron-up"></i>
-                      </button>
-                      <button
-                        onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
-                        class="reduced items-count"
-                        type="button"
-                      >
-                        <i class="lnr lnr-chevron-down"></i>
-                      </button>
-                    </div>
-                  </td>
-                  <td>
-                    <h5>$720.00</h5>
-                  </td>
-                </tr>
-                <!-- <tr class="bottom_button">
-                  <td></td>
-                  <td></td>
-                  <td>
-                    <div class="cupon_text">
-                      <input type="text" placeholder="Coupon Code" />
-                      <a class="main_btn" href="#">Apply</a>
-                      <a class="gray_btn" href="#">Close Coupon</a>
-                    </div>
-                  </td>
-                </tr>
-                <tr> -->
-                  <td></td>
-                  <td></td>
-                  <td>
-                    <h5>Subtotal</h5>
-                  </td>
-                  <td>
-                    <h5>$2160.00</h5>
-                  </td>
-                </tr>
-                <tr class="shipping_area">
-                  <td></td>
-                  <td></td>
-                  <td>
-                    <h5>Shipping</h5>
-                  </td>
-                  <td>
-                    <div class="shipping_box">
-                      
-                     
-                    </div>
-                  </td>
-                </tr>
-                <tr class="out_button_area">
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td>
-                    <div class="checkout_btn_inner">
-                      <a class="gray_btn" href="#">Continue Shopping</a>
-                      <a class="main_btn" href="#">Proceed to checkout</a>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </section>
    
-    <%-include("../../Views/Partials/user/footer")%>
+<style>
+  #productImg{
+    width: 150px;
+    height: 180px;
+  }
+  #dltBtn{
+    width: 70px;
+    height: 30px;
+    border: 0;
+    border-radius: 3px;
+  }
+  #icon{
+    background-color: beige;
+  }
+  .pop-container{
+    background-color: white;
+    margin-top: 80px;
+    z-index: 10;
+  }
+</style>
+<!--================Home Banner Area =================-->
+  <section class="banner_area">
+    <div class="banner_inner d-flex align-items-center">
+      <div class="container">
+        <div
+          class="banner_content d-md-flex justify-content-between align-items-center"
+        >
+          <div class="mb-3 mb-md-0">
+            <h2>Cart</h2>
+            <p>Very us move be blessed multiply night</p>
+          </div>
+          <div class="page_link">
+            <a href="/">Home</a>
+            <a href="/cart">Cart</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+<!--================End Home Banner Area =================-->
+
+<!--================Cart Area =================-->
+  <section class="cart_area">
+    <div class="container">
+      <div class="cart_inner">
+        <%if(cart.items.length === 0){%>
+          <div class="empty-cart-message">
+            <h3>Your cart is empty!</h3>
+            <p>There are no products in your cart. Please start shopping.</p>
+            <a href="/products" class="button">Browse Shopping</a>
+          </div>
+        <%}else{%>
+          <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Product</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% cart.items.forEach(item => {%>
+              <tr>
+                <td>
+                  <div class="media">
+                    <div class="d-flex">
+                      <img src="/uploads/product-images/<%= item.productId.images[0] %>" id="productImg"/>
+                    </div>
+                    <div class="media-body">
+                      <p><%=item.productId.productName%></p>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <h5>₹<%=item.productId.regularPrice%></h5>
+                </td>
+                <td>
+
+                  <div class="product_count">
+                    <input
+                      type="number"
+                      name="qty"
+                      class="input-text qty"
+                      maxlength="10"
+                      value="1"
+                      title="Quantity:"
+                      min="0"
+                    />
+                    <button
+                      onclick="increaseQty(this)"
+                      class="increase items-count"
+                      type="button"
+                    >
+                      <i class="lnr lnr-chevron-up"></i>
+                    </button>
+
+                    <button
+                      onclick="decreaseQty(this)"
+                      class="reduced items-count"
+                      type="button"
+                    >
+                      <i class="lnr lnr-chevron-down"></i>
+                    </button>
+                  </div>
+                  
+                </td>
+                <td>
+                  <h5>₹<%=item.productId.regularPrice%></h5>
+                </td>
+                <td>
+                  <button id="dltBtn" onclick="removeItem(`<%= cart._id %>`,`<%= item.productId._id %>`)">REMOVE</button>
+                </td>
+              </tr>
+              
+              <%})%>
+                <!-- <tr class="bottom_button">
+                <td></td>
+                <td></td>
+                <td>
+                  <div class="cupon_text">
+                    <input type="text" placeholder="Coupon Code" />
+                    <a class="main_btn" href="#">Apply</a>
+                    <a class="gray_btn" href="#">Close Coupon</a>
+                  </div>
+                </td>
+              </tr>
+              <tr> -->
+                <td></td>
+                <td></td>
+                <td>
+                  <h5>Subtotal</h5>
+                </td>
+                <td>
+                  <h5>₹<%=cart.totalPrice%></h5>
+                </td>
+
+                
+              </tr>
+              <tr class="shipping_area">
+                <td></td>
+                <td></td>
+                <td>
+                  <h5>Shipping</h5>
+                </td>
+                <td>
+                  <div class="shipping_box">
+                    
+                    
+                  </div>
+                </td>
+              </tr>
+              <tr class="out_button_area">
+                <td>
+                  <button class="gray_btn">Update Cart</button>
+
+                </td>
+                <td></td>
+                <td></td>
+                
+                <td>
+                  <div class="checkout_btn_inner d-flex">
+                    <a class="gray_btn" href="#">Continue Shopping</a>
+                    <a class="main_btn" href="#">Proceed to checkout</a>
+                  </div>
+                </td>
+              </tr>
+            
+            </tbody>
+          </table>
+        </div>
+        <%}%>
+      </div>
+    </div>
+  </section>
+   
+<script>
+
+  function increaseQty(button) {
+    const input = button.parentElement.querySelector("input.qty"); // Find the input in the same parent
+    let quantity = parseInt(input.value, 10); // Convert value to a number
+    if (!isNaN(quantity)) {
+      input.value = quantity + 1;
+    }
+  }
+
+  function decreaseQty(button) {
+    const input = button.parentElement.querySelector("input.qty"); // Find the input in the same parent
+    let quantity = parseInt(input.value, 10); // Convert value to a number
+    if (!isNaN(quantity) && quantity > 0) {
+      input.value = quantity - 1;
+    }
+  }
+
+  async function removeItem(mainId,productId) {
+    // console.log("function working...",id);
+   let response = await fetch('/removeProduct',{
+    method : "POST",
+    headers : {
+      'Content-Type' : 'application/json'
+    },
+    body : JSON.stringify({mainId,productId})
+   }) 
+
+   const data = await response.json()
+  
+   if(!data.status){
+    return Must.failure({time: 3000, content: data.message})
+   }
+   
+   setTimeout(()=>{
+      window.location.href = '/cart'
+    },1300)
+    
+    Must.success({time: 1300, content: data.message, color:'#27ae60'})
+
+    document.getElementById("icon").style.backgroundColor = 'beige'
+    document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
+  }
+
+</script>
+
+<%-include("../../Views/Partials/user/footer")%>

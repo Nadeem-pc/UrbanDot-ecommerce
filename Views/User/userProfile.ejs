@@ -771,12 +771,7 @@
         });
 
         function editAddress (obj){
-            console.log(obj, typeof obj)
-            let n = {
-                name: "sajjad@dsjnd",
-                sdl:223
-            }
-            console.log(JSON.stringify(n))
+
             let newObj = JSON.parse(`${obj}`)
             let name = document.getElementById('nameAtEditAddress')
             let phone =  document.getElementById('phoneAtEditAddress')
@@ -786,7 +781,6 @@
             let state =  document.getElementById('editState')
             let fullAddress =  document.getElementById('editAddress')
             let addressType =  document.getElementsByName('editAddressType') 
-            console.log(obj, name);
             name.value = newObj.name ?? "Guest"
             
         }
@@ -977,7 +971,7 @@
             event.preventDefault()
 
             const name = document.getElementById('nameAtAddress').value
-            const phone = document.getElementById('phoneAtAddress').value
+            const phone = document.getElementById('phoneAtAddress').value.trim()
             const pincode = document.getElementById('pincode').value
             const city = document.getElementById('city').value
             const fullAddress = document.getElementById('address').value
@@ -1023,8 +1017,5 @@
 
     </script>
 
-    <script>
-
-    </script>
 
 <%-include("../../Views/Partials/user/footer")%>
