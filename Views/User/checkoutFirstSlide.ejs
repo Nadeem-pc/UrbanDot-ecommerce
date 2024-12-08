@@ -1,0 +1,205 @@
+<%-include("../../Views/Partials/user/header")%>
+<script src="https://unpkg.com/must-pop@latest/dist/library.js"></script>
+
+
+<style>
+.address-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 15px;
+    position: relative;
+    height: 130px;
+}
+.address-actions {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+.btn {
+    background: #00b894;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background 0.3s ease;
+}
+.btn-outline {
+    background: transparent;
+    border: 2px solid #2d3436;
+    color: #00b894;
+}
+#address-type{
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 5px 8px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    background-color: #dadada;
+    font-weight: 400;
+    font-size: small;
+    border-radius: 3px;
+}
+.type{
+    gap: 35px;
+    height: 30px;
+}
+#icon{
+    background-color: beige;
+}
+.pop-container{
+    background-color: white;
+    margin-top: 80px;
+    z-index: 10;
+}
+</style>
+
+    <!--================Home Banner Area =================-->
+    <section class="banner_area">
+      <div class="banner_inner d-flex align-items-center">
+        <div class="container">
+          <div
+            class="banner_content d-md-flex justify-content-between align-items-center"
+          >
+            <div class="mb-3 mb-md-0">
+              <h2>Product Checkout</h2>
+              <p>Very us move be blessed multiply night</p>
+            </div>
+            <div class="page_link">
+              <a href="/">Home</a>
+              <a href="/checkout">Product Checkout</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!--================End Home Banner Area =================-->
+
+    <!--================Checkout Area =================-->
+    <section class="checkout_area section_gap">
+      <div class="container">
+        
+        <!-- <div class="cupon_area">
+          <div class="check_title">
+            <h2>
+              Have a coupon?
+              <a href="#">Click here to enter your code</a>
+            </h2>
+          </div>
+          <input type="text" placeholder="Enter coupon code" />
+          <a class="tp_btn" href="#">Apply Coupon</a>
+        </div> -->
+        <div class="billing_details">
+            <div class="row">
+                <div class="col-lg-8">
+                    <% if(address !== null){ %>
+                        <h3>Saved address</h3>
+                        <div id="addresses" class="tab-content">
+                            <% address.address.map((val)=>{ %>
+                                <div class="address-card">
+                                    <div class="address-actions">
+                                        <button class="btn btn-outline" onclick="editPage('editAddress', `<%= JSON.stringify(val).replace(/'/g, '&quot;') %>`)">Edit</button>
+                                    </div>
+                                    <div class="type d-flex"> 
+                                        <input type="radio" value="<%=val._id%>" name="selectedAddress" required>
+                                        <h3><%= val.name %></h3>
+                                        <h5 id="address-type"> <%=val.addressType%> </h5>
+                                    </div>
+                                    <p><%= val.fullAddress %></p>
+                                    <!-- <p> <%=val.pincode%> </p> -->
+                                    <p> <%=val.phone%> </p>
+                                    <!-- <p> <%= val.state%></p> -->
+                                    <!-- <p> <%= val.country%></p> -->
+                                </div>
+                            <%})%>
+                    <%}else{%>
+                        <h3>Add Address</h3>  
+                    <%}%>
+                    <button class="btn" onclick="location.href='/checkout/<%=cart._id%>'">Add New Address</button>
+                    <button class="btn" id="continueBtn" style="background-color: orange;" onclick="fetchData()">Continue</button>
+                </div>
+
+            </div>
+            <div class="col-lg-4">
+              <div class="order_box" style="margin-top: 30px;">
+                <h2>Price details</h2>
+                <ul class="list">
+                  <!-- <li>
+                    <a href="#"
+                      >Fresh Blackberry
+                      <span class="middle">x 02</span>
+                      <span class="last">$720.00</span>
+                    </a>
+                  </li> -->
+   
+                </ul>
+                <ul class="list list_2">
+                  <li>
+                    <a href="#"
+                      >Price
+                      <span>₹<%=totalPrice+50%></span>
+                     
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#"
+                      >Delivery Charges
+                      <span style="color: #00b894;"> <del>₹50</del> FREE</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#"
+                      >Total Payable
+                      <span>₹<%=totalPrice%></span>
+                    </a>
+                  </li>
+                </ul>
+    
+                <!-- <a class="main_btn" href="#" style="background-color: #00b894;">Place order</a> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+<!--================End Checkout Area =================-->
+
+<script>
+
+    async function fetchData() {
+
+        let radios = document.getElementsByName('selectedAddress')
+
+        let address = null
+        let isSelected = false
+        for(const radio of radios){
+            if(radio.checked){
+                address = radio.value
+                isSelected = true
+                break
+            }
+        }
+
+        let response = await fetch('/getUserAddress',{
+            method : 'POST',
+            headers : {
+                'Content-Type' : "application/json"
+            },
+            body : JSON.stringify({address})
+        })
+        let data = await response.json()
+
+        if(data.status){
+            window.location.href = '/payment'
+        }
+        return Must.failure({time: 3000, content: data.message})
+    }
+   
+    
+</script>
+
+<%-include("../../Views/Partials/user/footer")%>
+   

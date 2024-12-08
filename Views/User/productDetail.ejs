@@ -189,7 +189,7 @@
               <% if(product.stock === 0){%>
               
               <%}else{%>  
-                <a class="main_btn" id="buyNow-btn" href="#">Buy now</a>
+                <!-- <a class="main_btn" id="buyNow-btn" href="/checkoutInitial/<%=product._id%>">Buy now</a> -->
                 <button class="main_btn" id="cart-btn" onclick="fetchId(`<%= product._id %>`)">Add to Cart</button>
               <%}%>    
               <!-- <a class="icon_btn" href="#">

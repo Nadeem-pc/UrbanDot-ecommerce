@@ -2,6 +2,7 @@ const express = require("express")
 const user = express.Router()
 const userController = require('../Controllers/userController')
 const cartController = require('../Controllers/cartController')
+const orderController = require('../Controllers/orderController')
 const {isBlocked, isLogout, userAuth} = require('../Middlewares/User/userAuth')
 const passport  = require("passport")
 
@@ -39,11 +40,19 @@ user.post('/addAddress',userController.addAddress)
 
 user.get('/deleteAddress/:mainId/:id',userController.deleteAddress)
 
+// Cart Management
 user.post('/cart', userAuth, cartController.addToCart)
-
 user.get('/cart', userAuth, cartController.loadCart)
-
 user.post('/removeProduct',cartController.removeProduct)
+
+// Checkout Management
+user.get('/checkoutInitial',userAuth,orderController.loadFirstPageOfCheckout)
+// user.get('/checkoutInitial/:id',userAuth,orderController.loadFirstPageOfCheckout)
+user.get('/checkout/:id',userAuth,orderController.loadCheckout)
+user.get('/payment',orderController.loadPaymentPage)
+user.post('/getUserAddress',orderController.getUserAddress)
+user.post('/storeOrderDetails',orderController.storeOrderDetails)
+user.get('/orderPlaced',orderController.showOrderPlaced)
 
 user.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}))
 user.get('/google/callback',passport.authenticate('google',{failureRedirect:'/signup'}),(req,res) => {

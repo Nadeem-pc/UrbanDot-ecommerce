@@ -1,0 +1,232 @@
+<%-include("../../Views/Partials/user/header")%>
+
+<style>
+  .btn{
+    height: 30px;
+    display: flex;
+    align-items: center;
+  }
+</style>
+
+<!--================Home Banner Area =================-->
+  <section class="banner_area">
+    <div class="banner_inner d-flex align-items-center">
+      <div class="container">
+        <div
+          class="banner_content d-md-flex justify-content-between align-items-center"
+        >
+          <div class="mb-3 mb-md-0">
+            <h2>Product Checkout</h2>
+            <p>Very us move be blessed multiply night</p>
+          </div>
+          <div class="page_link">
+            <a href="/">Home</a>
+            <a href="/checkout">Product Checkout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+<!--================End Home Banner Area =================-->
+
+    <!--================Checkout Area =================-->
+    <section class="checkout_area section_gap">
+      <div class="container">
+        
+        <!-- <div class="cupon_area">
+          <div class="check_title">
+            <h2>
+              Have a coupon?
+              <a href="#">Click here to enter your code</a>
+            </h2>
+          </div>
+          <input type="text" placeholder="Enter coupon code" />
+          <a class="tp_btn" href="#">Apply Coupon</a>
+        </div> -->
+        <div class="billing_details">
+          <div class="row">
+            <div class="col-lg-8">
+              <h3>Delivery address</h3>
+              <form
+                class="row contact_form"
+                action="#"
+                method="post"
+                novalidate="novalidate"
+              >
+                <div class="col-md-6 form-group p_star">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="first"
+                    name="name"
+                  />
+                  <span
+                    class="placeholder"
+                    data-placeholder="Name"
+                  ></span>
+                </div>
+      
+     
+                <div class="col-md-6 form-group p_star">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="number"
+                    name="number"
+                  />
+                  <span
+                    class="placeholder"
+                    data-placeholder="Mobile number"
+                  ></span>
+                </div>
+                <div class="col-md-6 form-group p_star">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="pincode"
+                    name="compemailany"
+                  />
+                  <span
+                    class="placeholder"
+                    data-placeholder="Pincode"
+                  ></span>
+                </div>
+                
+                <div class="col-md-6 form-group p_star">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="city"
+                    name="city"
+                  />
+                  <span
+                    class="placeholder"
+                    data-placeholder="City/Town/District"
+                  ></span>
+                </div>
+     
+                <!-- <div class="col-md-12 form-group p_star">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="city"
+                    name="city"
+                  />
+                  <span class="placeholder" data-placeholder="Town/City"></span>
+                </div> -->
+ 
+          
+                <div class="col-md-12 form-group">
+         
+                  <textarea
+                    class="form-control"
+                    name="message"
+                    id="message"
+                    rows="1"
+                    placeholder="Address"
+                  ></textarea>
+                </div>
+
+                <div class="col-md-6 form-group p_star">
+                  <select class="country_select">
+                    <option value="1"> Select Country</option>
+                    <option value="India">India</option>
+                  </select>
+                </div>
+                <div class="col-md-6 form-group p_star">
+                  <select class="country_select">
+                    <option value="1">Select State</option>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                    <option value="Assam">Assam</option>
+                    <option value="Bihar">Bihar</option>
+                    <option value="Chhattisgarh">Chhattisgarh</option>
+                    <option value="Goa">Goa</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Haryana">Haryana</option>
+                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                    <option value="Jharkhand">Jharkhand</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Kerala">Kerala</option>
+                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Manipur">Manipur</option>
+                    <option value="Meghalaya">Meghalaya</option>
+                    <option value="Mizoram">Mizoram</option>
+                    <option value="Nagaland">Nagaland</option>
+                    <option value="Odisha">Odisha</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Rajasthan">Rajasthan</option>
+                    <option value="Sikkim">Sikkim</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Telangana">Telangana</option>
+                    <option value="Tripura">Tripura</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="Uttarakhand">Uttarakhand</option>
+                    <option value="West Bengal">West Bengal</option>
+                  </select>
+                </div>
+
+              <div class="col-md-6 form-group">
+                <p>Address Type</p>
+                <div>
+                  <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="editAddressType" id="home" value="home" >
+                      <h6 class="form-check-label" for="home">Home</h6>
+                  </div>
+                  <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="editAddressType" id="work" value="work">
+                      <h6 class="form-check-label" for="work">Work</h6>
+                  </div>
+                </div>
+              </div>
+          
+            </form>
+              <button class="btn" style="background-color: orange;" onclick="location.href='/payment'">Continue</button>
+
+            </div>
+            <div class="col-lg-4">
+              <div class="order_box" style="margin-top: 30px;">
+                <h2>Price details</h2>
+                <ul class="list">
+                  <!-- <li>
+                    <a href="#"
+                      >Fresh Blackberry
+                      <span class="middle">x 02</span>
+                      <span class="last">$720.00</span>
+                    </a>
+                  </li> -->
+   
+                </ul>
+                <ul class="list list_2">
+                  <li>
+                    <a href="#"
+                      >Price
+                      <span>₹<%=totalPrice+50%></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#"
+                      >Delivery Charges
+                      <span style="color: #00b894;"> <del>₹50</del> FREE</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#"
+                      >Total Payable
+                      <span>₹<%=totalPrice%></span>
+                    </a>
+                  </li>
+                </ul>
+    
+                <!-- <a class="main_btn" href="#" style="background-color: #00b894;">Place order</a> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!--================End Checkout Area =================-->
+
+<%-include("../../Views/Partials/user/footer")%>
+   

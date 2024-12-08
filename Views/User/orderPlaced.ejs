@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+</head>
+<body>
+
+<%-include("../../Views/Partials/user/header")%>
+
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px 0 200px;">
+    <dotlottie-player src="https://lottie.host/d924d297-b754-471c-912b-dfb3904de4c9/VHbthL86jN.lottie" background="transparent" speed="1" style="width: 400px; height: 400px;" loop autoplay></dotlottie-player>
+    
+    <h2 style="display: flex; justify-content: center; font-weight: bold; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Order Placed</h2>
+    <h5>OrderId : <%= orderId._id %> </h5>
+</div>
+    
+</body>
+</html>
+
+<script>
+    setTimeout(() => {
+        window.location.href = '/'
+    },3000)
+</script>
+
+<%-include("../../Views/Partials/user/footer")%>

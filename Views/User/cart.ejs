@@ -68,7 +68,7 @@
                 <td>
                   <div class="media">
                     <div class="d-flex">
-                      <img src="/uploads/product-images/<%= item.productId.images[0] %>" id="productImg"/>
+                     <a href="/product/<%=item.productId._id%>"> <img src="/uploads/product-images/<%= item.productId.images[0] %>" id="productImg"/> </a>
                     </div>
                     <div class="media-body">
                       <p><%=item.productId.productName%></p>
@@ -154,17 +154,14 @@
                 </td>
               </tr>
               <tr class="out_button_area">
-                <td>
-                  <button class="gray_btn">Update Cart</button>
-
-                </td>
+          
                 <td></td>
                 <td></td>
                 
                 <td>
-                  <div class="checkout_btn_inner d-flex">
-                    <a class="gray_btn" href="#">Continue Shopping</a>
-                    <a class="main_btn" href="#">Proceed to checkout</a>
+                  <div class="checkout_btn_inner d-flex justify-content-center">
+                    <a class="gray_btn" href="/shop">Continue Shopping</a>
+                    <a class="main_btn" href="/checkoutInitial">Proceed to checkout</a>
                   </div>
                 </td>
               </tr>
@@ -196,7 +193,7 @@
   }
 
   async function removeItem(mainId,productId) {
-    // console.log("function working...",id);
+    console.log("function working...",mainId);
    let response = await fetch('/removeProduct',{
     method : "POST",
     headers : {

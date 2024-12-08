@@ -542,7 +542,7 @@
                         <div class="address-card">
                             <div class="address-actions">
                                 <button class="btn btn-outline" onclick="editPage('editAddress', `<%= JSON.stringify(val).replace(/'/g, '&quot;') %>`)">Edit</button>
-                                <button class="btn btn-outline" onclick="location.href='/deleteAddress/<%=address._id%>/<%=val._id%>'">Delete</button>
+                            <button class="btn btn-outline" onclick="location.href='/deleteAddress/<%=address._id%>/<%=val._id%>'">Delete</button>
                             </div>
                             <div class="type d-flex "> 
                                 <h3><%= val.name %></h3>
@@ -558,7 +558,6 @@
                     <%})%>
                 <%}else{%>
                     <h2 class="section-title">Add Address</h2>
-                      
                 <%}%>
                 <button class="btn" onclick="changePage('addAddress')">Add New Address</button>
             </div>
@@ -970,15 +969,15 @@
         document.getElementById('addressForm').addEventListener('submit', async (event) => {
             event.preventDefault()
 
-            const name = document.getElementById('nameAtAddress').value
+            const name = document.getElementById('nameAtAddress').value.trim()
             const phone = document.getElementById('phoneAtAddress').value.trim()
-            const pincode = document.getElementById('pincode').value
-            const city = document.getElementById('city').value
-            const fullAddress = document.getElementById('address').value
+            const pincode = document.getElementById('pincode').value.trim()
+            const city = document.getElementById('city').value.trim()
+            const fullAddress = document.getElementById('address').value.trim()
             const country = document.getElementById('country').value
             const state = document.getElementById('state').value
             const radios = document.getElementsByName('addressType')
-            console.log()
+         
             let addressType = null
             let isSelected = false
             for(const radio of radios){

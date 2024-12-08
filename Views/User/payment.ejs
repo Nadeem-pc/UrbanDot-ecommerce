@@ -1,0 +1,167 @@
+<%-include("../../Views/Partials/user/header")%>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .slide{
+            padding: 60px;
+        }
+        .payment-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .payment-methods {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .order-summary {
+            background-color: #f1f3f5;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .payment-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .payment-option:hover {
+            background-color: #f8f9fa;
+            border-color: #00b894;
+        }
+        .payment-option input[type="radio"] {
+            margin-right: 15px;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        @media (max-width: 768px) {
+            .payment-container {
+                flex-direction: column;
+            }
+            .order-summary {
+                margin-top: 20px;
+            }
+        }
+    </style>
+
+    <div class="slide">
+        <div class="row payment-container">
+            <!-- Payment Methods Column -->
+            <div class="col-md-8 payment-methods">
+                <h2 class="mb-4">Select Payment Method</h2>
+                
+                <div class="payment-option">
+                    <input type="radio" id="cod" name="payment" value="COD">
+                    <label for="cod">
+                        <strong>Cash on Delivery (COD)</strong>
+                        <p class="text-muted mb-0">Pay when you receive the product</p>
+                    </label>
+                </div>
+                
+                <div class="payment-option">
+                    <input type="radio" id="wallet" name="payment" value="Wallet">
+                    <label for="wallet">
+                        <strong>Digital Wallet</strong>
+                        <p class="text-muted mb-0">Pay using your saved wallet balance</p>
+                    </label>
+                </div>
+                
+                <div class="payment-option">
+                    <input type="radio" id="razorpay" name="payment" value="razorpay">
+                    <label for="razorpay">
+                        <strong>Razorpay</strong>
+                        <p class="text-muted mb-0">Quick and secure online payment</p>
+                    </label>
+                </div>
+                
+                <div class="mt-4">
+                    <button id="proceedPayment" class="btn btn-primary w-100" style="background-color: orange;" disabled>
+                        Proceed to Payment
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Order Summary Column -->
+            <div class="col-md-4 order-summary">
+                <h3>Order Summary</h3>
+                <div class="order-item">
+                    <span>Price</span>
+                    <span>₹<%=totalPrice+50%></span>
+                </div>
+                <div class="order-item">
+                    <span>Delivery Charges</span>
+                    <span style="color: #00b894;"> <del>₹50</del> FREE</span>
+                </div>
+                <!-- <div class="order-item">
+                    <span>Amount Payable</span>
+                    
+                </div> -->
+                <hr>
+                <div class="order-item">
+                    <strong>Total</strong>
+                    <strong>₹<%=totalPrice%></strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & Required JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const paymentOptions = document.querySelectorAll('input[name="payment"]');
+            const proceedButton = document.getElementById('proceedPayment');
+
+            paymentOptions.forEach(option => {
+                option.addEventListener('change', () => {
+                    proceedButton.disabled = false;
+                });
+            });
+
+            proceedButton.addEventListener('click', async (event) => {
+                event.preventDefault()
+
+                let radios = document.getElementsByName('payment')
+
+                let paymentMethod = null
+                let isSelected = false
+                for(const radio of radios){
+                    if(radio.checked){
+                        paymentMethod = radio.value
+                        isSelected = true
+                        break
+                    }
+                }
+                console.log(paymentMethod);
+                
+                let response = await fetch('/storeOrderDetails',{
+                    method : 'POST',
+                    headers : {
+                        'Content-Type' : "application/json"
+                    },
+                    body : JSON.stringify({paymentMethod})
+                })
+                let data = await response.json()
+
+                if(data.success){
+                    window.location.href = '/orderPlaced'
+                }
+                return Must.failure({time: 3000, content: data.message})
+                        
+            });
+        });
+    </script>
+
+
+<%-include("../../Views/Partials/user/footer")%>

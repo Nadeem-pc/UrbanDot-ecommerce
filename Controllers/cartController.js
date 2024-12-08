@@ -45,7 +45,7 @@ const addToCart = async (req,res) => {
 const loadCart = async (req,res) => {
     try {
         const cart = await Cart.findOne({ userId : req.session.user }).populate('items.productId')
-
+        
         if(!cart){
             return res.render('cart', { cart })
         }
@@ -55,6 +55,7 @@ const loadCart = async (req,res) => {
         }, 0)
 
         res.render('cart', {cart : cart})
+
 
     } catch (error) {
         console.log(error);
