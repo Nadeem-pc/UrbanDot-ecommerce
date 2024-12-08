@@ -264,9 +264,11 @@
                                                         <span class="badge rounded-pill alert-warning">Pending</span>
                                                     <% } else if (order.orderStatus === 'Delivered') { %>
                                                         <span class="badge rounded-pill alert-success">Delivered</span>
-                                                    <% } else { %>
-                                                        <span class="badge rounded-pill alert-secondary"><%= order.orderStatus %></span>
-                                                    <% } %>
+                                                    <% } else if (order.orderStatus === 'Cancelled') { %>
+                                                        <span class="badge rounded-pill alert-danger">Cancelled</span>
+                                                    <% } else if (order.orderStatus === 'Shipped') { %>
+                                                        <span class="badge rounded-pill alert-warning">Shipped</span>
+                                                    <%}%>    
                                                 </td>
                                 
                                                 <!-- Order Date -->

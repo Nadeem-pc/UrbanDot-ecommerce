@@ -4,7 +4,7 @@ const User = require('../Models/userSchema')
 const Address = require('../Models/addressSchema')
 const mongoose = require('mongoose')
 const Cart = require('../Models/cartSchema')
-const { json } = require('express')
+const express = require('express')
 
 const loadCheckout = async (req,res) => {
     try {
@@ -176,7 +176,7 @@ const getOrderDetails = async (req,res) => {
 
         const orderDetails = await Order.aggregate([
             { $match : {_id:new mongoose.Types.ObjectId(id)}},
-            
+
             { $lookup: {
                 from: 'users',
                 localField: "userId",
@@ -208,6 +208,41 @@ const getOrderDetails = async (req,res) => {
     }
 }
 
+const updateOrderStatus = async (req,res) => {
+    try {
+        const { orderId, orderStatus } = req.body;
+        
+        if (orderStatus === 'Pending' || orderStatus === 'Shipped' || orderStatus === 'Delivered') {
+            await Order.updateOne({ _id: orderId }, { $set: { orderStatus ,"orderedItems.$[].status":orderStatus }});
+            return res.json({success:true, message: "Order status updated successfully!"});
+        }
+
+        res.status(500).json({success:false,message:"Something went wrong"})
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Internal Server Error" })
+    }
+}
+
+const cancelOrder = async (req,res) => {
+    const {productId} = req.body
+    const userId = req.session.user
+
+    try {
+        
+        const cancelOrder = await Order.updateOne({userId,'orderedItems.product':productId},{$set:{"orderedItems.$[].status":"Cancelled"}})
+        if(cancelOrder){
+            return res.json({success:true, message: "Order cancelled successfully!"});
+        }
+
+        return res.json({success:false, message: "Order cancellation failed!"});
+       
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Internal Server Error" })
+    }
+}
 
 module.exports = {
     loadCheckout,
@@ -217,7 +252,9 @@ module.exports = {
     storeOrderDetails,
     loadFirstPageOfCheckout,
 
+    cancelOrder,
     getOrdersList,
-    getOrderDetails
+    getOrderDetails,
+    updateOrderStatus,
 
 }

@@ -39,4 +39,7 @@ admin.get('/editProduct/:id',authMiddleware.isLogin, productController.loadEditP
 // ORDER MANAGEMENT
 admin.get('/orders',authMiddleware.isLogin,orderController.getOrdersList)
 admin.get('/orderDetails/:id',authMiddleware.isLogin, orderController.getOrderDetails)
+admin.post('/updateOrderStatus',orderController.updateOrderStatus)
+admin.post('/cancelOrder',orderController.cancelOrder)
+
 module.exports = admin

@@ -528,7 +528,11 @@
                         <span class="badge success" style="background-color: orange; display: flex; align-items: center;"><%= order.orderStatus %></span>
                     <% } else if (order.orderStatus === 'Delivered') { %>
                         <span class="badge success" style="background-color: green; display: flex; align-items: center;"><%= order.orderStatus %></span>
-                    <% } %>
+                    <% }else if(order.orderStatus === 'Cancelled'){ %>
+                        <span class="badge success" style="background-color: red; display: flex; align-items: center;"><%= order.orderStatus %></span>
+                    <%}else if(order.orderStatus === 'Shipped'){%>    
+                        <span class="badge success" style="background-color: orange; display: flex; align-items: center;"><%= order.orderStatus %></span>
+                    <%}%>    
                 </div>
                 <div class="order-items">
                     <% order.orderedItems.forEach(product => { %> <!-- Loop through orderedItems -->

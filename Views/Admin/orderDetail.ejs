@@ -14,7 +14,32 @@
         <link rel="shortcut icon" type="image/x-icon" href="/Admin/imgs/theme/favicon.svg" />
         <!-- Template CSS -->
         <link href="/Admin/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+        <script src="https://unpkg.com/must-pop@latest/dist/library.js"></script>
+
     </head>
+
+    <style>
+        #icon{
+            background-color: beige;
+        }
+        .pop-container{
+            background-color: white;
+            margin-top: 80px;
+            z-index: 10;
+        }
+        .cancelBtn{
+            border: none;
+            border-radius: 5px;
+            background-color: orange;
+            color: white;
+            width: 55px;
+            font-weight: bold;
+        }
+        #cancelledBtn {
+            background-color: red;
+            width: 70px;
+        }
+    </style>
 
     <body>
         <div class="screen-overlay"></div>
@@ -148,7 +173,6 @@
                             <option value="Products"></option>
                             <option value="New orders"></option>
                             <option value="Apple iphone"></option>
-                            <option value="Ahmed Hassan"></option>
                         </datalist>
                     </form>
                 </div>
@@ -207,15 +231,18 @@
                     }) %></b></span> <br />
                     <small class="text-muted">Order ID: <%= order._id %></small>
                 </div>
+                
                 <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                    <select class="form-select d-inline-block mb-lg-0 mr-5 mw-200">
+                    <select id="orderStatusSelect" class="form-select d-inline-block mb-lg-0 mr-5 mw-200" name="orderStatus">
                         <option>Change status</option>
-                        <option <%= order.status === 'Pending' ? 'selected' : '' %>>Pending</option>
-                        <option <%= order.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
-                        <option <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
-                        <option <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
                     </select>
+                    <input type="hidden" id="orderId" value="<%= order._id %>" />
+                    <button type="submit" id="updateStatusBtn" class="btn btn-primary mb-1">Update Status</button>
                 </div>
+    
             </div>
         </header>
         <div class="card-body">
@@ -282,7 +309,8 @@
                             <th width="40%">Product</th>
                             <th width="20%">Unit Price</th>
                             <th width="20%">Quantity</th>
-                            <th width="20%" class="text-end">Total</th>
+                            <th width="20%" >Total</th>
+                            <th class="text-end" width="20%" >More</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -299,12 +327,18 @@
                                     </td>
                                     <td>₹<%= item.productDetails[0].regularPrice.toFixed(2) %></td>
                                     <td><%= item.orderedItems.quantity %></td>
-                                    <td class="text-end">₹<%= (item.productDetails[0].regularPrice * item.orderedItems.quantity).toFixed(2) %></td>
+                                    <td >₹<%= (item.productDetails[0].regularPrice * item.orderedItems.quantity).toFixed(2) %></td>
+
+                                    <%if(item.orderedItems.status !== "Cancelled"){%>
+                                        <td class="text-end"><button class="cancelBtn" onclick="cancelProduct(`<%=item.orderedItems.product%>`)">Cancel</button></td>
+                                    <%}else{%>    
+                                        <td class="text-end"><button class="cancelBtn" id="cancelledBtn">Cancelled</button></td>
+                                    <%}%>    
                                 </tr>
                             <% } %>
                         <% }); %>
                         <tr>
-                            <td colspan="4">
+                            <td colspan="3" >
                                 <article class="float-end">
                                     <!-- <dl class="dlist">
                                         <dt>Subtotal:</dt>
@@ -315,7 +349,7 @@
                                         <dd>$<%= order.shippingCost %></dd>
                                     </dl> -->
                                     <dl class="dlist">
-                                        <dt>Grand total:</dt>
+                                        <dt class="pl-50">Grand total:</dt>
                                         <dd><b class="h5">₹<%= order.totalAmount.toFixed(2) %></b></dd>
                                     </dl>
                                 </article>
@@ -351,3 +385,66 @@
         <script src="/Admin/js/main.js?v=1.1" type="text/javascript"></script>
     </body>
 </html>
+
+<script>
+   
+    document.getElementById('updateStatusBtn').addEventListener('click', async () => {
+        const orderStatus = document.getElementById('orderStatusSelect').value;
+        const orderId = document.getElementById('orderId').value;
+
+        try {
+
+            let data
+            if (orderStatus !== "Change status") {
+                const response = await fetch('/admin/updateOrderStatus', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ orderId, orderStatus }),
+                });
+
+                data = await response.json();
+            }
+            
+            if (!data.success) {
+                return Must.failure({time: 2500, content: data.message})
+            } 
+
+            Must.success({time: 2000, content: data.message, color:'#27ae60'})
+            setTimeout(() => {
+                window.location.href = '/admin/orders'
+            },2000)
+            document.getElementById("icon").style.backgroundColor = 'beige'
+            document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
+            
+        } catch (error) {
+            console.error(error);
+        }
+    });
+
+    async function cancelProduct(productId){
+       
+        let response = await fetch('/admin/cancelOrder',{
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json'
+            },
+            body : JSON.stringify({productId})
+        })
+
+        let data = await response.json()
+
+        if(!data.success){
+            return Must.failure({time: 2500, content: data.message})
+        }
+    
+        Must.success({time: 2000, content: data.message, color:'#27ae60'})
+        setTimeout(() => {
+            window.location.href = '/admin/orders'
+        },2000)
+        document.getElementById("icon").style.backgroundColor = 'beige'
+        document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
+    }
+
+</script>
