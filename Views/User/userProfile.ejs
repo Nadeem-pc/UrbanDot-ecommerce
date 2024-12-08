@@ -4,6 +4,10 @@
 
     <style>
 
+        #itemImage{
+            width: 80px;
+            height: 80px;
+        }
         .form-container {
             background-color: white;
             border-radius: 10px;
@@ -510,29 +514,43 @@
 
 
             <!-- Orders Tab -->
-            <div id="orders" class="tab-content">
-                <h2 class="section-title">Order History</h2>
-                <div class="order-card">
-                    <div class="order-header">
-                        <div>
-                            <strong>Order #12345</strong>
-                            <div style="color: #636e72">Placed on Oct 15, 2023</div>
-                        </div>
-                        <span class="badge success">Delivered</span>
+           <div id="orders" class="tab-content">
+    <% if (orders && orders.length > 0) { %>
+        <h2 class="section-title">Order History</h2>
+        <% orders.forEach(order => { %> <!-- Loop through each order -->
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <strong> Order #<%= order._id %> </strong>
+                        <div style="color: #636e72">Placed on <%= order.orderDate %></div>
                     </div>
-                    <div class="order-items">
+                    <% if (order.orderStatus === 'Pending') { %>
+                        <span class="badge success" style="background-color: orange; display: flex; align-items: center;"><%= order.orderStatus %></span>
+                    <% } else if (order.orderStatus === 'Delivered') { %>
+                        <span class="badge success" style="background-color: green; display: flex; align-items: center;"><%= order.orderStatus %></span>
+                    <% } %>
+                </div>
+                <div class="order-items">
+                    <% order.orderedItems.forEach(product => { %> <!-- Loop through orderedItems -->
                         <div class="order-item">
-                            <div class="item-image"></div>
+                            <div class="item-image"><img src="/uploads/product-images/<%=product.product.images[0]%>" id="itemImage"></div>
                             <div>
-                                <div><strong>Premium Cotton T-Shirt</strong></div>
-                                <div style="color: #636e72">Size: L | Color: Black</div>
-                                <div>$29.99</div>
+                                <div><strong><%= product.product.productName %></strong></div>
+                                <div>₹<%= product.price %></div>
                             </div>
                         </div>
-                    </div>
-                    <button class="btn btn-outline">View Details</button>
+                    <% }) %>
                 </div>
+                <div style="display: flex; justify-content: center; align-items: center;"><strong>Total amount ₹<%= order.totalAmount %></strong></div>
+
+                <button class="btn btn-outline" onclick="viewOrderDetails(`<%=order._id%>`)">View Details</button>
             </div>
+        <% }) %>
+    <% } else { %>
+        <h2>No Orders Found</h2>
+        <a href="/shop" class="button">Start Shopping</a>
+    <% } %>
+</div>
 
             <!-- Addresses Tab -->
             <div id="addresses" class="tab-content">

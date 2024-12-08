@@ -1,8 +1,11 @@
 const express = require('express')
 const admin = express.Router()
+
 const adminController = require('../Controllers/adminController')
 const categoryController = require('../Controllers/categoryController')
 const productController = require('../Controllers/productController')
+const orderController = require('../Controllers/orderController')
+
 const authMiddleware = require('../Middlewares/Admin/adminAuth')
 const multer = require('multer') 
 const storage = require('../Middlewares/Admin/multer')
@@ -33,6 +36,7 @@ admin.post('/addProduct', upload.array("images",3), productController.addProduct
 admin.get('/toogleProductBlock/:id/:status',productController.productBlockAndUnblock)
 admin.get('/editProduct/:id',authMiddleware.isLogin, productController.loadEditProduct)
 
-
-
+// ORDER MANAGEMENT
+admin.get('/orders',authMiddleware.isLogin,orderController.getOrdersList)
+admin.get('/orderDetails/:id',authMiddleware.isLogin, orderController.getOrderDetails)
 module.exports = admin

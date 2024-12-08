@@ -12,6 +12,7 @@ const session = require('express-session');
 const mongoose = require('mongoose')
 const express = require("express");
 const { isBlocked } = require("../Middlewares/User/userAuth");
+const Order = require("../Models/orderSchema")
 
  
 const loadHomePage = async (req,res) => {
@@ -275,10 +276,13 @@ const loadProductDetail = async (req,res) => {
 
 const loadProfilePage = async (req,res) => {
     try {
-        let id = req.session.user
-        let user = await User.findOne({_id:id})
-        const address = await Address.findOne({user:id})
-        return res.render('userProfile',{user, address})
+        let userId = req.session.user
+        
+        let user = await User.findOne({_id:userId})
+        const address = await Address.findOne({user:userId})
+        let orders = await Order.find({ userId }).populate('orderedItems.product')
+              
+        return res.render('userProfile',{user, address, orders})
     }
     catch (error) {
         console.log(error);

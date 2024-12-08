@@ -43,9 +43,9 @@ const orderSchema = mongoose.Schema({
         required: true,
     },
 
-    OrderStatus: {
+    orderStatus: {
         type: String,
-        enum: ['Pending','Shipped','Out for delivery','Delivered','Cancelled'],
+        enum: ['Pending','Shipped','Delivered','Cancelled'],
         default: 'Pending',
     },
 
@@ -62,7 +62,7 @@ const orderSchema = mongoose.Schema({
     },
 
     orderDate : {
-        type : Date
+        type : String
     },
 
 },{ timestamps : true } )

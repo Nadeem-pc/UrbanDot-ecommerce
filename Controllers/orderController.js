@@ -4,6 +4,7 @@ const User = require('../Models/userSchema')
 const Address = require('../Models/addressSchema')
 const mongoose = require('mongoose')
 const Cart = require('../Models/cartSchema')
+const { json } = require('express')
 
 const loadCheckout = async (req,res) => {
     try {
@@ -103,19 +104,32 @@ const storeOrderDetails = async (req,res) => {
         const user = req.session.user
         const{paymentMethod} = req.body
 
+        const date = new Date();
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const month = months[date.getMonth()];
+        const day = date.getDate();
+        const year = date.getFullYear();
+
+        const formattedDate = `${month} ${day} ${year}`;
+
         const newOrder = new Order({
             userId : user,
             address : req.session.userAddress,
             paymentMethod,
             orderedItems : req.session.products,
             totalAmount : req.session.totalPrice,
+            orderDate : formattedDate,
             paymentStatus: 'Pending'
         })
        
         await newOrder.save()
+        await Cart.findOneAndUpdate({ userId: req.session.user }, { $set: { items: [] } })
         req.session.orderId = await Order.findOne({_id:newOrder._id})
 
-        res.status(201).json({ success: true})
+        const COD = await Order.findOne({_id:newOrder._id,paymentMethod:"COD"})
+        if(COD){
+            res.status(201).json({ success: true})
+        }
        
     } catch (error) {
         console.log(error);
@@ -135,11 +149,75 @@ const showOrderPlaced = async (req,res) => {
 }
 
 
+// ADMIN SIDE
+
+const getOrdersList = async (req,res) => {
+    try {
+        let orders = await Order.aggregate([
+            { $lookup: {
+              from: 'users',
+              localField: "userId",
+              foreignField: "_id",
+              as: "userDetails"
+            }},
+        ])
+        
+        return res.render('listOrders',{orders})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Internal Server Error" })
+    }
+}
+
+const getOrderDetails = async (req,res) => {
+    try {
+        const id = req.params
+        const order = await Order.findOne()
+
+        const orderDetails = await Order.aggregate([
+            { $match : {_id:new mongoose.Types.ObjectId(id)}},
+            
+            { $lookup: {
+                from: 'users',
+                localField: "userId",
+                foreignField: "_id",
+                as: "userDetails"
+              }},
+
+            { $unwind:"$orderedItems"},
+            { $lookup: {
+              from: 'products',
+              localField: 'orderedItems.product',
+              foreignField: '_id',
+              as: 'productDetails'
+            }},
+
+            { $lookup: {
+              from: 'addresses',
+              localField: 'address',
+              foreignField: 'address._id',
+              as: "userAddress"
+            }}
+        ])
+        
+        return res.render('orderDetail',{order,orderDetails})
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Internal Server Error" })
+    }
+}
+
+
 module.exports = {
     loadCheckout,
     getUserAddress,
     loadPaymentPage,
     showOrderPlaced,
     storeOrderDetails,
-    loadFirstPageOfCheckout
+    loadFirstPageOfCheckout,
+
+    getOrdersList,
+    getOrderDetails
+
 }
