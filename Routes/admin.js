@@ -7,8 +7,8 @@ const productController = require('../Controllers/productController')
 const orderController = require('../Controllers/orderController')
 
 const authMiddleware = require('../Middlewares/Admin/adminAuth')
-const multer = require('multer') 
 const storage = require('../Middlewares/Admin/multer')
+const multer = require('multer') 
 const upload = multer({storage:storage})
 
 // AUTHENTICATION MANAGEMENT 

@@ -3,11 +3,9 @@ const User = require('../../Models/userSchema')
 const userAuth = (req,res,next) => {
     if(req.session.user){
         next()
-    }
-    else if(req.method === "POST"){
+    }else if(req.method === "POST"){
         res.status(409).json({message: "No user in session"})
-    }
-    else{
+    }else{
         res.redirect('/login')
     }
 }
@@ -21,8 +19,7 @@ const isBlocked = (req,res,next) => {
 const isLogout = (req,res,next) => {
     if(req.session.user){
         res.redirect('/')
-    }
-    else{
+    }else{
         next()
     }
 }

@@ -1,0 +1,345 @@
+<%-include("../../Views/Partials/user/header")%>
+
+<script src="https://unpkg.com/must-pop@latest/dist/library.js"></script>
+
+
+<style>
+  .btn{
+    height: 30px;
+    display: flex;
+    align-items: center;
+  }
+  #icon{
+    background-color: beige;
+}
+
+.pop-container{
+    background-color: white;
+    margin-top: 80px;
+    z-index: 10;
+}
+</style>
+
+<!--================Home Banner Area =================-->
+  <section class="banner_area">
+    <div class="banner_inner d-flex align-items-center">
+      <div class="container">
+        <div
+          class="banner_content d-md-flex justify-content-between align-items-center"
+        >
+          <div class="mb-3 mb-md-0">
+            <h2>Product Checkout</h2>
+            <p>Very us move be blessed multiply night</p>
+          </div>
+          <div class="page_link">
+            <a href="/">Home</a>
+            <a href="/checkout">Product Checkout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+<!--================End Home Banner Area =================-->
+
+    <!--================Checkout Area =================-->
+    <section class="checkout_area section_gap">
+      <div class="container">
+        
+        <!-- <div class="cupon_area">
+          <div class="check_title">
+            <h2>
+              Have a coupon?
+              <a href="#">Click here to enter your code</a>
+            </h2>
+          </div>
+          <input type="text" placeholder="Enter coupon code" />
+          <a class="tp_btn" href="#">Apply Coupon</a>
+        </div> -->
+        <div class="billing_details">
+          <div class="row">
+            <div class="col-lg-12">
+              <h3>Edit address</h3>
+              <form
+                class="row contact_form"
+                id="editForm"
+              >
+                <div class="col-md-6 form-group p_star">
+                    <label for="name" id="nameLabel">Name</label>
+
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    name="name"
+                    value="<%= ADDRESS.name%>" 
+                  />
+                
+                </div>
+      
+     
+                <div class="col-md-6 form-group p_star">
+                    <label for="phone" id="mobLabel">Phone</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="phone"
+                    name="phone"
+                    value="<%= ADDRESS.phone%>"  
+
+                  />
+               
+                </div>
+                <div class="col-md-6 form-group p_star">
+                    <label for="pincode" id="pincodeLabel">Pincode</label>
+
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="pincode"
+                    name="pincode"
+                    value="<%=ADDRESS.pincode%>"  
+                  />
+                </div>
+                
+                <div class="col-md-6 form-group p_star">
+                    <label for="city" id="cityLabel">City</label>
+
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="city"
+                    name="city"
+                    value="<%=ADDRESS.city%>"  
+                  />
+                
+                </div>
+     
+                <!-- <div class="col-md-12 form-group p_star">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="city"
+                    name="city"
+                  />
+                  <span class="placeholder" data-placeholder="Town/City"></span>
+                </div> -->
+ 
+          
+                <div class="col-md-12 form-group">
+                    <label for="address">Address</label>
+                    
+                  <textarea
+                    class="form-control"
+                    name="address"
+                    id="address"
+                    rows="1"
+                    placeholder="<%= ADDRESS.fullAddress %>" 
+                     
+                    
+                  ></textarea>
+                </div>
+
+                <div class="col-md-6 form-group p_star">
+                    <label for="country">Country</label>
+
+                  <select class="country_select">
+                    <option value="India">India</option>
+                  </select>
+                </div>
+                <div class="col-md-6 form-group p_star">
+                    <label for="state" id="stateLabel">State</label>
+
+                  <select class="country_select" id="state">
+                    <option value="<%=ADDRESS.state%>"><%=ADDRESS.state%></option>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                    <option value="Assam">Assam</option>
+                    <option value="Bihar">Bihar</option>
+                    <option value="Chhattisgarh">Chhattisgarh</option>
+                    <option value="Goa">Goa</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Haryana">Haryana</option>
+                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                    <option value="Jharkhand">Jharkhand</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Kerala">Kerala</option>
+                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Manipur">Manipur</option>
+                    <option value="Meghalaya">Meghalaya</option>
+                    <option value="Mizoram">Mizoram</option>
+                    <option value="Nagaland">Nagaland</option>
+                    <option value="Odisha">Odisha</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Rajasthan">Rajasthan</option>
+                    <option value="Sikkim">Sikkim</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Telangana">Telangana</option>
+                    <option value="Tripura">Tripura</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="Uttarakhand">Uttarakhand</option>
+                    <option value="West Bengal">West Bengal</option>
+                  </select>
+                </div>
+
+              <div class="col-md-6 form-group">
+                <p id="typeLabel">Address Type</p>
+                <div>
+                  <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="addressType" id="home" value="home" <%= ADDRESS.addressType === 'home' ? 'checked' : '' %>>
+                      <h6 class="form-check-label" for="home">Home</h6>
+                  </div>
+                  <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="addressType" id="work" value="work" <%= ADDRESS.addressType === 'work' ? 'checked' : '' %>>
+                      <h6 class="form-check-label" for="work">Work</h6>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn" type="submit" style="background-color: orange;">Continue</button>
+          
+            </form>
+
+            </div>
+            <!-- <div class="col-lg-4">
+              <div class="order_box" style="margin-top: 30px;">
+                <h2>Price details</h2>
+                <ul class="list"> -->
+                  <!-- <li>
+                    <a href="#"
+                      >Fresh Blackberry
+                      <span class="middle">x 02</span>
+                      <span class="last">$720.00</span>
+                    </a>
+                  </li> -->
+   
+                <!-- </ul>
+                <ul class="list list_2">
+                  <li>
+                    <a href="#"
+                      >Price
+                      <span>₹</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#"
+                      >Delivery Charges
+                      <span style="color: #00b894;"> <del>₹50</del> FREE</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#"
+                      >Total Payable
+                      <span>₹</span>
+                    </a>
+                  </li>
+                </ul> -->
+    
+                <!-- <a class="main_btn" href="#" style="background-color: #00b894;">Place order</a> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!--================End Checkout Area =================-->
+
+<%-include("../../Views/Partials/user/footer")%>
+   
+<script>
+
+    function validateAddress(name,phone,pincode,city,isSelected){
+
+        const usernamePattern = /^[A-Za-z\s]{3,}$/;
+        const phonePattern = /^[0-9]{10}$/;
+
+        let isValid = true
+
+        if(!usernamePattern.test(name)){
+            document.getElementById('nameLabel').innerHTML = 'Name must be at least 3 characters long and contain only letters and spaces.'
+            document.getElementById('nameLabel').style.color = 'red'
+            isValid = false
+        }else{
+            document.getElementById('nameLabel').innerHTML = 'Name'
+            document.getElementById('nameLabel').style.color = 'black'   
+        }
+
+        if(!phonePattern.test(phone)){
+            document.getElementById('mobLabel').innerHTML = 'Invalid Mobile Number'
+            document.getElementById('mobLabel').style.color = 'red'
+            isValid = false
+        }else{
+            document.getElementById('mobLabel').innerHTML = 'Mobile'
+            document.getElementById('mobLabel').style.color = 'black'  
+        }
+
+        if (!/^\d{6}$/.test(pincode)) {
+        document.getElementById('pincodeLabel').innerHTML = "Pincode must be exactly 6 digits.";
+        document.getElementById('pincodeLabel').style.color = 'red'
+            isValid = false;
+        }else{
+            document.getElementById('pincodeLabel').innerHTML = 'Pincode'
+            document.getElementById('pincodeLabel').style.color = 'black'  
+        }
+
+        if (!/^[A-Za-z\s]+$/.test(city)) {
+            document.getElementById('cityLabel').innerHTML = "City name contain only alphabets.";
+            document.getElementById('cityLabel').style.color = 'red'
+            isValid = false;
+        }else{
+            document.getElementById('cityLabel').innerHTML = 'City'
+            document.getElementById('cityLabel').style.color = 'black'  
+        }      
+
+        return isValid
+    }
+
+    document.getElementById('editForm').addEventListener('submit', async (event) => {
+        event.preventDefault()
+
+        let name = document.getElementById('name').value.trim()
+        let phone = document.getElementById('phone').value.trim()
+        let pincode = document.getElementById('pincode').value.trim()
+        let city = document.getElementById('city').value.trim()
+        let fullAddress = document.getElementById('address').value.trim()
+        let state = document.getElementById('state').value
+        let radios = document.getElementsByName('addressType')
+        
+
+        let addressType = null
+        let isSelected = false
+        for(const radio of radios){
+            if(radio.checked){
+                addressType = radio.value
+                isSelected = true
+                break
+            }
+        }
+
+            if(!validateAddress(name,phone,pincode,city,isSelected)) return 
+           
+            let response = await fetch('/editAddress',{
+                method : "POST",
+                headers : {
+                    'Content-Type' : "application/json"
+                },
+                body : JSON.stringify({name,phone,pincode,city,fullAddress,state,addressType})
+            })
+
+            let data = await response.json()
+            
+            if(!data.status){
+                return Must.failure({time: 3000, content:"Something went wrong"})
+            }
+            Must.success({time: 1500, content: data.message, color:'#27ae60'})
+
+            setTimeout(() => {
+                window.location.href = '/payment'
+            },1500)
+
+            document.getElementById("icon").style.backgroundColor = 'beige'
+            document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
+        
+    })
+
+</script>

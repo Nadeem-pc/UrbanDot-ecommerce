@@ -5,6 +5,7 @@ const Address = require('../Models/addressSchema')
 const mongoose = require('mongoose')
 const Cart = require('../Models/cartSchema')
 const express = require('express')
+const { use } = require('passport')
 
 const loadCheckout = async (req,res) => {
     try {
@@ -148,6 +149,49 @@ const showOrderPlaced = async (req,res) => {
     }
 }
 
+const cancelProduct = async (req,res) => {
+    try {
+        const {productId,orderId} = req.body
+        let cancelOrder = await Order.updateOne({_id:orderId,"orderedItems.product":productId},{$set:{orderStatus:"Cancelled"}})
+
+        if(cancelOrder){
+            return res.json({status:true,message:"Order cancelled"})
+        }
+        res.json({status:false,message:"Order cancellation failed"})
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Internal Server Error" })
+    }
+}
+
+const getOrderDetailsForUser = async (req, res) => {
+    try {
+        const orderId = req.params.orderId;
+        const orderDetails = await Order.findById(orderId)
+            .populate('orderedItems.product') // Populating ordered products
+            .populate('address'); // Populating the address
+
+        // let address = await Order.aggregate([
+        //     {$match:{_id:orderId}},
+        //     { $lookup: {
+        //       from: 'addresses',
+        //       localField: "address",
+        //       foreignField: "address._id",
+        //       as: "userAddress"
+        //     }},
+        // ])    
+
+        if (!orderDetails) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        res.json(orderDetails);
+    } catch (error) {
+        console.error('Error fetching order details:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
 
 // ADMIN SIDE
 
@@ -232,7 +276,10 @@ const cancelOrder = async (req,res) => {
     try {
         
         const cancelOrder = await Order.updateOne({userId,'orderedItems.product':productId},{$set:{"orderedItems.$[].status":"Cancelled"}})
-        if(cancelOrder){
+        
+        const cancelAll = await Order.updateOne({userId,"orderedItems.status":{$all:["Cancelled"]}},{$set:{orderStatus:"Cancelled"}})
+
+        if(cancelOrder || cancelAll){
             return res.json({success:true, message: "Order cancelled successfully!"});
         }
 
@@ -248,9 +295,11 @@ module.exports = {
     loadCheckout,
     getUserAddress,
     loadPaymentPage,
+    cancelProduct,
     showOrderPlaced,
     storeOrderDetails,
     loadFirstPageOfCheckout,
+    getOrderDetailsForUser,
 
     cancelOrder,
     getOrdersList,

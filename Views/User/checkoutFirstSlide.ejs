@@ -101,7 +101,7 @@
                             <% address.address.map((val)=>{ %>
                                 <div class="address-card">
                                     <div class="address-actions">
-                                        <button class="btn btn-outline" onclick="editPage('editAddress', `<%= JSON.stringify(val).replace(/'/g, '&quot;') %>`)">Edit</button>
+                                        <button class="btn btn-outline" onclick="location.href='/editAddress/<%=val._id%>'">Edit</button>
                                     </div>
                                     <div class="type d-flex"> 
                                         <input type="radio" value="<%=val._id%>" name="selectedAddress" required>
@@ -197,7 +197,6 @@
         }
         return Must.failure({time: 3000, content: data.message})
     }
-   
     
 </script>
 

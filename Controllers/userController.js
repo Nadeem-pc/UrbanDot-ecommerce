@@ -11,8 +11,9 @@ const env = require("dotenv").config();
 const session = require('express-session');
 const mongoose = require('mongoose')
 const express = require("express");
-const { isBlocked } = require("../Middlewares/User/userAuth");
+const { isBlocked, userAuth } = require("../Middlewares/User/userAuth");
 const Order = require("../Models/orderSchema")
+const user = require("../Routes/user")
 
  
 const loadHomePage = async (req,res) => {
@@ -235,28 +236,74 @@ const blockedUser = async (req,res) => {
     }
 }
 
-const loadShop = async (req,res) => {
+const loadShop = async (req, res) => {
     try {
-        const limit = 6
-        const page = parseInt(req.query.page) || 1
-        const skip = (page - 1) * limit
-
-        const totalProducts = await Product.countDocuments();
-        const totalPages = Math.ceil(totalProducts / limit);
-
-        const products = await Product.find({isBlocked:false}).skip(skip).limit(limit)
-
-        return res.render('shop',{
-            products,
-            currentPage : page,
-            totalPages
-        })
+      const { sort = 'new-arrivals', category = '', page = 1, search = '' } = req.query; // Include search parameter
+      const limit = 6; // Products per page
+      const skip = (page - 1) * limit;
+  
+      // Fetch listed categories for filtering
+      const listedCategories = await Category.find({ isListed: true }).select('_id'); // Fetch IDs of listed categories
+  
+      // Build the query object
+      const query = { 
+        isBlocked: false, // Exclude blocked products
+        category: { $in: listedCategories.map(cat => cat._id) }, // Exclude products from unlisted categories
+      };
+      if (category) {
+        query.category = category; // Include specific category if provided
+      }
+      if (search) {
+        query.productName = { $regex: search, $options: 'i' }; // Case-insensitive search
+      }
+  
+      // Sorting options
+      let sortOption = {};
+      switch (sort) {
+        case "low-to-high":
+          sortOption.regularPrice = 1;
+          break;
+        case "high-to-low":
+          sortOption.regularPrice = -1;
+          break;
+        case "name-asc":
+          sortOption.productName = 1;
+          break;
+        case "name-desc":
+          sortOption.productName = -1;
+          break;
+        default:
+          sortOption.createdAt = -1; // Default: New arrivals
+      }
+  
+      // Fetch products with filters, sorting, pagination, and search
+      const products = await Product.find(query)
+        .sort(sortOption)
+        .skip(skip)
+        .limit(limit);
+  
+      // Count total products for pagination
+      const totalProducts = await Product.countDocuments(query);
+      const totalPages = Math.ceil(totalProducts / limit);
+  
+      // Fetch all categories for the sidebar (only include listed categories)
+      const categories = await Category.find({ isListed: true });
+  
+      // Render the shop page
+      res.render("shop", {
+        products,
+        categories,
+        currentPage: parseInt(page, 10),
+        totalPages,
+        sort,
+        selectedCategory: category,
+        searchTerm: search,
+      });
+    } catch (error) {
+      console.error("Error in loadShop:", error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
-    catch (error) {
-        console.log(error);
-        res.redirect('/pageNotFound')
-    }
-}
+  };
 
 const loadProductDetail = async (req,res) => {
     const {id} = req.params  
@@ -381,6 +428,81 @@ const deleteAddress = async (req,res) => {
     }
 }
 
+const loadEditAddress = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = req.session.user;
+        const addressToEdit = req.session.addressToEdit;
+
+        // Find the user's address
+        const addressDoc = await Address.findOne({ user });
+
+        if (!addressDoc) {
+            return res.status(404).json({ error: "Address not found" });
+        }
+
+        // Find the index of the address to edit
+        const addressIndex = addressDoc.address.findIndex(p => p._id.toString() === id.toString());
+
+        if (addressIndex === -1) {
+            return res.status(404).json({ error: "Address not found" });
+        }
+
+        let ADDRESS;
+        if (addressIndex !== -1) {
+            ADDRESS = addressDoc.address[addressIndex];
+        }
+
+        // Store the address ID to session for update later
+        req.session.addressToEdit = id;
+
+        // Render the edit address view
+        return res.render('editAddress', { ADDRESS });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
+// Update the address in the database
+const editAddress = async (req, res) => {
+    try {
+        const { name, phone, pincode, city, fullAddress, state, addressType } = req.body;
+        const addressToEdit = req.session.addressToEdit;
+        const user = req.session.user;
+
+        // Find and update the address
+        const updatedAddress = await Address.findOneAndUpdate(
+            { user, "address._id": addressToEdit },
+            {
+                $set: {
+                    "address.$.name": name,
+                    "address.$.phone": phone,
+                    "address.$.pincode": pincode,
+                    "address.$.city": city,
+                    "address.$.fullAddress": fullAddress,
+                    "address.$.state": state,
+                    "address.$.addressType": addressType
+                }
+            },
+            { new: true } // To return the updated document
+        );
+
+        if (!updatedAddress) {
+            return res.status(404).json({ error: "Address not found or could not be updated" });
+        }
+
+        return res.status(200).json({status:true, message:"Address edited successfully"})
+        
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
+
 
 
 module.exports = {
@@ -401,4 +523,6 @@ module.exports = {
     changePassword,
     addAddress,
     deleteAddress,
+    loadEditAddress,
+    editAddress
 }

@@ -297,9 +297,9 @@
                                         </div> -->
                                     </div>
                     
-                                    <div class="row col-12 mt-25 ">
+                                    <div class="row col-12 d-flex justify-content-evenly align-items-center mt-25">
 
-                                        <div class="addImg card mb-2 col-lg-4">
+                                        <div class="addImg card mb-2 col-4">
                                             <div class="card-body p-0 d-flex flex-column justify-content-evenly align-items-center">
                                                 <div class="input-upload d-flex justify-content-center">
                                                     <img src="/Admin/imgs/theme/upload.svg" id="defaultImg-1"/>
@@ -313,7 +313,7 @@
                                             </div>
                                         </div>
                     
-                                        <div class="addImg card mb-2 col-lg-4">
+                                        <div class="addImg card mb-2 col-4">
                                             <div class="card-body p-0 d-flex flex-column justify-content-evenly align-items-center">
                                                 <div class="input-upload d-flex justify-content-center">
                                                     <img src="/Admin/imgs/theme/upload.svg" id="defaultImg-2"/>
@@ -327,7 +327,7 @@
                                             </div>
                                         </div>
                                         
-                                        <div class="addImg card mb-2 col-lg-4">
+                                        <div class="addImg card mb-2 col-4">
                                             <div class="card-body p-0 d-flex flex-column justify-content-evenly align-items-center">
                                                 <div class="input-upload d-flex justify-content-center">
                                                     <img src="/Admin/imgs/theme/upload.svg" id="defaultImg-3"/>
@@ -390,10 +390,12 @@
         </main>
 
         <script>
+            let file;
+            let selectedImages = [];
 
             function previewImage(event, index) {
                 const imgElement = document.getElementById(`defaultImg-${index}`);
-                const file = event.target.files[0];
+                 file = event.target.files[0];
                 let input = event.target
                 let cropper;
 
@@ -447,11 +449,14 @@
                                 }
                             };  
                         };
+                       
                     }
-
                     reader.readAsDataURL(input.files[0]);
-                    let selectedImages = [];
 
+
+                  
+                    
+                }  
                     document.getElementById('imgInput').addEventListener('change', (event) => {
                         const files = event.target.files; // Get all uploaded files
 
@@ -464,8 +469,9 @@
                         }
 
                     });
-
-                    documentetElementById('product_form').addEventListener('submit', async (event) => {
+                
+            }          
+            document.getElementById('product_form').addEventListener('submit', async (event) => {
                         console.log("first");
                         
                         event.preventDefault();
@@ -549,11 +555,11 @@
                                 return displayErrorMessage(quantityError);  
                             }
 
-                            if (!/^\d+(\.\d{1,2})?$/.test(quantity) || parseInt(quantity) < 0) {
-                                console.log(quantity, typeof quantity, quantity < 0)
-                                let quantityError = 'Please enter a valid quantity.'
-                                return displayErrorMessage(quantityError);
-                            }
+                            // if (!/^\d+(\.\d{1,2})?$/.test(quantity) || parseInt(quantity) < 0) {
+                            //     console.log(quantity, typeof quantity, quantity < 0)
+                            //     let quantityError = 'Please enter a valid quantity.'
+                            //     return displayErrorMessage(quantityError);
+                            // }
 
                             if (!/^\d+(\.\d{1,2})?$/.test(price) || parseFloat(price) < 0) {
                                 let priceError = 'Please enter a valid price.'
@@ -569,14 +575,10 @@
                             }
 
                             function displayErrorMessage(message){
-                            return Must.failure({time:6000, content: message})
+                                return Must.failure({time:6000, content: message})
                             }
                                                 
                     });
-                }  
-                
-            }          
-            
                     
 
         </script>
