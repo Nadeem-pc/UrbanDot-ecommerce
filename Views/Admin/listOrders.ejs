@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>UrbanDot | Admin</title>
+        <title>UrbanDot | Admin Dashboard</title>
         <meta http-equiv="x-ua-compatible" content="ie=edge" />
         <meta name="description" content="" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,7 +11,7 @@
         <meta property="og:url" content="" />
         <meta property="og:image" content="" />
         <!-- Favicon -->
-        <link rel="shortcut icon" type="image/x-icon" href="/Admin/imgs/theme/favicon.svg" />
+        <link rel="shortcut icon" type="image/x-icon" href="/Admin/imgs/theme/favicon.png" />
         <!-- Template CSS -->
         <link href="/Admin/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
     </head>
@@ -30,31 +30,43 @@
             <nav>
                 <ul class="menu-aside">
                     <li class="menu-item">
-                        <a class="menu-link" href="index.html">
+                        <a class="menu-link" href="/admin/dashboard">
                             <i class="icon material-icons md-home"></i>
                             <span class="text">Dashboard</span>
                         </a>
                     </li>
+
+                    <li class="menu-item">
+                        <a class="menu-link" href="/admin/users">
+                            <i class="icon material-icons md-people"></i>
+                            <span class="text">Users</span>
+                        </a>
+                    </li>
+
+                    <li class="menu-item">
+                        <a class="menu-link" href="/admin/category">
+                          <i class="icon material-icons md-category"></i>
+                          <span class="text">Categories</span>
+                        </a>
+                    </li>
+
                     <li class="menu-item has-submenu">
                         <a class="menu-link" href="page-products-list.html">
                             <i class="icon material-icons md-shopping_bag"></i>
                             <span class="text">Products</span>
                         </a>
                         <div class="submenu">
-                            <a href="page-products-list.html">Product List</a>
-                            <a href="page-products-grid.html">Product grid</a>
-                            <a href="page-products-grid-2.html">Product grid 2</a>
-                            <a href="page-categories.html">Categories</a>
+                            <a href="/admin/products">Product List</a>
+                            <a href="/admin/addProduct">Add product</a>
                         </div>
                     </li>
                     <li class="menu-item active">
-                        <a class="menu-link" href="page-orders-1.html">
+                        <a class="menu-link" href="/admin/orders">
                             <i class="icon material-icons md-shopping_cart"></i>
                             <span class="text">Orders</span>
                         </a>
-                     
                     </li>
-                    <li class="menu-item has-submenu">
+                    <!-- <li class="menu-item has-submenu">
                         <a class="menu-link" href="page-sellers-cards.html">
                             <i class="icon material-icons md-store"></i>
                             <span class="text">Sellers</span>
@@ -131,7 +143,7 @@
                             <i class="icon material-icons md-local_offer"></i>
                             <span class="text"> Starter page </span>
                         </a>
-                    </li>
+                    </li> -->
                 </ul>
                 <br />
                 <br />

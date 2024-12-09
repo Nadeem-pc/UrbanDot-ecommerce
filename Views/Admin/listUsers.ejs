@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Nest Dashboard</title>
+        <title>UrbanDot | Admin Dashboard</title>
         <meta http-equiv="x-ua-compatible" content="ie=edge" />
         <meta name="description" content="" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,9 +11,10 @@
         <meta property="og:url" content="" />
         <meta property="og:image" content="" />
         <!-- Favicon -->
-        <link rel="shortcut icon" type="image/x-icon" href="/Admin/imgs/theme/favicon.svg" />
+        <link rel="shortcut icon" type="image/x-icon" href="/Admin/imgs/theme/favicon.png" />
         <!-- Template CSS -->
         <link href="/Admin/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
 
     <body>
@@ -36,7 +37,7 @@
                         </a>
                     </li>
 
-                    <li class="menu-item">
+                    <li class="menu-item active">
                         <a class="menu-link" href="">
                             <i class="icon material-icons md-people"></i>
                             <span class="text">Users</span>
@@ -48,7 +49,7 @@
                           <i class="icon material-icons md-category"></i>
                           <span class="text">Categories</span>
                         </a>
-                      </li>
+                    </li>
 
                     <li class="menu-item has-submenu">
                         <a class="menu-link" href="page-products-list.html">
@@ -56,25 +57,18 @@
                             <span class="text">Products</span>
                         </a>
                         <div class="submenu">
-                            <a href="page-products-list.html">Product List</a>
-                            <a href="page-products-grid.html">Product grid</a>
-                            <a href="page-products-grid-2.html">Product grid 2</a>
-                            
+                            <a href="/admin/products">Product List</a>
+                            <a href="/admin/addProduct">Add product</a>
                         </div>
                     </li>
-                    <li class="menu-item has-submenu">
-                        <a class="menu-link" href="page-orders-1.html">
+                    <li class="menu-item">
+                        <a class="menu-link" href="/admin/orders">
                             <i class="icon material-icons md-shopping_cart"></i>
                             <span class="text">Orders</span>
                         </a>
-                        <div class="submenu">
-                            <a href="page-orders-1.html">Order list 1</a>
-                            <a href="page-orders-2.html">Order list 2</a>
-                            <a href="page-orders-detail.html">Order detail</a>
-                        </div>
                     </li>
 
-                    <li class="menu-item has-submenu">
+                    <!-- <li class="menu-item has-submenu">
                         <a class="menu-link" href="page-form-product-1.html">
                             <i class="icon material-icons md-add_box"></i>
                             <span class="text">Add product</span>
@@ -134,7 +128,7 @@
                             <a href="page-settings-1.html">Setting sample 1</a>
                             <a href="page-settings-2.html">Setting sample 2</a>
                         </div>
-                    </li>
+                    </li> -->
                     <!-- <li class="menu-item">
                         <a class="menu-link" href="page-blank.html">
                             <i class="icon material-icons md-local_offer"></i>
@@ -179,12 +173,6 @@
                         </li>
                         <li class="dropdown nav-item">
                             <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
-                            <!-- <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
-                                <a class="dropdown-item text-brand" href="#"><img src="/Admin/imgs/theme/flag-us.png" alt="English" />English</a>
-                                <a class="dropdown-item" href="#"><img src="/Admin/imgs/theme/flag-fr.png" alt="Français" />Français</a>
-                                <a class="dropdown-item" href="#"><img src="/Admin/imgs/theme/flag-jp.png" alt="Français" />日本語</a>
-                                <a class="dropdown-item" href="#"><img src="/Admin/imgs/theme/flag-cn.png" alt="Français" />中国人</a>
-                            </div> -->
                         </li>
                         <li class="dropdown nav-item">
                             <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/Admin/imgs/people/avatar-2.png" alt="User" /></a>
@@ -239,8 +227,8 @@
                                     <tr>
                                         <th>Username</th>
                                         <th>Email</th>
-                                        <th>Status</th>
                                         <th>Phone</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -250,17 +238,29 @@
                                         <tr id="<%= data[i].id%>">
                                             <td><%= data[i].username %></td>
                                             <td><%= data[i].email%></td>
-                                            <td><%= data[i].isBlocked %></td>
-                                            <td><%= data[i].phone%></td>
+                                            <td>
+                                                <% if(data[i].phone !== null){%>
+                                                    <%= data[i].phone%>
+                                                <% }else{ %>  
+                                                    <p>Not available</p>
+                                                <%}%>    
+                                            </td>
+                                            <td>
+                                                <% if(data[i].isBlocked === true){ %>
+                                                    <p>Blocked</p>
+                                                <%}else{%>
+                                                    <p>Active</p>   
+                                                <%}%>    
+                                            </td>
                                             <td id="<%= data[i].id%>td">
                                                 <%if(data[i].isBlocked===false){%>
-                                                    <button class="btn btn-danger" style="width: 80px;">
-                                                        <a onclick="toggleBlock('<%= data[i].id %>', true)" class="text-white" style="text-decoration: none;">Block</a>
+                                                    <button class="btn btn-danger" style="width: 80px; height:35px; border-radius:20px;">
+                                                        <a onclick="confirmToggleBlock('<%= data[i].id %>', true)" class="text-white" style="text-decoration: none; margin-left: 7px;">Block</a>
                                                     </button>
 
                                                 <%}else{%>
-                                                    <button class="btn btn-success" style="width: 80px;">
-                                                        <a onclick="toggleBlock('<%= data[i].id %>', false)" class="text-white" style="text-decoration: none;">Unblock</a>
+                                                    <button class="btn btn-success" style="width: 80px;height:35px; border-radius:20px;">
+                                                        <a onclick="confirmToggleBlock('<%= data[i].id %>', false)" class="text-white" style="text-decoration: none;position: relative;right:2px;">Unblock</a>
                                                     </button> 
                                                 <%}%>
                                             </td>
@@ -302,25 +302,57 @@
         </main>
 
         <script>
-            async function toggleBlock(id, blockStatus){
-                let response = await fetch("/admin/toogleBlock",{
+
+            function confirmToggleBlock(id, blockStatus) {
+                const actionText = blockStatus ? "Block" : "Unblock";
+                const actionColor = blockStatus ? "#d33" : "#3085d6";
+
+                Swal.fire({
+                    title: `Are you sure you want to ${actionText} this user?`,
+                    text: `This action will ${actionText.toLowerCase()} the user from your website.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: actionColor,
+                    cancelButtonColor: '#aaa',
+                    confirmButtonText: `Yes, ${actionText}`,
+                    cancelButtonText: "Cancel",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        toggleBlock(id, blockStatus); // Call the original function if confirmed
+                    }
+                });
+            }
+
+            // Function to send block/unblock request to the backend
+            async function toggleBlock(id, blockStatus) {
+                let response = await fetch("/admin/toogleBlock", {
                     method: "PUT",
-                    headers:{
+                    headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({blockStatus, id})
-                })
+                    body: JSON.stringify({ blockStatus, id })
+                });
 
-                let data = await response.json()
-                if(!data.status) return 
+                let data = await response.json();
+                if (!data.status) {
+                    Swal.fire('Error', 'Unable to process the request.', 'error');
+                    return;
+                }
 
-                let element = changeUI(blockStatus, id)
-                document.getElementById(`${id}td`).innerHTML = element   
+                // Update the UI
+                let element = changeUI(blockStatus, id);
+                document.getElementById(`${id}td`).innerHTML = element;
+
+                // Show success message
+                Swal.fire({
+                    title: 'Success!',
+                    text: `User has been ${blockStatus ? 'blocked' : 'unblocked'} successfully.`,
+                    icon: 'success'
+                });
             }
 
 
             function changeUI(blockStatus, id){
-
                 return `            
                     ${!blockStatus
                     
@@ -334,7 +366,6 @@
                     }
                             
                 `
-
             }
 
         </script>

@@ -113,16 +113,17 @@ const addProduct = async (req,res) => {
     }
 }
 
-const productBlockAndUnblock = async (req,res) => {
-    const {id,status} = req.params
+const productBlockAndUnblock = async (req, res) => {
+    const { id, status } = req.params;
     try {
-        await Product.updateOne({_id:id},{$set:{isBlocked:status}})
-        res.redirect('/admin/products')
+        const blockStatus = status === 'true';
+        await Product.updateOne({ _id: id }, { $set: { isBlocked: blockStatus } });
+        res.status(200).json({ success: true, message: `Product successfully ${blockStatus ? 'blocked' : 'unblocked'}` });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
     }
-    catch (error) {
-       console.log(error);
-    } 
-}
+};
 
 const loadEditProduct = async(req,res) => {
     const {id} = req.params
