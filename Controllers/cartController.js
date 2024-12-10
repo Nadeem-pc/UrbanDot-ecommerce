@@ -56,7 +56,6 @@ const loadCart = async (req,res) => {
 
         res.render('cart', {cart : cart})
 
-
     } catch (error) {
         console.log(error);
         res.redirect('/pageNotFound')

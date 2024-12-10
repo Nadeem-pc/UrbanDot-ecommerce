@@ -19,7 +19,7 @@ const user = require("../Routes/user")
 const loadHomePage = async (req,res) => {
     try{    
         const products = await Product.find({isBlocked:false})
-        return res.render("home",{products})
+        return res.render("home",{ products, user: req.session.user || null })
     }
     catch(error){
         console.log("Something Went Wrong");
@@ -43,6 +43,16 @@ const loadLogin = async (req,res) => {
     catch(error){
         console.log("Something Went Wrong");   
         res.redirect('/pageNotFound')
+    }
+}
+
+const logout = async (req,res) => {
+    try {
+        req.session.destroy()
+        return res.status(200).json({ success: true, message: 'Logged out successfully' });
+    } catch (error) {
+        console.log("Something went wrong",error);
+        return res.status(500).json({ success: false, message: 'Failed to log out' });
     }
 }
 
@@ -70,8 +80,7 @@ const verifyLogin = async (req,res) => {
 
     } catch (error) {
         console.log("Error while login",error);
-        res.json({status:false, message : "Login failed. Please try agian later"}) 
-        
+        res.json({status:false, message : "Login failed. Please try agian later"})    
     }
 }
 
@@ -510,6 +519,7 @@ module.exports = {
     pageNotFound,
     loadLogin,
     verifyLogin,
+    logout,
     loadSignUp,
     insertSignUp,
     loadVerifyOtp,

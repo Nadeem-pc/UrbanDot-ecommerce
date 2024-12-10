@@ -348,6 +348,8 @@
                     title: 'Success!',
                     text: `User has been ${blockStatus ? 'blocked' : 'unblocked'} successfully.`,
                     icon: 'success'
+                }).then(() => {
+                    window.location.reload();
                 });
             }
 

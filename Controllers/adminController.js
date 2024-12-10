@@ -57,7 +57,7 @@ const listUsers = async (req,res) => {
             page = req.query.page
         }
 
-        const limit = 4
+        const limit = 6
         const userData = await User.find({
             $or:[
                 {username:{$regex:".*"+searchInput+".*"}},

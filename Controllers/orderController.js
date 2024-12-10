@@ -152,7 +152,7 @@ const showOrderPlaced = async (req,res) => {
 const cancelProduct = async (req,res) => {
     try {
         const {productId,orderId} = req.body
-        let cancelOrder = await Order.updateOne({_id:orderId,"orderedItems.product":productId},{$set:{orderStatus:"Cancelled"}})
+        let cancelOrder = await Order.pdateOne({_id:orderId,"orderedItems.product":productId},{$set:{orderStatus:"Cancelled"}})
 
         if(cancelOrder){
             return res.json({status:true,message:"Order cancelled"})
@@ -216,7 +216,7 @@ const getOrdersList = async (req,res) => {
 const getOrderDetails = async (req,res) => {
     try {
         const id = req.params
-        const order = await Order.findOne()
+        const order = await Order.findOne({_id: new mongoose.Types.ObjectId(id)})
 
         const orderDetails = await Order.aggregate([
             { $match : {_id:new mongoose.Types.ObjectId(id)}},

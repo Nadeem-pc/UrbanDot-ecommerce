@@ -1,8 +1,17 @@
-<!-- <style>
-    .footer-area{
-        background: black;
+  <style>
+    #icon{
+        background-color: beige;
     }
-</style>   -->
+    .pop-container{
+        background-color: white;
+        margin-top: 80px;
+        z-index: 10;
+        height: 70px;
+    }
+    .pop-container p{
+        margin-top: 17px;
+    }
+  </style>
   
   <footer class="footer-area section_gap">
     <div class="container">
@@ -78,6 +87,37 @@
             </p>
         </div>
     </div>
+
+    <script src="https://unpkg.com/must-pop@2.1.1/dist/library.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutButton = document.getElementById('logoutButton');
+
+            if (logoutButton) {
+                logoutButton.addEventListener('click', async () => {
+                    try {
+                        const response = await fetch('/logout', { method: 'POST' });
+
+                        if (response.ok) {
+                            const result = await response.json();
+                            if (result.success) {
+                                Must.success({time: 1200, content:"You have been logged out successfully!", color:'#27ae60'})
+                                document.getElementById("icon").style.backgroundColor = 'beige'
+                                document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
+                                setTimeout(() => {
+                                    location.reload(); 
+                                },1200)
+                            }
+                        } else {
+                            console.error('Logout failed');
+                        }
+                    } catch (error) {
+                        console.error('Error logging out:', error);
+                    }
+                });
+            }
+        });
+    </script>
 </footer>
 
 <!-- Scripts with integrity and crossorigin attributes -->

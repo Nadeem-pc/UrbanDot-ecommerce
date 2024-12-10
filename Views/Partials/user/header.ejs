@@ -39,8 +39,19 @@
     body{
       position:  relative;
     }
-
+    #logoutButton{
+      border: 0;
+      color: #00a884;
+      background-color: white;
+      padding-left: 18px;
+      padding-bottom: 10px;
+    }
+    #loginButton{
+      padding-left: 18px;
+      padding-bottom: 10px;
+    }
   </style>
+
 </head>
 
 <body>
@@ -111,6 +122,11 @@
                     <a href="#" class="icons">
                       <i class="ti-heart" aria-hidden="true"></i>
                     </a>
+                    <% if (isLoggedIn) { %>
+                      <button id="logoutButton">Logout</button>
+                    <% } else { %>
+                      <a href="/login" id="loginButton">Login</a>
+                    <% } %>
                   </li>
                 </ul>
               </div>

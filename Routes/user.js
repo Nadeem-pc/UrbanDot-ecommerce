@@ -9,9 +9,10 @@ const {isBlocked, isLogout, userAuth} = require('../Middlewares/User/userAuth')
 // Home Page
 user.get('/', isBlocked, userController.loadHomePage)
 
-// Login Management
+// Login & Logout Management
 user.post('/login',userController.verifyLogin)
 user.get('/login',isLogout, userController.loadLogin)
+user.post('/logout', userController.logout)
 
 // SignUp Management
 user.get('/signup',isLogout, userController.loadSignUp)

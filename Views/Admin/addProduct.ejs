@@ -361,10 +361,8 @@
                         </div>
           
                     </div>
-
-                 
                        
-                    </div>
+                </div>
                     
                 </div>
             </section>
@@ -385,197 +383,140 @@
         </main>
 
         <script>
-            let file;
-            let selectedImages = [];
 
-            function previewImage(event, index) {
-                const imgElement = document.getElementById(`defaultImg-${index}`);
-                 file = event.target.files[0];
-                let input = event.target
-                let cropper;
+let selectedImages = [];
+let cropperInstances = [];
+let files = [];
 
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function () {
-                        // Set the image source to the uploaded file
-                        imgElement.src = reader.result;
-                        imgElement.style.maxWidth = '100%'
-                        imgElement.style.maxHeight = '100%'
-                        imgElement.classList.add("uploading-img")
-                        // Initialize cropper
-                        cropper = new Cropper(imgElement, {
-                            aspectRatio: 1 / 1.2,
-                            viewMode: 1,
-                            guides: true,
-                            background: false,
-                            autoCropArea: 1,
-                            zoomable: true,
+function previewImage(event, index) {
+    const imgElement = document.getElementById(`defaultImg-${index}`);
+    if (!imgElement) return;
+
+    const file = event.target.files[0];
+    let cropper;
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            imgElement.src = reader.result;
+            imgElement.style.maxWidth = '100%';
+            imgElement.style.maxHeight = '100%';
+            imgElement.classList.add("uploading-img");
+
+            // Initialize cropper
+            cropper = new Cropper(imgElement, {
+                aspectRatio: 1 / 1.2,
+                viewMode: 1,
+                guides: true,
+                background: false,
+                autoCropArea: 1,
+                zoomable: true,
+            });
+
+            // Display cropper container
+            const cropperContainer = imgElement.parentNode;
+            cropperContainer.style.display = 'block';
+
+            // Save Button Logic
+            const saveButton = document.querySelector(`#cropBtn${index}`);
+            saveButton.style.display = 'initial';
+
+            saveButton.onclick = async () => {
+                if (cropper) {
+                    const croppedCanvas = cropper.getCroppedCanvas({ width: 280, height: 300 });
+                    if (croppedCanvas) {
+                        imgElement.src = croppedCanvas.toDataURL('image/jpeg', 0.8);
+
+                        await croppedCanvas.toBlob((blob) => {
+                            const imgFile = new File([blob], `cropped-img-${Date.now()}-${index}.png`, {
+                                type: blob.type,
+                            });
+
+                            // Update selectedImages array
+                            selectedImages[index] = imgFile;
                         });
 
-                        // Display cropper container
-                        const cropperContainer = imgElement.parentNode;
-                        cropperContainer.style.display = 'block';
-
-                        // Save Button Logic
-                        const saveButton = document.querySelector(`#cropBtn${index}`);
-                        saveButton.style.display = 'initial';
-                        saveButton.onclick = async () => {
-                            if (cropper) {
-                                const croppedCanvas = cropper.getCroppedCanvas({width: 280, height: 300});
-                                if (croppedCanvas) {
-                                    // Update the src of the existing image with the cropped result
-                                    imgElement.src = croppedCanvas.toDataURL('image/jpeg', 0.8);
-
-                                    // Create a Blob and assign it to the file input
-                                    const timestamp = new Date().getTime();
-                                    const fileName = `cropped-img-${timestamp}-${index}.png`;
-                                    console.log(imgElement)
-                                    await croppedCanvas.toBlob((blob) => {
-                                        const imgFile = new File([blob], fileName, { type: blob.type });
-                                        const input = document.getElementById(`imgInput${index}`);
-                                        const fileList = new DataTransfer();
-                                        fileList.items.add(imgFile);
-                                        input.files = fileList.files;
-                                    });
-
-                                    saveButton.style.display = 'none';
-                                    cropper.destroy();
-                                    cropper = null; 
-                                }
-                            };  
-                        };
-                       
+                        saveButton.style.display = 'none';
+                        cropper.destroy();
+                        cropper = null;
                     }
-                    reader.readAsDataURL(input.files[0]);
+                }
+            };
+        };
+        reader.readAsDataURL(file);
+    }
+}
 
+document.querySelectorAll("input[type='file']").forEach((input, index) => {
+    input.addEventListener("change", (event) => {
+        previewImage(event, index);
+    });
+});
 
-                  
+document.getElementById("product_form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const name = document.getElementsByName("name")[0].value;
+    const description = document.getElementById("product_description").value;
+    const category = document.getElementsByName("category")[0].value;
+    const quantity = document.getElementById("quantity").value;
+    const price = document.getElementsByName("price")[0].value;
+
+    if (validateForm(name, description, category, quantity, price, selectedImages)) {
+        const formData = new FormData();
+
+        // Append all images
+        selectedImages.forEach((file) => {
+            if (file) {
+                formData.append("images", file);
+            }
+        });
+
+        // Append other fields
+        formData.append("name", name);
+        formData.append("description", description);
+        formData.append("category", category);
+        formData.append("quantity", quantity);
+        formData.append("price", price);
+
+        // Submit the form data to the server
+        const response = await fetch("/admin/addProduct", {
+            method: "POST",
+            body: formData,
+        });
+
+        const data = await response.json();
+        if (!data.status) {
+            return Must.failure({ time: 6000, content: data.message });
+        }
+
+        Must.success({ time: 1300, content: data.message, color: "#27ae60" });
+    }
+});
+
+function validateForm(name, description, category, quantity, price, images) {
+    if (name.trim() === "") {
+        return displayErrorMessage("Please enter a product name");
+    }
+    if (description.trim() === "") {
+        return displayErrorMessage("Please enter a product description.");
+    }
+    if (quantity === "") {
+        return displayErrorMessage("Please enter the product quantity.");
+    }
+    if (!/^\d+(\.\d{1,2})?$/.test(price) || parseFloat(price) < 0) {
+        return displayErrorMessage("Please enter a valid price.");
+    }
+    if (images.length < 3 || images.some(img => img === undefined)) {
+        return displayErrorMessage("Please provide at least 3 valid product images.");
+    }
+    return true;
+}
+
+function displayErrorMessage(message) {
+    return Must.failure({ time: 6000, content: message });
+}
                     
-                }  
-                    document.getElementById('imgInput').addEventListener('change', (event) => {
-                        const files = event.target.files; // Get all uploaded files
-
-                        // Clear the array and populate it with the new files
-                        selectedImages = [];
-                        for (let i = 0; i < files.length; i++) {
-                            const file = files[i];
-                            console.log('Selected file:', file);
-                            selectedImages.push(file); // Add each file to the array
-                        }
-
-                    });
-                
-            }          
-            document.getElementById('product_form').addEventListener('submit', async (event) => {
-                        console.log("first");
-                        
-                        event.preventDefault();
-                  
-                        
-                        // try {
-                            const name = document.getElementsByName('name')[0].value;
-                            const description = document.getElementById('product_description').value;
-                            const category = document.getElementsByName('category')[0].value;
-                            const quantity = document.getElementById('quantity').value;
-                            const price = document.getElementsByName('price')[0].value;
-                           
-                            
-                            if(validateForm(name,description,category,quantity,price,file)){
-                                console.log("second");
-    
-                                
-                                // Append images
-                                const formData = new FormData();
-                                console.log(1);
-                                
-                                selectedImages.forEach(file => formData.append('images', file));
-                                
-                                // Append other fields
-                                formData.append('name', name);
-                                formData.append('description', description);
-                                formData.append('category', category);
-                                formData.append('quantity', quantity);
-                                formData.append('price', price);
-                                
-                                console.log(1);
-                                
-                                // Submit the form data to the server
-                                const response = await fetch('/admin/addProduct', {
-                                    method: 'POST',
-                                    body: formData, // Send the FormData directly
-                                });
-                                
-                                console.log(1);
-                                const data = await response.json();
-                                console.log(1);
-                                if (!data.status) {
-                                    console.log(1);
-                                    return Must.failure({time:6000, content: message})
-                                }
-                                
-                                console.log(1);
-                                // setTimeout(()=>{
-                                //     window.location.href = '/admin/addProduct'
-                                // },1300)
-    
-                                Must.success({time: 1300, content: data.message, color:'#27ae60'})
-    
-                                document.getElementById("icon").style.backgroundColor = 'beige'
-                                document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
-                            }
-
-                        // }
-                        // catch (error) {
-                        //     console.error('Error submitting form:', error);
-                        // }
-                        function validateForm(name,description,quantity,price,images) {
-
-
-                            if (name.trim() === "") {
-                                let nameError = "Please enter a product name"
-                                return displayErrorMessage(nameError);
-                            } 
-                            // else if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
-                            //     let nameError = "Product name should contain only alphabetic characters"
-                            //     return displayErrorMessage(nameError);
-                            // }
-                                        
-                            if (description.trim() === "") {
-                                let descriptionError = 'Please enter a product description.'
-                                return displayErrorMessage(descriptionError);  
-                            }
-
-                            if (quantity === "") {
-                                let quantityError = 'Please enter the product quantity.'
-                                return displayErrorMessage(quantityError);  
-                            }
-
-                            // if (!/^\d+(\.\d{1,2})?$/.test(quantity) || parseInt(quantity) < 0) {
-                            //     console.log(quantity, typeof quantity, quantity < 0)
-                            //     let quantityError = 'Please enter a valid quantity.'
-                            //     return displayErrorMessage(quantityError);
-                            // }
-
-                            if (!/^\d+(\.\d{1,2})?$/.test(price) || parseFloat(price) < 0) {
-                                let priceError = 'Please enter a valid price.'
-                                return displayErrorMessage(priceError);
-                            }
-
-                            // if (images.length < 3) {                     
-                            //     let imageError = 'Please provide atleast 3 images of the product'
-                            //     return displayErrorMessage(imageError);
-                            // }
-
-                                return true;
-                            }
-
-                            function displayErrorMessage(message){
-                                return Must.failure({time:6000, content: message})
-                            }
-                                                
-                    });
-                    
-
         </script>
 
 

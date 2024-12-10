@@ -66,52 +66,54 @@ const loadAddProduct = async (req,res) => {
     }
 }
 
-const addProduct = async (req,res) => {
+const addProduct = async (req, res) => {
     try {
-        const products = req.body;
-        const productExists = await Product.findOne({
-            productName  : products.name,
-        })
+        const { name, description, category, price, quantity } = req.body;
+      
+        
 
-        if(!productExists){
-            const images = [];
-
-            if(req.files && req.files.length > 0){
-                for(let i = 0; i < req.files.length; i++){
-                    const originalImagePath = req.files[i].path
-                    const resizedImagePath = path.join('Public','uploads','product-images',req.files[i].filename)
-                    await sharp(originalImagePath).resize({width:350,height:419}).toFile(resizedImagePath)
-                    images.push(req.files[i].filename)
-                }
-            }
-
-            const categoryId = await Category.findOne({name:products.category})
-            if(!categoryId){
-                return res.status(400).json({status:false, message:"Invalid category"})
-            }
-
-            const newProduct = new Product({
-                productName : products.name, 
-                description : products.description,
-                category : categoryId._id,
-                regularPrice : products.price,
-                stock : products.quantity,
-                images : images 
-            }) 
-
-            await newProduct.save()
-
-            return res.status(201).json({status:true, message:"Product added successfully"})
- 
-        }else{
-            return res.status(400).json({status:false, message:"Product already exists"})
+        // Check for duplicate products
+        const productExists = await Product.findOne({ productName: name });
+        if (productExists) {
+            return res.status(400).json({ status: false, message: "Product already exists" });
         }
+
+        // Validate category
+        const categoryData = await Category.findOne({ name: category });
+        if (!categoryData) {
+            return res.status(400).json({ status: false, message: "Invalid category" });
+        }
+
+        // Handle image uploads
+        const images = [];
+        if (req.files && req.files.length) {
+            for (const file of req.files) {
+                const resizedPath = path.join('Public', 'uploads', 'product-images', file.filename);
+                await sharp(file.path).resize({ width: 350, height: 419 }).toFile(resizedPath);
+                images.push(file.filename);
+            }
+        }
+
+        console.log(images);
+        
+
+        // Create and save new product
+        const newProduct = new Product({
+            productName: name,
+            description,
+            category: categoryData._id,
+            regularPrice: price,
+            stock: quantity,
+            images,
+        });
+
+        await newProduct.save();
+        return res.status(201).json({ status: true, message: "Product added successfully" });
+    } catch (error) {
+        console.error("Error adding product:", error.message);
+        return res.status(500).json({ status: false, message: "Internal server error" });
     }
-    catch (error) {
-        console.log(error.message);
-        // return res.status(500).json({status:false,message:'somwthing wrong'});
-    }
-}
+};
 
 const productBlockAndUnblock = async (req, res) => {
     const { id, status } = req.params;
