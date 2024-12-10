@@ -1,10 +1,11 @@
 const express = require('express')
 const admin = express.Router()
 
-const adminController = require('../Controllers/adminController')
-const categoryController = require('../Controllers/categoryController')
-const productController = require('../Controllers/productController')
-const orderController = require('../Controllers/orderController')
+const adminController = require('../Controllers/admin/adminController')
+const categoryController = require('../Controllers/admin/categoryController')
+const productController = require('../Controllers/admin/productController')
+const orderController = require('../Controllers/admin/orderController')
+const userController = require('../Controllers/admin/userController')
 
 const authMiddleware = require('../Middlewares/Admin/adminAuth')
 const storage = require('../Middlewares/Admin/multer')
@@ -17,8 +18,8 @@ admin.post('/login', adminController.verifyLogin)
 admin.get('/dashboard', authMiddleware.isLogin, adminController.loadHome)
 
 // USER MANAGEMENT 
-admin.get('/users', authMiddleware.isLogin, adminController.listUsers)
-admin.put('/toogleBlock', adminController.blockUser)
+admin.get('/users', authMiddleware.isLogin, userController.listUsers)
+admin.put('/toogleBlock', userController.blockUser)
 
 // CATEGORY MANAGEMENT
 admin.get('/category', authMiddleware.isLogin, categoryController.loadCategories)
@@ -41,5 +42,6 @@ admin.get('/orders',authMiddleware.isLogin,orderController.getOrdersList)
 admin.get('/orderDetails/:id',authMiddleware.isLogin, orderController.getOrderDetails)
 admin.post('/updateOrderStatus',orderController.updateOrderStatus)
 admin.post('/cancelOrder',orderController.cancelOrder)
+
 
 module.exports = admin

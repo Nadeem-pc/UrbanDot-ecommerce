@@ -1,4 +1,4 @@
-const Category = require('../Models/categorySchema')
+const Category = require('../../Models/categorySchema')
 
 
 const loadCategories = async (req,res) => {
@@ -126,11 +126,11 @@ const editCategory = async (req,res) => {
 
 
 module.exports = {
-    loadCategories,
-    loadAddCategory,
     addCategory,
     listCategory,
+    editCategory,
+    loadCategories,
     unlistCategory,
+    loadAddCategory,
     loadEditCategory,
-    editCategory
 }

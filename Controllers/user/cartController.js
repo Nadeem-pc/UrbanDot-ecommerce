@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
-const Product = require('../Models/productSchema')
-const Cart = require('../Models/cartSchema')
+const Cart = require('../../Models/cartSchema')
+const Product = require('../../Models/productSchema')
 
 
 const addToCart = async (req,res) => {
@@ -79,8 +79,4 @@ const removeProduct = async (req,res) => {
 }
 
 
-module.exports = {
-    loadCart,
-    addToCart,
-    removeProduct
-}
+module.exports = { loadCart, addToCart, removeProduct }

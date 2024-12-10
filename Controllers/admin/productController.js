@@ -1,6 +1,6 @@
-const Product = require('../Models/productSchema')
-const Category = require('../Models/categorySchema')
-const User = require('../Models/userSchema')
+const User = require('../../Models/userSchema')
+const Product = require('../../Models/productSchema')
+const Category = require('../../Models/categorySchema')
 const fs = require('fs')
 const path = require('path')
 const sharp = require('sharp')
@@ -70,8 +70,6 @@ const addProduct = async (req, res) => {
     try {
         const { name, description, category, price, quantity } = req.body;
       
-        
-
         // Check for duplicate products
         const productExists = await Product.findOne({ productName: name });
         if (productExists) {
@@ -113,7 +111,7 @@ const addProduct = async (req, res) => {
         console.error("Error adding product:", error.message);
         return res.status(500).json({ status: false, message: "Internal server error" });
     }
-};
+}
 
 const productBlockAndUnblock = async (req, res) => {
     const { id, status } = req.params;
@@ -125,7 +123,7 @@ const productBlockAndUnblock = async (req, res) => {
         console.error(error);
         res.status(500).json({ success: false, message: "Internal Server Error" });
     }
-};
+}
 
 const loadEditProduct = async(req,res) => {
     const {id} = req.params
@@ -140,11 +138,10 @@ const loadEditProduct = async(req,res) => {
 }
 
 
-
 module.exports = {
+    addProduct,
     loadProducts,
     loadAddProduct,
-    addProduct,
-    productBlockAndUnblock,
-    loadEditProduct
+    loadEditProduct,
+    productBlockAndUnblock
 }

@@ -1,24 +1,14 @@
-const Order = require('../Models/orderSchema')
-const Product = require('../Models/productSchema')
-const User = require('../Models/userSchema')
-const Address = require('../Models/addressSchema')
+const User = require('../../Models/userSchema')
+const Cart = require('../../Models/cartSchema')
+const Order = require('../../Models/orderSchema')
+const Product = require('../../Models/productSchema')
+const Address = require('../../Models/addressSchema')
+
 const mongoose = require('mongoose')
-const Cart = require('../Models/cartSchema')
 const express = require('express')
 const { use } = require('passport')
+const session = require('express-session')
 
-const loadCheckout = async (req,res) => {
-    try {
-        const cartId = req.params
-        let cart = await Cart.findOne({_id:new mongoose.Types.ObjectId(cartId)}).populate('items.productId')   
-        
-        return res.render('checkout',{cart,totalPrice:req.session.totalPrice, products:req.session.products})
-
-    } catch (error) {
-        console.log(error);
-        res.redirect('/pageNotFound')
-    }
-}
 
 const loadFirstPageOfCheckout = async (req,res) => {
     try {
@@ -58,6 +48,19 @@ const loadFirstPageOfCheckout = async (req,res) => {
         req.session.products = validItems
         
         return res.render('checkoutFirstSlide',{address,cart,totalPrice})
+
+    } catch (error) {
+        console.log(error);
+        res.redirect('/pageNotFound')
+    }
+}
+
+const loadCheckout = async (req,res) => {
+    try {
+        const cartId = req.params
+        let cart = await Cart.findOne({_id:new mongoose.Types.ObjectId(cartId)}).populate('items.productId')   
+        
+        return res.render('checkout',{cart,totalPrice:req.session.totalPrice, products:req.session.products})
 
     } catch (error) {
         console.log(error);
@@ -192,117 +195,14 @@ const getOrderDetailsForUser = async (req, res) => {
     }
 };
 
-// ADMIN SIDE
-
-const getOrdersList = async (req,res) => {
-    try {
-        let orders = await Order.aggregate([
-            { $lookup: {
-              from: 'users',
-              localField: "userId",
-              foreignField: "_id",
-              as: "userDetails"
-            }},
-        ])
-        
-        return res.render('listOrders',{orders})
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ error: "Internal Server Error" })
-    }
-}
-
-const getOrderDetails = async (req,res) => {
-    try {
-        const id = req.params
-        const order = await Order.findOne({_id: new mongoose.Types.ObjectId(id)})
-
-        const orderDetails = await Order.aggregate([
-            { $match : {_id:new mongoose.Types.ObjectId(id)}},
-
-            { $lookup: {
-                from: 'users',
-                localField: "userId",
-                foreignField: "_id",
-                as: "userDetails"
-              }},
-
-            { $unwind:"$orderedItems"},
-            { $lookup: {
-              from: 'products',
-              localField: 'orderedItems.product',
-              foreignField: '_id',
-              as: 'productDetails'
-            }},
-
-            { $lookup: {
-              from: 'addresses',
-              localField: 'address',
-              foreignField: 'address._id',
-              as: "userAddress"
-            }}
-        ])
-        
-        return res.render('orderDetail',{order,orderDetails})
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ error: "Internal Server Error" })
-    }
-}
-
-const updateOrderStatus = async (req,res) => {
-    try {
-        const { orderId, orderStatus } = req.body;
-        
-        if (orderStatus === 'Pending' || orderStatus === 'Shipped' || orderStatus === 'Delivered') {
-            await Order.updateOne({ _id: orderId }, { $set: { orderStatus ,"orderedItems.$[].status":orderStatus }});
-            return res.json({success:true, message: "Order status updated successfully!"});
-        }
-
-        res.status(500).json({success:false,message:"Something went wrong"})
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ error: "Internal Server Error" })
-    }
-}
-
-const cancelOrder = async (req,res) => {
-    const {productId} = req.body
-    const userId = req.session.user
-
-    try {
-        
-        const cancelOrder = await Order.updateOne({userId,'orderedItems.product':productId},{$set:{"orderedItems.$[].status":"Cancelled"}})
-        
-        const cancelAll = await Order.updateOne({userId,"orderedItems.status":{$all:["Cancelled"]}},{$set:{orderStatus:"Cancelled"}})
-
-        if(cancelOrder || cancelAll){
-            return res.json({success:true, message: "Order cancelled successfully!"});
-        }
-
-        return res.json({success:false, message: "Order cancellation failed!"});
-       
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ error: "Internal Server Error" })
-    }
-}
 
 module.exports = {
     loadCheckout,
-    getUserAddress,
-    loadPaymentPage,
     cancelProduct,
+    getUserAddress,
     showOrderPlaced,
+    loadPaymentPage,
     storeOrderDetails,
-    loadFirstPageOfCheckout,
     getOrderDetailsForUser,
-
-    cancelOrder,
-    getOrdersList,
-    getOrderDetails,
-    updateOrderStatus,
-
+    loadFirstPageOfCheckout,
 }

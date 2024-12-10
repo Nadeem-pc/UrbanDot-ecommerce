@@ -1,9 +1,12 @@
 const express = require("express")
 const user = express.Router()
 const passport  = require("passport")
-const userController = require('../Controllers/userController')
-const cartController = require('../Controllers/cartController')
-const orderController = require('../Controllers/orderController')
+const userController = require('../Controllers/user/userController')
+const cartController = require('../Controllers/user/cartController')
+const orderController = require('../Controllers/user/orderController')
+const profileController = require('../Controllers/user/profileController')
+const addressController = require('../Controllers/user/addressController')
+const ShoppingController = require('../Controllers/user/shoppingController')
 const {isBlocked, isLogout, userAuth} = require('../Middlewares/User/userAuth')
 
 // Home Page
@@ -24,17 +27,17 @@ user.post('/verifyOtp',userController.verifyOtp)
 user.post('/resend-otp',userController.resendOtp)
 
 // Shopping page
-user.get('/shop', isBlocked, userController.loadShop)
-user.get('/product/:id', isBlocked, userController.loadProductDetail)
+user.get('/shop', isBlocked, ShoppingController.loadShop)
+user.get('/product/:id', isBlocked, ShoppingController.loadProductDetail)
 
 // Profile Management
-user.get('/profile',isBlocked, userAuth, userController.loadProfilePage)
-user.post('/editUser',userController.editUserProfile)
+user.get('/profile',isBlocked, userAuth, profileController.loadProfilePage)
+user.post('/editUser',profileController.editUserProfile)
 user.post('/changePassword',userController.changePassword)
-user.post('/addAddress',userController.addAddress)
-user.get('/editAddress/:id', isBlocked, userAuth, userController.loadEditAddress)
-user.post('/editAddress',userAuth, userController.editAddress)
-user.get('/deleteAddress/:mainId/:id',userController.deleteAddress)
+user.post('/addAddress',addressController.addAddress)
+user.get('/editAddress/:id', isBlocked, userAuth, addressController.loadEditAddress)
+user.post('/editAddress',userAuth, addressController.editAddress)
+user.get('/deleteAddress/:mainId/:id',addressController.deleteAddress)
 
 // Cart Management
 user.get('/cart', isBlocked, userAuth, cartController.loadCart)
