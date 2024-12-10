@@ -358,7 +358,7 @@
         let data = await response.json();
 
         if(!data.status){
-          return Must.failure({time: 5000, content: data.message})
+          return Must.failure({time: 2000, content: data.message})
         }
 
         setTimeout(()=>{

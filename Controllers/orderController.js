@@ -125,7 +125,6 @@ const storeOrderDetails = async (req,res) => {
        
         await newOrder.save()
         await Cart.findOneAndUpdate({ userId: req.session.user }, { $set: { items: [] } })
-        req.session.orderId = await Order.findOne({_id:newOrder._id})
 
         const COD = await Order.findOne({_id:newOrder._id,paymentMethod:"COD"})
         if(COD){
@@ -140,7 +139,7 @@ const storeOrderDetails = async (req,res) => {
 
 const showOrderPlaced = async (req,res) => {
     try {
-        orderId =  req.session.orderId
+        const orderId = Math.random
         return res.render('orderPlaced',{orderId})
 
     } catch (error) {

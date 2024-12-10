@@ -10,9 +10,26 @@
   .search-bar{
     margin-left: 200px;
     position: relative;
-    left:690px;
+    left:670px;
     top: 10px;
   }
+  .btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+  } 
+  .btn-secondary:hover {
+    background-color: #5a6268;
+    color: #fff;
+  }
+  .list .active a {
+    color: #00a884;
+    font-weight: bold;
+  }
+  #filterBtn{
+    margin-left: 10px;
+  }
+
 </style>
 
 <!--================Home Banner Area =================-->
@@ -49,6 +66,7 @@
       <input type="hidden" name="category" value="<%= selectedCategory %>">
       <input type="hidden" name="sort" value="<%= sort %>">
       <button class="btn btn-primary" type="submit">Search</button>
+      <a href="/shop" id="filterBtn" class="btn btn-secondary">Clear Filters</a>
     </div>
   </form>
 </div>
@@ -56,8 +74,6 @@
 <section class="cat_product_area section_gap">
   <div class="container">
     <div class="row flex-row-reverse">
-
-     
       <!-- Products Section -->
       <div class="col-lg-9">
         <div class="latest_product_inner">
@@ -122,8 +138,8 @@
             <div class="widgets_inner">
               <ul class="list">
                 <% categories.forEach(cat => { %>
-                  <li>
-                    <a href="/shop?category=<%= cat._id %>&sort=<%= sort %>">
+                  <li class="<%= selectedCategory === cat._id ? 'active' : '' %>">
+                    <a href="/shop?category=<%= cat._id %>&sort=<%= sort %>&search=<%= searchTerm %>">
                       <%= cat.name %>
                     </a>
                   </li>
@@ -132,33 +148,36 @@
             </div>
           </aside>
 
-          <!-- Sorting -->
           <aside class="left_widgets p_filter_widgets">
             <div class="l_w_title">
               <h3>Sort By</h3>
             </div>
             <div class="widgets_inner">
               <ul class="list">
-                <!-- <li><a href="/shop?sort=new-arrivals">New Arrivals</a></li>
-                <li><a href="/shop?sort=low-to-high">Price: Low to High</a></li>
-                <li><a href="/shop?sort=high-to-low">Price: High to Low</a></li>
-                <li><a href="/shop?sort=name-asc">Name: A to Z</a></li>
-                <li><a href="/shop?sort=name-desc">Name: Z to A</a></li> -->
-
-                <li>
-                  <a href="/shop?sort=new-arrivals&search=<%= searchTerm %>">New Arrivals</a>
+                <li class="<%= sort === 'new-arrivals' ? 'active' : '' %>">
+                  <a href="/shop?sort=new-arrivals&category=<%= selectedCategory %>&search=<%= searchTerm %>">
+                    New Arrivals
+                  </a>
                 </li>
-                <li>
-                  <a href="/shop?sort=low-to-high&search=<%= searchTerm %>">Price: Low to High</a>
+                <li class="<%= sort === 'low-to-high' ? 'active' : '' %>">
+                  <a href="/shop?sort=low-to-high&category=<%= selectedCategory %>&search=<%= searchTerm %>">
+                    Price: Low to High
+                  </a>
                 </li>
-                <li>
-                  <a href="/shop?sort=high-to-low&search=<%= searchTerm %>">Price: High to Low</a>
+                <li class="<%= sort === 'high-to-low' ? 'active' : '' %>">
+                  <a href="/shop?sort=high-to-low&category=<%= selectedCategory %>&search=<%= searchTerm %>">
+                    Price: High to Low
+                  </a>
                 </li>
-                <li>
-                  <a href="/shop?sort=name-asc&search=<%= searchTerm %>">Name: A to Z</a>
+                <li class="<%= sort === 'name-asc' ? 'active' : '' %>">
+                  <a href="/shop?sort=name-asc&category=<%= selectedCategory %>&search=<%= searchTerm %>">
+                    Name: A to Z
+                  </a>
                 </li>
-                <li>
-                  <a href="/shop?sort=name-desc&search=<%= searchTerm %>">Name: Z to A</a>
+                <li class="<%= sort === 'name-desc' ? 'active' : '' %>">
+                  <a href="/shop?sort=name-desc&category=<%= selectedCategory %>&search=<%= searchTerm %>">
+                    Name: Z to A
+                  </a>
                 </li>
               </ul>
             </div>
@@ -171,3 +190,4 @@
 <!--================End Category Product Area =================-->
 
 <%- include("../../Views/Partials/user/footer") %>
+
