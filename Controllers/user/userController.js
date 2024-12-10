@@ -1,8 +1,6 @@
 const User = require("../../Models/userSchema") 
 const Order = require("../../Models/orderSchema")
 const Product = require("../../Models/productSchema")
-const Address = require("../../Models/addressSchema")
-const Category = require("../../Models/categorySchema")
 
 const bcrypt = require('bcrypt')
 const passport = require("passport");

@@ -1,10 +1,24 @@
 <%-include("../../Views/Partials/user/header")%>
 
+<script src="https://unpkg.com/must-pop@latest/dist/library.js"></script>
+
 <style>
   .btn{
     height: 30px;
     display: flex;
     align-items: center;
+    margin-top: 50px;
+    margin-right:30px ;
+    position: relative;
+    right: 60px;
+  }
+  #icon{
+    background-color: beige;
+  }
+  .pop-container{
+    background-color: white;
+    margin-top: 80px;
+    z-index: 10;
   }
 </style>
 
@@ -45,64 +59,63 @@
         </div> -->
         <div class="billing_details">
           <div class="row">
-            <div class="col-lg-8">
-              <h3>Delivery address</h3>
+            <div class="col-lg-12">
+              <h3>Add address</h3>
               <form
                 class="row contact_form"
-                action="#"
-                method="post"
-                novalidate="novalidate"
+                id="addForm"
               >
                 <div class="col-md-6 form-group p_star">
+                    <label for="name" id="nameLabel">Name</label>
+
                   <input
                     type="text"
                     class="form-control"
-                    id="first"
+                    id="name"
                     name="name"
+                    value="" 
+                    required
                   />
-                  <span
-                    class="placeholder"
-                    data-placeholder="Name"
-                  ></span>
+                
                 </div>
       
-     
                 <div class="col-md-6 form-group p_star">
+                    <label for="phone" id="mobLabel">Phone</label>
                   <input
                     type="text"
                     class="form-control"
-                    id="number"
-                    name="number"
+                    id="phone"
+                    name="phone"
+                    value=""  
+                    required
                   />
-                  <span
-                    class="placeholder"
-                    data-placeholder="Mobile number"
-                  ></span>
+               
                 </div>
                 <div class="col-md-6 form-group p_star">
+                    <label for="pincode" id="pincodeLabel">Pincode</label>
+
                   <input
                     type="text"
                     class="form-control"
                     id="pincode"
-                    name="compemailany"
+                    name="pincode"
+                    value=""
+                    required  
                   />
-                  <span
-                    class="placeholder"
-                    data-placeholder="Pincode"
-                  ></span>
                 </div>
                 
                 <div class="col-md-6 form-group p_star">
+                    <label for="city" id="cityLabel">City</label>
+
                   <input
                     type="text"
                     class="form-control"
                     id="city"
                     name="city"
+                    value=""  
+                    required
                   />
-                  <span
-                    class="placeholder"
-                    data-placeholder="City/Town/District"
-                  ></span>
+                
                 </div>
      
                 <!-- <div class="col-md-12 form-group p_star">
@@ -114,28 +127,33 @@
                   />
                   <span class="placeholder" data-placeholder="Town/City"></span>
                 </div> -->
- 
-          
+  
                 <div class="col-md-12 form-group">
-         
+                    <label for="address">Address</label>
+                    
                   <textarea
                     class="form-control"
-                    name="message"
-                    id="message"
+                    name="address"
+                    id="address"
                     rows="1"
-                    placeholder="Address"
+                    placeholder="" 
+                    required
+                    
                   ></textarea>
                 </div>
 
                 <div class="col-md-6 form-group p_star">
-                  <select class="country_select">
-                    <option value="1"> Select Country</option>
+                  <label for="country">Country</label>
+                  <select class="country_select" id="country" required>
+                    <option value="">Country</option>
                     <option value="India">India</option>
                   </select>
                 </div>
                 <div class="col-md-6 form-group p_star">
-                  <select class="country_select">
-                    <option value="1">Select State</option>
+                    <label for="state" id="stateLabel">State</label>
+                  
+                  <select class="country_select" id="state" required>
+                    <option value="">State</option>
                     <option value="Andhra Pradesh">Andhra Pradesh</option>
                     <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                     <option value="Assam">Assam</option>
@@ -168,27 +186,28 @@
                 </div>
 
               <div class="col-md-6 form-group">
-                <p>Address Type</p>
+                <p id="typeLabel">Address Type</p>
                 <div>
                   <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="editAddressType" id="home" value="home" >
+                      <input class="form-check-input" type="radio" name="addressType" id="home" value="home">
                       <h6 class="form-check-label" for="home">Home</h6>
                   </div>
                   <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="editAddressType" id="work" value="work">
+                      <input class="form-check-input" type="radio" name="addressType" id="work" value="work">
                       <h6 class="form-check-label" for="work">Work</h6>
                   </div>
                 </div>
               </div>
+
+              <button class="btn" id="continueBtn" type="submit" style="background-color: orange;">Save and Continue</button>
           
             </form>
-              <button class="btn" style="background-color: orange;" onclick="location.href='/payment'">Continue</button>
 
             </div>
-            <div class="col-lg-4">
+            <!-- <div class="col-lg-4">
               <div class="order_box" style="margin-top: 30px;">
                 <h2>Price details</h2>
-                <ul class="list">
+                <ul class="list"> -->
                   <!-- <li>
                     <a href="#"
                       >Fresh Blackberry
@@ -197,12 +216,12 @@
                     </a>
                   </li> -->
    
-                </ul>
+                <!-- </ul>
                 <ul class="list list_2">
                   <li>
                     <a href="#"
                       >Price
-                      <span>₹<%=totalPrice+50%></span>
+                      <span>₹</span>
                     </a>
                   </li>
                   <li>
@@ -214,10 +233,10 @@
                   <li>
                     <a href="#"
                       >Total Payable
-                      <span>₹<%=totalPrice%></span>
+                      <span>₹</span>
                     </a>
                   </li>
-                </ul>
+                </ul> -->
     
                 <!-- <a class="main_btn" href="#" style="background-color: #00b894;">Place order</a> -->
               </div>
@@ -230,3 +249,108 @@
 
 <%-include("../../Views/Partials/user/footer")%>
    
+<script>
+
+    function validateAddress(name,phone,pincode,city,isSelected){
+
+        const usernamePattern = /^[A-Za-z\s]{3,}$/;
+        const phonePattern = /^[0-9]{10}$/;
+
+        let isValid = true
+
+        if(!usernamePattern.test(name)){
+            document.getElementById('nameLabel').innerHTML = 'Name must be at least 3 characters long and contain only letters and spaces.'
+            document.getElementById('nameLabel').style.color = 'red'
+            isValid = false
+        }else{
+            document.getElementById('nameLabel').innerHTML = 'Name'
+            document.getElementById('nameLabel').style.color = 'black'   
+        }
+
+        if(!phonePattern.test(phone)){
+            document.getElementById('mobLabel').innerHTML = 'Invalid Mobile Number'
+            document.getElementById('mobLabel').style.color = 'red'
+            isValid = false
+        }else{
+            document.getElementById('mobLabel').innerHTML = 'Mobile'
+            document.getElementById('mobLabel').style.color = 'black'  
+        }
+
+        if (!/^\d{6}$/.test(pincode)) {
+        document.getElementById('pincodeLabel').innerHTML = "Pincode must be exactly 6 digits.";
+        document.getElementById('pincodeLabel').style.color = 'red'
+            isValid = false;
+        }else{
+            document.getElementById('pincodeLabel').innerHTML = 'Pincode'
+            document.getElementById('pincodeLabel').style.color = 'black'  
+        }
+
+        if (!/^[A-Za-z\s]+$/.test(city)) {
+            document.getElementById('cityLabel').innerHTML = "City name contain only alphabets.";
+            document.getElementById('cityLabel').style.color = 'red'
+            isValid = false;
+        }else{
+            document.getElementById('cityLabel').innerHTML = 'City'
+            document.getElementById('cityLabel').style.color = 'black'  
+        }    
+        if(!isSelected){
+                document.getElementById('typeLabel').innerHTML = "Please select an address type before submitting.";
+                document.getElementById('typeLabel').style.color = 'red'
+                isValid = false;
+            }else{
+                document.getElementById('typeLabel').innerHTML = 'Address Type'
+                document.getElementById('typeLabel').style.color = 'black'  
+            }  
+
+        return isValid
+    }
+
+    document.getElementById('addForm').addEventListener('submit', async (event) => {
+        event.preventDefault()
+
+        let name = document.getElementById('name').value.trim()
+        let phone = document.getElementById('phone').value.trim()
+        let pincode = document.getElementById('pincode').value.trim()
+        let city = document.getElementById('city').value.trim()
+        let fullAddress = document.getElementById('address').value.trim()
+        let state = document.getElementById('state').value
+        let country = document.getElementById('country').value
+        let radios = document.getElementsByName('addressType')
+
+        let addressType = null
+        let isSelected = false
+        for(const radio of radios){
+            if(radio.checked){
+                addressType = radio.value
+                isSelected = true
+                break
+            }
+        }
+
+            if(!validateAddress(name,phone,pincode,city,isSelected)) return 
+           
+            let response = await fetch('/addNewAddress',{
+                method : "POST",
+                headers : {
+                    'Content-Type' : "application/json"
+                },
+                body : JSON.stringify({name,phone,pincode,fullAddress,city,country,state,addressType})
+            })
+
+            let data = await response.json()
+            
+            if(!data.status){
+                return Must.failure({time: 3000, content:"Something went wrong"})
+            }
+            // Must.success({time: 1500, content: data.message, color:'#27ae60'})
+
+            setTimeout(() => {
+                window.location.href = '/payment'
+            },1500)
+
+            document.getElementById("icon").style.backgroundColor = 'beige'
+            document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
+        
+    })
+
+</script>

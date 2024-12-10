@@ -13,7 +13,7 @@ const loadProfilePage = async (req,res) => {
         
         let user = await User.findOne({_id:userId})
         const address = await Address.findOne({user:userId})
-        let orders = await Order.find({ userId }).populate('orderedItems.product')
+        let orders = await Order.find({ userId }).populate('orderedItems.product').sort({createdAt:-1})
               
         return res.render('userProfile',{user, address, orders})
     }

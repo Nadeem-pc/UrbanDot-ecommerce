@@ -1,5 +1,4 @@
 const express = require('express')
-const { use } = require('passport')
 const mongoose = require('mongoose')
 const Order = require('../../Models/orderSchema')
 
@@ -14,6 +13,7 @@ const getOrdersList = async (req,res) => {
               as: "userDetails"
             }},
         ])
+        .sort({createdAt:-1})
         
         return res.render('listOrders',{orders})
     } catch (error) {

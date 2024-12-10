@@ -229,151 +229,150 @@
                 </div>
             </header>
             <section class="content-main">
-    <div class="content-header">
-        <div>
-            <h2 class="content-title card-title">Order detail</h2>
-            <p>Details for Order ID: <%= order._id %></p>
-        </div>
-    </div>
-    <div class="card">
-        <header class="card-header">
-            <div class="row align-items-center">
-                <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
-                    <span> <i class="material-icons md-calendar_today"></i> <b><%= new Date(order.orderDate).toLocaleString('en-US', {
-                        weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit'
-                    }) %></b></span> <br />
-                    <small class="text-muted">Order ID: <%= order._id %></small>
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Order detail</h2>
+                        <p>Details for : <%= order.orderId %></p>
+                    </div>
                 </div>
-                
-                <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                    <select id="orderStatusSelect" class="form-select d-inline-block mb-lg-0 mr-5 mw-200" name="orderStatus">
-                        <option>Change status</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Shipped">Shipped</option>
-                        <option value="Delivered">Delivered</option>
-                    </select>
-                    <input type="hidden" id="orderId" value="<%= order._id %>" />
-                    <button type="submit" id="updateStatusBtn" class="btn btn-primary mb-1">Update Status</button>
-                </div>
-    
-            </div>
-        </header>
-        <div class="card-body">
-            <div class="row mb-50 mt-20 order-info-wrap">
-                <div class="col-md-4">
-                    <article class="icontext align-items-start">
-                        <span class="icon icon-sm rounded-circle bg-primary-light">
-                            <i class="text-primary material-icons md-person"></i>
-                        </span>
-                        <div class="text">
-                            <h6 class="mb-1">Customer</h6>
-                            <% if(orderDetails[0]?.userDetails?.length) { %>
-                                <p class="mb-1">
-                                    <%= orderDetails[0].userDetails[0].username %> <br />
-                                    <%= orderDetails[0].userDetails[0].email %> <br />
-                                    <%= orderDetails[0].userDetails[0].phone %>
-                                </p>
-                            <% } else { %>
-                                <p>No customer data found</p>
-                            <% } %>
+                <div class="card">
+                    <header class="card-header">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
+                                <span> <i class="material-icons md-calendar_today"></i> <b><%= new Date(order.orderDate).toLocaleString('en-US', {
+                                    weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit'
+                                }) %></b></span> <br />
+                                <small class="text-muted">Order : <%= order.orderId %></small>
+                            </div>
+                            
+                            <div class="col-lg-6 col-md-6 ms-auto text-md-end">
+                                <select id="orderStatusSelect" class="form-select d-inline-block mb-lg-0 mr-5 mw-200" name="orderStatus">
+                                    <option>Change status</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Shipped">Shipped</option>
+                                    <option value="Delivered">Delivered</option>
+                                </select>
+                                <input type="hidden" id="orderId" value="<%= order._id %>" />
+                                <button type="submit" id="updateStatusBtn" class="btn btn-primary mb-1">Update Status</button>
+                            </div>
                         </div>
-                    </article>
-                </div>
-                <div class="col-md-4">
-                    <article class="icontext align-items-start">
-                        <span class="icon icon-sm rounded-circle bg-primary-light">
-                            <i class="text-primary material-icons md-local_shipping"></i>
-                        </span>
-                        <div class="text">
-                            <h6 class="mb-1">Order info</h6>
-                            <p class="mb-1">
-                                <!-- Shipping: <%= order.shippingMethod || 'Not specified' %> <br /> -->
-                                Payment method : <%= order.paymentMethod || 'Not specified' %> <br />
-                                Status : <%= order.orderStatus %>
-                            </p>
+                    </header>
+                    <div class="card-body">
+                    <div class="row mb-50 mt-20 order-info-wrap">
+                        <div class="col-md-4">
+                            <article class="icontext align-items-start">
+                                <span class="icon icon-sm rounded-circle bg-primary-light">
+                                    <i class="text-primary material-icons md-person"></i>
+                                </span>
+                                <div class="text">
+                                    <h6 class="mb-1">Customer</h6>
+                                    <% if(orderDetails[0]?.userDetails?.length) { %>
+                                        <p class="mb-1">
+                                            <%= orderDetails[0].userDetails[0].username %> <br />
+                                            <%= orderDetails[0].userDetails[0].email %> <br />
+                                            <%= orderDetails[0].userDetails[0].phone %>
+                                        </p>
+                                    <% } else { %>
+                                        <p>No customer data found</p>
+                                    <% } %>
+                                </div>
+                            </article>
                         </div>
-                    </article>
-                </div>
-                <div class="col-md-4">
-                    <article class="icontext align-items-start">
-                        <span class="icon icon-sm rounded-circle bg-primary-light">
-                            <i class="text-primary material-icons md-place"></i>
-                        </span>
-                        <div class="text">
-                            <h6 class="mb-1">Deliver to</h6>
-                            <% if(orderDetails[0]?.userAddress?.length) { %>
-                                <p class="mb-1">
-                                    <%= orderDetails[0].userAddress[0].address[0].name %><br>
-                                    <%= orderDetails[0].userAddress[0].address[0].fullAddress %> <br />
-                                     <%= orderDetails[0].userAddress[0].address[0].city %>,<%= orderDetails[0].userAddress[0].address[0].state %>, <%= orderDetails[0].userAddress[0].address[0].country %> <br />
-                                    <%= orderDetails[0].userAddress[0].address[0].pincode %>
-                                </p>
-                            <% } else { %>
-                                <p>No address data found</p>
-                            <% } %>
+                        <div class="col-md-4">
+                            <article class="icontext align-items-start">
+                                <span class="icon icon-sm rounded-circle bg-primary-light">
+                                    <i class="text-primary material-icons md-local_shipping"></i>
+                                </span>
+                                <div class="text">
+                                    <h6 class="mb-1">Order info</h6>
+                                    <p class="mb-1">
+                                        <!-- Shipping: <%= order.shippingMethod || 'Not specified' %> <br /> -->
+                                        Payment method : <%= order.paymentMethod || 'Not specified' %> <br />
+                                        Status : <%= order.orderStatus %>
+                                    </p>
+                                </div>
+                            </article>
                         </div>
-                    </article>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th width="40%">Product</th>
-                            <th width="20%">Unit Price</th>
-                            <th width="20%">Quantity</th>
-                            <th width="20%" >Total</th>
-                            <th class="text-end" width="20%" >More</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% orderDetails.forEach(item => { %>
-                            <% if(item.productDetails.length) { %>
+                        <div class="col-md-4">
+                            <article class="icontext align-items-start">
+                                <span class="icon icon-sm rounded-circle bg-primary-light">
+                                    <i class="text-primary material-icons md-place"></i>
+                                </span>
+                                <div class="text">
+                                    <h6 class="mb-1">Deliver to</h6>
+                                    <% if(orderDetails[0]?.userAddress?.length) { %>
+                                        <p class="mb-1">
+                                            <%= orderDetails[0].userAddress[0].address[0].name %><br>
+                                            <%= orderDetails[0].userAddress[0].address[0].fullAddress %> <br />
+                                            <%= orderDetails[0].userAddress[0].address[0].city %>,<%= orderDetails[0].userAddress[0].address[0].state %>, <%= orderDetails[0].userAddress[0].address[0].country %> <br />
+                                            <%= orderDetails[0].userAddress[0].address[0].pincode %>
+                                        </p>
+                                    <% } else { %>
+                                        <p>No address data found</p>
+                                    <% } %>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <a class="itemside" href="#">
-                                            <div class="left">
-                                                <img src="/uploads/product-images/<%=item.productDetails[0].images[0]%>" style="width: 90px;height: 120px;" width="40" height="40" class="img-xs" alt="<%= item.productDetails[0].name %>" />
-                                            </div>
-                                            <div class="info"><%= item.productDetails[0].productName %></div>
-                                        </a>
-                                    </td>
-                                    <td>₹<%= item.productDetails[0].regularPrice.toFixed(2) %></td>
-                                    <td><%= item.orderedItems.quantity %></td>
-                                    <td >₹<%= (item.productDetails[0].regularPrice * item.orderedItems.quantity).toFixed(2) %></td>
-
-                                    <%if(item.orderedItems.status !== "Cancelled"){%>
-                                        <td class="text-end"><button class="cancelBtn" onclick="cancelProduct(`<%=item.orderedItems.product%>`)">Cancel</button></td>
-                                    <%}else{%>    
-                                        <td class="text-end"><button class="cancelBtn" id="cancelledBtn">Cancelled</button></td>
-                                    <%}%>    
+                                    <th width="40%">Product</th>
+                                    <th width="20%">Unit Price</th>
+                                    <th width="20%">Quantity</th>
+                                    <th width="20%" >Total</th>
+                                    <th class="text-end" width="20%" >More</th>
                                 </tr>
-                            <% } %>
-                        <% }); %>
-                        <tr>
-                            <td colspan="3" >
-                                <article class="float-end">
-                                    <!-- <dl class="dlist">
-                                        <dt>Subtotal:</dt>
-                                        <dd>$<%= order.subtotal %></dd>
-                                    </dl>
-                                    <dl class="dlist">
-                                        <dt>Shipping cost:</dt>
-                                        <dd>$<%= order.shippingCost %></dd>
-                                    </dl> -->
-                                    <dl class="dlist">
-                                        <dt class="pl-50">Grand total:</dt>
-                                        <dd><b class="h5">₹<%= order.totalAmount.toFixed(2) %></b></dd>
-                                    </dl>
-                                </article>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                                <% orderDetails.forEach(item => { %>
+                                    <% if(item.productDetails.length) { %>
+                                        <tr>
+                                            <td>
+                                                <a class="itemside" href="#">
+                                                    <div class="left">
+                                                        <img src="/uploads/product-images/<%=item.productDetails[0].images[0]%>" style="width: 90px;height: 120px;" width="40" height="40" class="img-xs" alt="<%= item.productDetails[0].name %>" />
+                                                    </div>
+                                                    <div class="info"><%= item.productDetails[0].productName %></div>
+                                                </a>
+                                            </td>
+                                            <td>₹<%= item.productDetails[0].regularPrice.toFixed(2) %></td>
+                                            <td><%= item.orderedItems.quantity %></td>
+                                            <td >₹<%= (item.productDetails[0].regularPrice * item.orderedItems.quantity).toFixed(2) %></td>
+
+                                            <%if(item.orderedItems.status !== "Cancelled"){%>
+                                                <td class="text-end"><button class="cancelBtn" onclick="cancelProduct(`<%=item.orderedItems.product%>`)">Cancel</button></td>
+                                            <%}else{%>    
+                                                <td class="text-end"><button class="cancelBtn" id="cancelledBtn">Cancelled</button></td>
+                                            <%}%>    
+                                        </tr>
+                                    <% } %>
+                                <% }); %>
+                                <tr>
+                                    <td colspan="3" >
+                                        <article class="float-end">
+                                            <!-- <dl class="dlist">
+                                                <dt>Subtotal:</dt>
+                                                <dd>$<%= order.subtotal %></dd>
+                                            </dl>
+                                            <dl class="dlist">
+                                                <dt>Shipping cost:</dt>
+                                                <dd>$<%= order.shippingCost %></dd>
+                                            </dl> -->
+                                            <dl class="dlist">
+                                                <dt class="pl-50">Grand total:</dt>
+                                                <dd><b class="h5">₹<%= order.totalAmount.toFixed(2) %></b></dd>
+                                            </dl>
+                                        </article>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</section>
+            </section>
             <!-- content-main end// -->
             <footer class="main-footer font-xs">
                 <div class="row pb-30 pt-15">
@@ -421,13 +420,13 @@
             }
             
             if (!data.success) {
-                return Must.failure({time: 2500, content: data.message})
+                return Must.failure({time: 2000, content: data.message})
             } 
 
-            Must.success({time: 2000, content: data.message, color:'#27ae60'})
+            Must.success({time: 1100, content: data.message, color:'#27ae60'})
             setTimeout(() => {
                 window.location.href = '/admin/orders'
-            },2000)
+            },1100)
             document.getElementById("icon").style.backgroundColor = 'beige'
             document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
             

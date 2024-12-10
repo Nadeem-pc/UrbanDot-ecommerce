@@ -50,7 +50,8 @@ user.get('/orderDetails/:orderId', isBlocked, userAuth, orderController.getOrder
 
 // Checkout Management
 user.get('/checkoutInitial',isBlocked, userAuth,orderController.loadFirstPageOfCheckout)
-user.get('/checkout/:id',isBlocked,userAuth,orderController.loadCheckout)
+user.get('/checkout/:id',isBlocked,userAuth,orderController.loadAddNewAddress)
+user.post('/addNewAddress',orderController.addNewAddress)
 user.get('/payment',isBlocked,userAuth, orderController.loadPaymentPage)
 user.post('/getUserAddress',orderController.getUserAddress)
 user.post('/storeOrderDetails',orderController.storeOrderDetails)
@@ -65,6 +66,5 @@ user.get('/auth/google',passport.authenticate('google',{scope:['profile','email'
 user.get('/google/callback',passport.authenticate('google',{failureRedirect:'/signup'}),(req,res) => {
     res.redirect('/')
 })
-
 
 module.exports = user   

@@ -55,16 +55,45 @@ const loadFirstPageOfCheckout = async (req,res) => {
     }
 }
 
-const loadCheckout = async (req,res) => {
+const loadAddNewAddress = async (req,res) => {
     try {
         const cartId = req.params
         let cart = await Cart.findOne({_id:new mongoose.Types.ObjectId(cartId)}).populate('items.productId')   
         
-        return res.render('checkout',{cart,totalPrice:req.session.totalPrice, products:req.session.products})
+        return res.render('addNewAddress',{cart,totalPrice:req.session.totalPrice, products:req.session.products})
 
     } catch (error) {
         console.log(error);
         res.redirect('/pageNotFound')
+    }
+}
+
+const addNewAddress = async (req,res) => {
+    const{name,phone,pincode,city,fullAddress,country,state,addressType} = req.body
+    const userId = req.session.user
+
+    try {
+        const userData = await User.findOne({_id:userId})
+        const userAddress = await Address.findOne({user:userData._id})
+
+        if(!userAddress){
+            const newAddress = new Address({
+                user : userData._id,
+                address : [{addressType,name,city,pincode,phone,country,state,fullAddress}]
+            });
+
+            await newAddress.save()
+            return res.status(200).json({status:true})
+        }
+        else{
+            userAddress.address.push({addressType,name,city,pincode,phone,country,state,fullAddress})
+            await userAddress.save()
+            return res.status(200).json({status:true})
+        }
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Internal Server Error" })
     }
 }
 
@@ -115,15 +144,17 @@ const storeOrderDetails = async (req,res) => {
         const year = date.getFullYear();
 
         const formattedDate = `${month} ${day} ${year}`;
-
+        req.session.orderId = generateOrderId()
+        
         const newOrder = new Order({
             userId : user,
-            address : req.session.userAddress,
             paymentMethod,
+            paymentStatus: 'Pending',
+            orderDate : formattedDate,
+            orderId : req.session.orderId,
+            address : req.session.userAddress,
             orderedItems : req.session.products,
             totalAmount : req.session.totalPrice,
-            orderDate : formattedDate,
-            paymentStatus: 'Pending'
         })
        
         await newOrder.save()
@@ -140,9 +171,16 @@ const storeOrderDetails = async (req,res) => {
     }
 }
 
+const generateOrderId = () => {
+    const timestamp = Date.now(); 
+    const randomValue = Math.floor(1000 + Math.random() * 9000);
+    return `ORD-${timestamp}-${randomValue}`;
+}
+
 const showOrderPlaced = async (req,res) => {
     try {
-        const orderId = Math.random
+    
+        const orderId = req.session.orderId
         return res.render('orderPlaced',{orderId})
 
     } catch (error) {
@@ -193,16 +231,17 @@ const getOrderDetailsForUser = async (req, res) => {
         console.error('Error fetching order details:', error);
         res.status(500).json({ message: 'Server error' });
     }
-};
+}
 
 
 module.exports = {
-    loadCheckout,
     cancelProduct,
+    addNewAddress,
     getUserAddress,
     showOrderPlaced,
     loadPaymentPage,
     storeOrderDetails,
+    loadAddNewAddress,
     getOrderDetailsForUser,
     loadFirstPageOfCheckout,
 }
