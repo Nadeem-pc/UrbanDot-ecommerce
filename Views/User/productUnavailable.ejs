@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Unavailable</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/Admin/imgs/theme/favicon.png" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+        }
+        .unavailable-container {
+            text-align: center;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+        .unavailable-image {
+            max-width: 300px;
+            margin-bottom: 20px;
+        }
+        .btn-return-shop {
+            margin-top: 20px;
+            border: 0;
+            background-color: black;
+            transition: all 0.3s ease;
+        }
+        .btn-return-shop:hover {
+            background-color: #00a884;
+            transform: scale(1.05);
+        }
+        .message{
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="unavailable-container">
+        <img src="/User/img/unavailable.jpeg" alt="Product Unavailable" class="unavailable-image">
+        
+        <h2 class="message text-danger mb-4">Product Unavailable</h2>
+        
+        <p class="lead text-muted">
+            We're sorry, the product you selected is currently unavailable
+            and cannot be purchased at this time.
+        </p>
+        
+        <button id="returnToShopBtn" class="btn btn-primary btn-lg btn-return-shop">
+            Return to Shop
+        </button>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('returnToShopBtn').addEventListener('click', function() {
+            // Redirect to shop page
+            window.location.href = '/shop'; // Replace with your actual shop page URL
+        });
+
+        // Optional: Add some visual feedback for blocked product
+        function simulateBlockedProductFeedback() {
+            const blockedProductElement = document.querySelector('.blocked-product');
+            if (blockedProductElement) {
+                blockedProductElement.style.opacity = '0.5';
+                blockedProductElement.style.pointerEvents = 'none';
+            }
+        }
+
+        // Call this function when a product is detected as blocked
+        simulateBlockedProductFeedback();
+    </script>
+</body>
+</html>

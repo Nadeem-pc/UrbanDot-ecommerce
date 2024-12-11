@@ -33,10 +33,7 @@ const loadFirstPageOfCheckout = async (req,res) => {
         }
 
         if (!validItems.length) {
-            return res.status(400).json({
-                success: false,
-                message: 'No valid products available for payment.'
-            });
+            return res.redirect('/unavailable')
         }
 
         // Calculate total price for valid products

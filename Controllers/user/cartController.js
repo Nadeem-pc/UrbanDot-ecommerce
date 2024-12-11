@@ -6,6 +6,7 @@ const Product = require('../../Models/productSchema')
 const addToCart = async (req,res) => {
     try {
         const productId = new mongoose.Types.ObjectId(req.body.productId)
+        let quantity = req.body.quantity
         const userId = req.session.user
         
         const product = await Product.findById(productId).populate('category');
@@ -14,7 +15,7 @@ const addToCart = async (req,res) => {
         
         
         if(!cart){
-            cart = new Cart({ userId, items:[{productId, quantity: 1, price, totalPrice: price}] })
+            cart = new Cart({ userId, items:[{productId, quantity, price, totalPrice: price * quantity}] })
             console.log(cart)
         }
         else{
@@ -23,8 +24,8 @@ const addToCart = async (req,res) => {
             if(!productInCart){
                 cart.items.push({
                     productId,
-                    quantity : 1,
-                    totalPrice: price,
+                    quantity,
+                    totalPrice: price * quantity,
                     price
                 })
             }
@@ -78,5 +79,54 @@ const removeProduct = async (req,res) => {
     }
 }
 
+const updateCart = async (req,res) => {
+    const { productId, quantity } = req.body;
+    const userId = req.session.user
+    
+    try {
 
-module.exports = { loadCart, addToCart, removeProduct }
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Product not found." });
+        }
+
+        const price = product.regularPrice; 
+        const totalPrice = price * quantity;
+
+        // Find the user's cart
+        const cart = await Cart.findOne({ userId });
+        if (!cart) {
+            return res.status(404).json({ success: false, message: "Cart not found." });
+        }
+
+        // Update the specific product in the cart
+        const itemIndex = cart.items.findIndex((item) => item.productId.toString() === productId);
+        if (itemIndex !== -1) {
+            // If the item exists, update the quantity and totalPrice
+            cart.items[itemIndex].quantity = quantity;
+            cart.items[itemIndex].totalPrice = totalPrice;
+        } else {
+            // If the item doesn't exist, add it
+            cart.items.push({ productId, quantity, price, totalPrice });
+        }
+
+        // Save the updated cart
+        await cart.save();
+
+        // Calculate the cart subtotal
+        const cartSubtotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
+
+        res.status(200).json({
+            success: true,
+            message: "Cart updated successfully.",
+            totalPrice,
+            cartSubtotal,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+}
+
+
+module.exports = { loadCart, addToCart, removeProduct, updateCart }

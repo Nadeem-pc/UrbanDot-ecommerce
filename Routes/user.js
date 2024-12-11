@@ -49,6 +49,7 @@ user.get('/deleteAddress/:mainId/:id',addressController.deleteAddress)
 user.get('/cart', isBlocked, userAuth, cartController.loadCart)
 user.post('/cart', userAuth, cartController.addToCart)
 user.post('/removeProduct',cartController.removeProduct)
+user.post('/cart/update',cartController.updateCart)
 
 // Order Management
 user.post('/cancelProduct',orderController.cancelProduct)
@@ -66,6 +67,7 @@ user.get('/orderPlaced',isBlocked,userAuth, orderController.showOrderPlaced)
 // Others
 user.get('/blocked', userController.blockedUser)
 user.get('/pageNotFound',userController.pageNotFound)
+user.get('/unavailable',ShoppingController.productUnavailable)
 
 // Google Authentication
 user.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}))

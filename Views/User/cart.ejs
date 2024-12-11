@@ -83,34 +83,35 @@
 
                   <div class="product_count">
                     <input
-                      type="number"
-                      name="qty"
-                      class="input-text qty"
-                      maxlength="10"
-                      value="1"
-                      title="Quantity:"
-                      min="0"
+                        type="number"
+                        name="qty"
+                        class="input-text qty"
+                        maxlength="10"
+                        value="<%=item.quantity%>"
+                        title="Quantity:"
+                        min="1"
+                        data-product-id="<%=item.productId._id%>"
                     />
                     <button
-                      onclick="increaseQty(this)"
-                      class="increase items-count"
-                      type="button"
+                        onclick="increaseQty(this)"
+                        class="increase items-count"
+                        type="button"
                     >
-                      <i class="lnr lnr-chevron-up"></i>
+                        <i class="lnr lnr-chevron-up"></i>
                     </button>
-
+                
                     <button
-                      onclick="decreaseQty(this)"
-                      class="reduced items-count"
-                      type="button"
+                        onclick="decreaseQty(this)"
+                        class="reduced items-count"
+                        type="button"
                     >
-                      <i class="lnr lnr-chevron-down"></i>
+                        <i class="lnr lnr-chevron-down"></i>
                     </button>
-                  </div>
+                </div>
                   
                 </td>
                 <td>
-                  <h5>₹<%=item.productId.regularPrice%></h5>
+                  <h5>₹<%=item.totalPrice%></h5>
                 </td>
                 <td>
                   <button id="dltBtn" onclick="removeItem(`<%= cart._id %>`,`<%= item.productId._id %>`)">REMOVE</button>
@@ -143,9 +144,9 @@
               <tr class="shipping_area">
                 <td></td>
                 <td></td>
-                <td>
+                <!-- <td>
                   <h5>Shipping</h5>
-                </td>
+                </td> -->
                 <td>
                   <div class="shipping_box">
                     
@@ -165,7 +166,6 @@
                   </div>
                 </td>
               </tr>
-            
             </tbody>
           </table>
         </div>
@@ -179,17 +179,54 @@
   function increaseQty(button) {
     const input = button.parentElement.querySelector("input.qty"); // Find the input in the same parent
     let quantity = parseInt(input.value, 10); // Convert value to a number
-    if (!isNaN(quantity)) {
+    if (!isNaN(quantity) && quantity < 10) {
       input.value = quantity + 1;
+      updateCartItem(input); // Update the cart item
     }
   }
 
   function decreaseQty(button) {
     const input = button.parentElement.querySelector("input.qty"); // Find the input in the same parent
     let quantity = parseInt(input.value, 10); // Convert value to a number
-    if (!isNaN(quantity) && quantity > 0) {
+    if (!isNaN(quantity) && quantity > 1) {
       input.value = quantity - 1;
+      updateCartItem(input); // Update the cart item
     }
+  }
+
+  function updateCartItem(input) {
+    const quantity = parseInt(input.value, 10);
+    const productId = input.getAttribute("data-product-id"); // Ensure data-product-id is set correctly
+
+    fetch(`/cart/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        productId: productId,
+        quantity: quantity,
+      }),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        // Update UI with new totals
+        const totalPriceElement = document.querySelector(`.total-price[data-product-id="${productId}"]`);
+        const subtotalElement = document.getElementById("cart-subtotal");
+
+        if (totalPriceElement) {
+        totalPriceElement.textContent = `₹${data.totalPrice.toFixed(2)}`;
+        }
+
+        if (subtotalElement) {
+          subtotalElement.textContent = `₹${data.cartSubtotal.toFixed(2)}`;
+        }
+      } else {
+        console.error("Failed to update cart:", data.message);
+      }
+    })
+    .catch((error) => console.error("Error:", error));
   }
 
   async function removeItem(mainId,productId) {

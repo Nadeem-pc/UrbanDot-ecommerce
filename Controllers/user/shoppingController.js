@@ -73,7 +73,7 @@ const loadShop = async (req, res) => {
       console.error("Error in loadShop:", error);
       res.status(500).json({ error: "Internal Server Error" });
     }
-};
+}
 
 const loadProductDetail = async (req,res) => {
     const {id} = req.params  
@@ -87,8 +87,17 @@ const loadProductDetail = async (req,res) => {
     }
     catch (error) {
         console.log(error);
-        res.redirect('/pageNotFound')
+        res.redirect('/unavailable')
     }
 }
 
-module.exports = { loadShop, loadProductDetail }
+const productUnavailable = async (req,res) => {
+    try {
+        return res.render('productUnavailable')
+    } catch (error) {
+        console.error("Error in loadShop:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
+module.exports = { loadShop, loadProductDetail, productUnavailable }
