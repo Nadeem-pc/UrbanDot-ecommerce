@@ -249,7 +249,7 @@
             </div>
 
             <div class="remember-forgot" >
-                <a href="#" class="forgot-password">Forgot Password</a>
+                <a href="/forgotPassword" class="forgot-password">Forgot Password</a>
             </div>
 
             <button type="submit" class="login-button gradient-custom-2">Log In</button>
@@ -354,12 +354,6 @@
             button.addEventListener('click', () => {
                location.href = '/auth/google'
             });
-        });
-
-        // Forgot password link
-        document.querySelector('.forgot-password').addEventListener('click', (e) => {
-            e.preventDefault();
-            showError('Password reset functionality is not implemented in this demo');
         });
 
         // Sign up link

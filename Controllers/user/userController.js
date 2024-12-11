@@ -3,6 +3,7 @@ const Order = require("../../Models/orderSchema")
 const Product = require("../../Models/productSchema")
 
 const bcrypt = require('bcrypt')
+const crypto = require('crypto');
 const passport = require("passport");
 const nodemailer = require('nodemailer');
 
@@ -264,18 +265,126 @@ const changePassword = async (req,res) => {
     }
 }
 
+const loadForgotPassword = async (req,res) => {
+    try {
+        return res.render('forgotPassword')
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Internal Server Error" })
+    }
+} 
+
+const forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        // Check if the user exists
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.json({ success: false, message: 'Email not found. Please try again.' });
+        }
+
+        // Generate a reset token
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        user.resetToken = resetToken;
+        user.resetTokenExpire = Date.now() + 36000; // 1 hour
+        await user.save();
+
+        // Configure nodemailer
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.NODEMAILER_EMAIL,
+                pass: process.env.NODEMAILER_PASSWORD,
+            },
+        });
+
+        // Reset URL
+        const resetUrl = `http://localhost:${process.env.PORT || 3000}/changePassword/${resetToken}`;
+        const mailOptions = {
+            from: `UrbanDot <${process.env.NODEMAILER_EMAIL}>`,
+            to: email,
+            subject: 'Password Reset Request',
+            html: `<p>You requested a password reset. Click the link below to reset your password:</p>
+                <a href="${resetUrl}" target="_blank">${resetUrl}</a>
+                <p>If you did not request this, please ignore this email.</p>`,
+        };
+
+        // Send email
+        await transporter.sendMail(mailOptions);
+        return res.json({ success: true, message: `Password reset link has been sent to: ${email}` });
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+const loadChangePassword = async (req, res) => {
+    try {
+        const { token } = req.params;
+
+        const user = await User.findOne({
+            resetToken: token,
+            resetTokenExpire: { $gt: Date.now() }, // Ensure token hasn't expired
+        });
+
+        if (!user) {
+            return res.send("The password reset link has expired or is invalid.");
+        }
+
+        return res.render('passwordChange', { token });
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+const updatePassword = async (req, res) => {
+    try {
+        const { token } = req.params;
+        const { password } = req.body;
+
+        const user = await User.findOne({
+            resetToken: token,
+            resetTokenExpire: { $gt: Date.now() },
+        });
+
+        if (!user) {
+            return res.json({ success: false, message: 'Invalid or expired token' });
+        }
+
+        // Hash and update the new password
+        user.password = await bcrypt.hash(password, 10);
+        user.resetToken = null; // Clear token
+        user.resetTokenExpire = null; // Clear token expiry
+        await user.save();
+        req.session.user = user
+
+        return res.json({ success: true, message: 'Password changed successfully' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
 
 module.exports = {
+    logout,
+    resendOtp,
+    verifyOtp,
+    loadLogin,
+    loadSignUp,
+    verifyLogin,
+    blockedUser,
     loadHomePage,
     pageNotFound,
-    loadLogin,
-    verifyLogin,
-    logout,
-    loadSignUp,
     insertSignUp,
     loadVerifyOtp,
-    verifyOtp,
-    resendOtp,
-    blockedUser,
-    changePassword
+    changePassword,
+    forgotPassword,
+    updatePassword,
+    loadForgotPassword,
+    loadChangePassword,
 }

@@ -33,6 +33,16 @@ const userSchema =  mongoose.Schema({
         type : Boolean,
         default : false
     },
+    
+    resetToken : {
+        type: String,
+        default: null
+    },
+    
+    resetTokenExpire : {
+        type: Number,
+        default: null
+    },
 
 },  )
 

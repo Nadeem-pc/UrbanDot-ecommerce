@@ -37,6 +37,7 @@ app.set("view engine","ejs")
 app.set("views",[path.join(__dirname,'Views/User'),path.join(__dirname,'Views/Admin')])
 app.use(express.static(path.join(__dirname,'Public')))
 
+
 // Middleware to set session data for use in views
 app.use((req, res, next) => {
     res.locals.isLoggedIn = !!req.session.user; // Check if a user is logged in

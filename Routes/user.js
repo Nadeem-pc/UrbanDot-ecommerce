@@ -26,6 +26,12 @@ user.get('/verifyOtp', isLogout, userController.loadVerifyOtp)
 user.post('/verifyOtp',userController.verifyOtp)
 user.post('/resend-otp',userController.resendOtp)
 
+// Forgot Password
+user.get('/forgotPassword', isBlocked,userController.loadForgotPassword)
+user.post('/forgotPassword',userController.forgotPassword)
+user.get('/changePassword/:token', userController.loadChangePassword)
+user.post('/changePassword/:token', userController.updatePassword)
+
 // Shopping page
 user.get('/shop', isBlocked, ShoppingController.loadShop)
 user.get('/product/:id', isBlocked, ShoppingController.loadProductDetail)
