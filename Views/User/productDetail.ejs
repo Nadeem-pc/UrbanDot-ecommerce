@@ -80,23 +80,30 @@
   }
   .pop-container{
     background-color: white;
-    margin-top: 80px;
+    margin-top: 880px;
     z-index: 10;
   }
 .items-count {
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #ccc;
-    background-color: #f8f9fa;
-    cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+  background-color: #f8f9fa;
+  cursor: pointer;
 }
 .input-text.qty {
-    width: 75px;
-    height: 45px;
-    text-align: center;
+  width: 78px;
+  height: 44px;
+  margin-top: 13px;
+  text-align: center; 
+}
+#controlBtn{
+  margin-top: 13px;
+}
+#controlBtn2{
+  margin-top: 13px;
 }
 
 </style>
@@ -186,11 +193,15 @@
                   title="Quantity:"
                   min="1"
                   id="quantity"
+                  max="<%= Math.min(product.stock, 10) %>"
+                  data-stock="<%= product.stock %>"
+                  data-max="10"
                 />
                 <button
                   onclick="increaseQty(this)"
                   class="increase items-count"
                   type="button"
+                  id="controlBtn"
                 >
                   <i class="lnr lnr-chevron-up"></i>
                 </button>
@@ -199,6 +210,8 @@
                   onclick="decreaseQty(this)"
                   class="reduced items-count"
                   type="button"
+                  id="controlBtn2"
+
                 >
                   <i class="lnr lnr-chevron-down"></i>
                 </button>
@@ -361,7 +374,6 @@
                     <div class="d-flex">
                       <img
                         src="img/product/single-product/review-1.png"
-                        alt=""
                       />
                     </div>
                     <div class="media-body">
@@ -530,8 +542,15 @@
     
     const data = await response.json()
 
+    const addToCartButton = document.getElementById('cart-btn')
+
     if(!data.status){
-      return Must.failure({time: 3000, content: data.message})
+      addToCartButton.disabled = true;
+      addToCartButton.textContent = data.message;
+      addToCartButton.style.color = 'red';
+      addToCartButton.style.backgroundColor = 'white'; 
+      addToCartButton.style.border = '0';
+      addToCartButton.style.fontSize = '17px';
     }
 
     setTimeout(()=>{
@@ -546,17 +565,30 @@
   }
 
   function increaseQty(button) {
-    const input = button.parentElement.querySelector("input.qty"); // Find the input in the same parent
-    let quantity = parseInt(input.value, 10); // Convert value to a number
-    if (!isNaN(quantity)  && quantity < 10) {
+
+    const input = button.parentElement.querySelector("input.qty");
+    let quantity = parseInt(input.value, 10);
+    const stock = parseInt(input.getAttribute("data-stock"), 10);
+    const maxQuantity = Math.min(stock, 10);
+    const addToCartButton = document.getElementById('cart-btn')
+
+    if (quantity < maxQuantity) {
       input.value = quantity + 1;
+    } else {
+      addToCartButton.disabled = true;
+      addToCartButton.textContent = `Maximum quantity allowed is ${maxQuantity}`;
+      addToCartButton.style.color = 'red';
+      addToCartButton.style.backgroundColor = 'white'; 
+      addToCartButton.style.border = '0'; 
+      addToCartButton.style.fontSize = '17px';
     }
   }
 
   function decreaseQty(button) {
-    const input = button.parentElement.querySelector("input.qty"); // Find the input in the same parent
-    let quantity = parseInt(input.value, 10); // Convert value to a number
-    if (!isNaN(quantity) && quantity > 1) {
+    const input = button.parentElement.querySelector("input.qty");
+    let quantity = parseInt(input.value, 10);
+
+    if (quantity > 1) {
       input.value = quantity - 1;
     }
   }

@@ -90,6 +90,14 @@ const updateCart = async (req,res) => {
             return res.status(404).json({ success: false, message: "Product not found." });
         }
 
+        const maxAllowedQuantity = Math.min(product.stock, 10);
+        if (quantity > maxAllowedQuantity) {
+            return res.status(400).json({
+                success: false,
+                message: `Maximum quantity allowed is ${maxAllowedQuantity}.`,
+            });
+        }
+
         const price = product.regularPrice; 
         const totalPrice = price * quantity;
 

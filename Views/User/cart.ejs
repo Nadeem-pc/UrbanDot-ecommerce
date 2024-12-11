@@ -91,6 +91,9 @@
                         title="Quantity:"
                         min="1"
                         data-product-id="<%=item.productId._id%>"
+                        max="<%= Math.min(item.productId.stock, 10) %>"
+                        data-stock="<%= item.productId.stock %>"
+                        data-max="10"
                     />
                     <button
                         onclick="increaseQty(this)"
@@ -176,12 +179,18 @@
    
 <script>
 
-  function increaseQty(button) {
-    const input = button.parentElement.querySelector("input.qty"); // Find the input in the same parent
-    let quantity = parseInt(input.value, 10); // Convert value to a number
-    if (!isNaN(quantity) && quantity < 10) {
+function increaseQty(button) {
+    const input = button.parentElement.querySelector("input.qty");
+    let quantity = parseInt(input.value, 10);
+    const stock = parseInt(input.getAttribute("data-stock"), 10);
+    const maxQuantity = Math.min(stock, 10); // Limit quantity to 10 or stock, whichever is smaller
+
+    if (quantity < maxQuantity) {
       input.value = quantity + 1;
-      updateCartItem(input); // Update the cart item
+      updateCartItem(input);
+    } else {
+      document.getElementById('cart-btn').style.display = 'none'
+      document.getElementsByClassName('main_btn')
     }
   }
 
