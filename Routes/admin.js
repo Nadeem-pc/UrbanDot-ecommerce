@@ -6,6 +6,7 @@ const categoryController = require('../Controllers/admin/categoryController')
 const productController = require('../Controllers/admin/productController')
 const orderController = require('../Controllers/admin/orderController')
 const userController = require('../Controllers/admin/userController')
+const stockController = require('../Controllers/admin/stockController')
 
 const authMiddleware = require('../Middlewares/Admin/adminAuth')
 const storage = require('../Middlewares/Admin/multer')
@@ -42,6 +43,10 @@ admin.get('/orders',authMiddleware.isLogin,orderController.getOrdersList)
 admin.get('/orderDetails/:id',authMiddleware.isLogin, orderController.getOrderDetails)
 admin.post('/updateOrderStatus',orderController.updateOrderStatus)
 admin.post('/cancelOrder',orderController.cancelOrder)
+
+// STOCK MANAGEMENT
+admin.get('/stocks',authMiddleware.isLogin,stockController.getStockDetails)
+admin.post('/updateStock',stockController.updateProductStock)
 
 
 module.exports = admin

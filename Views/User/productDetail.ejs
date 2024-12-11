@@ -144,16 +144,19 @@
                 >
               </li> -->
               <li>
-                <a href="#"> <span>Availibility</span>
-                  <% if(product.stock >= 30){ %>
-                      : In Stock
-                      <%}else if(product.stock === 0){%>
-                      : Out of stock
-                    <%}else if(product.stock<= 15 ){%> 
-                      : Only few left
-                  <%}%>
+                <a href="#">
+                    <span>Availability</span>
+                    <% if (product.stock === 0) { %>
+                        : Out of stock
+                    <% } else if (product.stock <= 15) { %>
+                        : Only few left
+                    <% } else if (product.stock >= 30) { %>
+                        : In Stock
+                    <% } else { %>
+                        : In stock
+                    <% } %>
                 </a>
-              </li>
+            </li>
             </ul>
             <p> <%=product.description%> </p>
             <div class="product_count w-100 d-flex justify-content-between align-items-center">
