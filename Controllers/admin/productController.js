@@ -137,51 +137,42 @@ const loadEditProduct = async(req,res) => {
     }
 }
 
-const editProduct = async (req,res) => {
+const editProduct = async (req, res) => {
     try {
-        const productId = new mongoose.Types.ObjectId(req.params)
-        const{name,description,category,regularPrice,offerPrice} = req.body
-        // const updatedImages = existingImages ? [...existingImages] : [];
-        
-        const productExists = await Product.findOne({ productName: name });
-        if (productExists) {
-            return res.status(400).json({ status: false, message: "Product already exists" });
-        }
-        
-        const images = [];
+        const productId = req.params.id;
+        const updates = req.body;
+
+        const fieldsToUpdate = ['productName', 'description', 'regularPrice', 'offerPrice', 'category'];
+
+        const updateData = {};
+        fieldsToUpdate.forEach(field => {
+            if (updates[field] !== undefined) {
+                updateData[field] = updates[field];
+            }
+        });
+
         if (req.files && req.files.length) {
+            const images = [];
             for (const file of req.files) {
                 const resizedPath = path.join('Public', 'uploads', 'product-images', file.filename);
                 await sharp(file.path).resize({ width: 350, height: 419 }).toFile(resizedPath);
                 images.push(file.filename);
             }
+            updateData.images = images;
         }
 
-        let updateProduct = await Product.findByIdAndUpdate(
-            productId,
-            {
-                productName : name,
-                description,
-                category,
-                regularPrice,
-                offerPrice,
-                images
-            },
-            {new : true}
-        );
+        const updatedProduct = await Product.findByIdAndUpdate(productId, updateData, { new: true, runValidators: true });
 
-        if(!updateProduct){
-            return res.json({ status: false, message: "Product updation failed" });
+        if (!updatedProduct) {
+            return res.status(404).json({ status: false, message: "Product not found" });
         }
-        
-        return res.status(201).json({ status: true, message: "Product updated successfully" });
+        return res.status(200).json({ status: true, message: "Product updated successfully", product: updatedProduct });
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ success: false, message: "Internal Server Error" });
+        return res.status(500).json({ status: false, message: "Internal Server Error" });
     }
-}
-
+};
 
 module.exports = {
     addProduct,

@@ -284,7 +284,7 @@
                                         <div class="col-lg-6">
                                             <div class="mb-4">
                                                 <label class="form-label">Current price/Offer price</label>
-                                                <input placeholder="<%=product.regularPrice%>" type="text" class="form-control" name="price" id='offerPrice'/>
+                                                <input placeholder="<%=product.offerPrice%>" type="text" class="form-control" name="price" id='offerPrice'/>
                                             </div>
                                         </div>
                                         <!-- <div class="col-lg-4">
@@ -412,7 +412,7 @@
 
         <script>
 
-let selectedImages = [];
+            let selectedImages = [];
             let cropperInstances = {}; // Store cropper instances for each image separately
 
             function previewImage(event, index) {
@@ -483,36 +483,63 @@ let selectedImages = [];
                     previewImage(event, index + 1); // Ensure proper index for IDs
                 });
             });
+
             document.getElementById("product_form").addEventListener("submit", async (event) => {
                 event.preventDefault();
 
-                const name = document.getElementsByName("name")[0].value;
-                const description = document.getElementById("product_description").value;
-                const category = document.getElementsByName("category")[0].value
-                // let category = categorySelect.options[categorySelect.selectedIndex].text;
-                const regularPrice = document.getElementById("regularPrice").value;
-                const offerPrice = document.getElementById("offerPrice").value;
-
-                if (validateForm(name, description, regularPrice, offerPrice, selectedImages)) {
+                if (validateForm()) {
                     const formData = new FormData();
+                    const originalData = {
+                        productName: "<%= product.productName %>",
+                        description: "<%= product.description %>",
+                        category: "<%= product.category ? product.category._id : '' %>",
+                        regularPrice: "<%= product.regularPrice %>",
+                        offerPrice: "<%= product.offerPrice %>",
+                    };
 
-                    // Append all images
-                    selectedImages.forEach((file) => {
-                        if (file) {
-                            formData.append("images", file);
+                    const updatedFields = {};
+
+                    // Check each field for changes and add to formData only if they have changed
+                    const productName = document.getElementById("product_name").value;
+                    if (productName && productName !== originalData.productName) {
+                        updatedFields.productName = productName;
+                    }
+
+                    const description = document.getElementById("product_description").value;
+                    if (description && description !== originalData.description) {
+                        updatedFields.description = description;
+                    }
+
+                    const category = document.querySelector("select[name='category']").value;
+                    if (category && category !== originalData.category) {
+                        updatedFields.category = category;
+                    }
+
+                    const regularPrice = document.getElementById("regularPrice").value;
+                    if (regularPrice && regularPrice !== originalData.regularPrice) {
+                        updatedFields.regularPrice = regularPrice;
+                    }
+
+                    const offerPrice = document.getElementById("offerPrice").value;
+                    if (offerPrice && offerPrice !== originalData.offerPrice) {
+                        updatedFields.offerPrice = offerPrice;
+                    }
+
+                    // Only append updated fields to formData
+                    Object.keys(updatedFields).forEach((key) => {
+                        formData.append(key, updatedFields[key]);
+                    });
+
+                    // Handle images
+                    selectedImages.forEach((imageFile) => {
+                        if (imageFile) {
+                            formData.append("images", imageFile);
                         }
                     });
 
-                    // Append other fields
-                    formData.append("name", name);
-                    formData.append("description", description);
-                    formData.append("category", category);
-                    formData.append("regularPrice", regularPrice);
-                    formData.append("offerPrice", offerPrice);
-
                     // Submit the form data to the server
                     const response = await fetch(`/admin/editProduct/<%=product._id%>`, {
-                        method: "POST",
+                        method: "PATCH",
                         body: formData,
                     });
 
@@ -522,59 +549,98 @@ let selectedImages = [];
                     }
 
                     Must.success({ time: 1300, content: data.message, color: "#27ae60" });
-                    document.getElementById("icon").style.backgroundColor = 'beige'
-                    document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
+                    document.getElementById("icon").style.backgroundColor = 'beige';
+                    document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px';
 
                     setTimeout(() => {
-                        window.location.href = '/admin/products'
-                    },1300)
-                }
+                        window.location.href = '/admin/products';
+                    }, 1300);
+                }    
             });
 
-            function validateForm(name, description, regularPrice, offerPrice, images) {
+            function validateForm() {
+                const updatedFields = getUpdatedFields();
+
+                for (const field in updatedFields) {
+                    if (!validateField(field, updatedFields[field])) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            function getUpdatedFields() {
+                const originalData = {
+                    productName: "<%= product.productName %>",
+                    description: "<%= product.description %>",
+                    category: "<%= product.category ? product.category._id : '' %>",
+                    regularPrice: "<%= product.regularPrice %>",
+                    offerPrice: "<%= product.offerPrice %>",
+                };
+
+                const updatedFields = {};
+
+                const productName = document.getElementById("product_name").value;
+                if (productName && productName !== originalData.productName) {
+                    updatedFields.productName = productName;
+                }
+
+                const description = document.getElementById("product_description").value;
+                if (description && description !== originalData.description) {
+                    updatedFields.description = description;
+                }
+
+                const category = document.querySelector("select[name='category']").value;
+                if (category && category !== originalData.category) {
+                    updatedFields.category = category;
+                }
+
+                const regularPrice = document.getElementById("regularPrice").value;
+                if (regularPrice && regularPrice !== originalData.regularPrice) {
+                    updatedFields.regularPrice = regularPrice;
+                }
+
+                const offerPrice = document.getElementById("offerPrice").value;
+                if (offerPrice && offerPrice !== originalData.offerPrice) {
+                    updatedFields.offerPrice = offerPrice;
+                }
+
+                return updatedFields;
+            }
+
+            function validateField(fieldName, value) {
                 const minLength = 10;
                 const maxLength = 100;
                 const allowedCharacters = /^[a-zA-Z\s\-\&\.\']+$/;
 
-                if (name.trim() === "") {
-                    return displayErrorMessage("Please enter a product name");
-                }
-                if (name.length < minLength || name.length > maxLength) {
-                    return displayErrorMessage(`Product name must be between ${minLength} and ${maxLength} characters.`);
-                }
-                if (description.length < 40) {
-                    return displayErrorMessage(`Product description must be atleast 40 characters.`);
-                }
-                if (!allowedCharacters.test(name)) {
-                    return displayErrorMessage("Product name contains invalid characters.");
-                }
-                if (description.trim() === "") {
-                    return displayErrorMessage("Please enter a product description.");
-                }
-                if (regularPrice === "") {
-                    return displayErrorMessage("Please enter the regular price of the product.");
-                }
-                if (offerPrice === "") {
-                    return displayErrorMessage("Please enter the offer price of the product.");
-                }
-                if (!/^\d+(\.\d{1,2})?$/.test(regularPrice) || parseFloat(regularPrice) < 0) {
-                    return displayErrorMessage("Please enter a valid price as regular price.");
-                }
-                if (!/^\d+(\.\d{1,2})?$/.test(offerPrice) || parseFloat(offerPrice) < 0) {
-                    return displayErrorMessage("Please enter a valid price as offer price.");
-                }
-                if(offerPrice > regularPrice){
-                    return displayErrorMessage("Offer price must be less than regular price.");
-                }
-                if (images.length <= 3 || images.some(img => img === undefined)) {
-                    return displayErrorMessage("Please provide at least 3 valid product images.");
+                switch (fieldName) {
+                    case "productName":
+                        if (value.length < minLength || value.length > maxLength) {
+                            return displayErrorMessage(`Product name must be between ${minLength} and ${maxLength} characters.`);
+                        }
+                        if (!allowedCharacters.test(value)) {
+                            return displayErrorMessage("Product name contains invalid characters.");
+                        }
+                        break;
+                    case "regularPrice":
+                    case "offerPrice":
+                        if (!/^\d+(\.\d{1,2})?$/.test(value) || parseFloat(value) < 0) {
+                            return displayErrorMessage(`Please enter a valid price for ${fieldName}.`);
+                        }
+                        if (fieldName === "offerPrice" && parseFloat(value) > parseFloat(document.getElementById("regularPrice").value)) {
+                            return displayErrorMessage("Offer price must be less than the regular price.");
+                        }
+                        break;
+                    default:
+                        return true;
                 }
                 return true;
             }
 
             function displayErrorMessage(message) {
-                return Must.failure({ time: 6000, content: message });
-            }      
+                Must.failure({ time: 6000, content: message });
+                return false;
+            }  
             
         </script>
 
