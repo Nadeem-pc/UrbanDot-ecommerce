@@ -41,8 +41,8 @@ const deleteAddress = async (req,res) => {
     
     try {
         await Address.updateOne(
-            { _id: new mongoose.Types.ObjectId(mainId) }, 
-            { $pull: { address: { _id: new mongoose.Types.ObjectId(id) } } } 
+            { _id: new mongoose.Types.ObjectId(mainId), 'address._id' : new mongoose.Types.ObjectId(id) }, 
+            {$set:{'address.$.isDeleted' : true}}
         );
 
         setTimeout(() => {

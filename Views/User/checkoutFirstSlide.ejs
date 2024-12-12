@@ -115,14 +115,14 @@
                                     <!-- <p> <%= val.country%></p> -->
                                 </div>
                             <%})%>
+                            <button class="btn" onclick="location.href='/checkout/<%=cart._id%>'">Add New Address</button>
+                            <button class="btn" id="continueBtn" style="background-color: orange;" onclick="fetchData()">Continue</button>
+                        </div>
                     <%}else{%>
-                        <h3>Add Address</h3>  
+                        <script>window.location.href='/checkout/<%=cart._id%>'</script>
                     <%}%>
-                    <button class="btn" onclick="location.href='/checkout/<%=cart._id%>'">Add New Address</button>
-                    <button class="btn" id="continueBtn" style="background-color: orange;" onclick="fetchData()">Continue</button>
                 </div>
 
-            </div>
             <div class="col-lg-4">
               <div class="order_box" style="margin-top: 30px;">
                 <h2>Price details</h2>

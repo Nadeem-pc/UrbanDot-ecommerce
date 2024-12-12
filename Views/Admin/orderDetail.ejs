@@ -308,10 +308,11 @@
                                     <h6 class="mb-1">Deliver to</h6>
                                     <% if(orderDetails[0]?.userAddress?.length) { %>
                                         <p class="mb-1">
-                                            <%= orderDetails[0].userAddress[0].address[0].name %><br>
-                                            <%= orderDetails[0].userAddress[0].address[0].fullAddress %> <br />
-                                            <%= orderDetails[0].userAddress[0].address[0].city %>,<%= orderDetails[0].userAddress[0].address[0].state %>, <%= orderDetails[0].userAddress[0].address[0].country %> <br />
-                                            <%= orderDetails[0].userAddress[0].address[0].pincode %>
+                                            <%= orderDetails[0].userAddress[0].address.name %><br>
+                                            <%= orderDetails[0].userAddress[0].address.fullAddress %> <br />
+                                            <%= orderDetails[0].userAddress[0].address.city %>, <%= orderDetails[0].userAddress[0].address.state %>, <%= orderDetails[0].userAddress[0].address.country %> <br />
+                                            <%= orderDetails[0].userAddress[0].address.pincode %>
+                                            <p>Phone number:  <%= orderDetails[0].userAddress[0].address.phone %></p>
                                         </p>
                                     <% } else { %>
                                         <p>No address data found</p>

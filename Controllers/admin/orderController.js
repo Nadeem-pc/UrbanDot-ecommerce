@@ -22,44 +22,60 @@ const getOrdersList = async (req,res) => {
     }
 }
 
-const getOrderDetails = async (req,res) => {
+const getOrderDetails = async (req, res) => {
     try {
-        const id = req.params
-        const order = await Order.findOne({_id: new mongoose.Types.ObjectId(id)})
+        const id = req.params.id;
+
+        // Fetch order details
+        const order = await Order.findOne({ _id: new mongoose.Types.ObjectId(id) });
 
         const orderDetails = await Order.aggregate([
-            { $match : {_id:new mongoose.Types.ObjectId(id)}},
+            { $match: { _id: new mongoose.Types.ObjectId(id) } },
 
-            { $lookup: {
-                from: 'users',
-                localField: "userId",
-                foreignField: "_id",
-                as: "userDetails"
-              }},
+            // Lookup user details
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'userDetails',
+                },
+            },
 
-            { $unwind:"$orderedItems"},
-            { $lookup: {
-              from: 'products',
-              localField: 'orderedItems.product',
-              foreignField: '_id',
-              as: 'productDetails'
-            }},
+            // Unwind orderedItems for detailed product information
+            { $unwind: '$orderedItems' },
 
-            { $lookup: {
-              from: 'addresses',
-              localField: 'address',
-              foreignField: 'address._id',
-              as: "userAddress"
-            }}
-        ])
+            // Lookup product details
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'orderedItems.product',
+                    foreignField: '_id',
+                    as: 'productDetails',
+                },
+            },
+
+            // Lookup address details, specifically filtering for the matching address
+            {
+                $lookup: {
+                    from: 'addresses',
+                    let: { addressId: '$address' },
+                    pipeline: [
+                        { $unwind: '$address' },
+                        { $match: { $expr: { $eq: ['$address._id', '$$addressId'] } } },
+                    ],
+                    as: 'userAddress',
+                },
+            },
+        ]);
+
+        return res.render('orderDetail', { order, orderDetails });
         
-        return res.render('orderDetail',{order,orderDetails})
-
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ error: "Internal Server Error" })
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
-}
+};
 
 const updateOrderStatus = async (req,res) => {
     try {

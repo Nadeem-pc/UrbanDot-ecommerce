@@ -7,21 +7,38 @@ const mongoose = require('mongoose')
 const session = require('express-session');
 
 
-const loadProfilePage = async (req,res) => {
+const loadProfilePage = async (req, res) => {
     try {
-        let userId = req.session.user
-        
-        let user = await User.findOne({_id:userId})
-        const address = await Address.findOne({user:userId})
-        let orders = await Order.find({ userId }).populate('orderedItems.product').sort({createdAt:-1})
-              
-        return res.render('userProfile',{user, address, orders})
-    }
-    catch (error) {
+        let userId = req.session.user;
+        let user = await User.findOne({ _id: userId });
+
+        const addressResult = await Address.aggregate([
+            { $match: { user: new mongoose.Types.ObjectId(userId) } },
+            {
+                $project: {
+                    address: {
+                        $filter: {
+                            input: "$address",
+                            as: "addr",
+                            cond: { $eq: ["$$addr.isDeleted", false] }
+                        }
+                    }
+                }
+            }
+        ]);
+        const address = addressResult[0] || { address: [] };
+
+        let orders = await Order.find({ userId })
+        .populate('orderedItems.product')
+        .sort({ createdAt: -1 });
+
+        return res.render('userProfile', { user, address, orders });
+
+    } catch (error) {
         console.log(error);
-        res.redirect('/pageNotFound')
+        res.redirect('/pageNotFound');
     }
-}
+};
 
 const editUserProfile = async (req,res) => {
     const {name,phone} = req.body

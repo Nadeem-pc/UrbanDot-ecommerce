@@ -260,21 +260,31 @@
                                         <label class="form-label">Description</label>
                                         <textarea placeholder="<%=product.description%>" class="form-control" id="product_description" name="description" rows="4"></textarea>
                                     </div>
-
+                                    <div class="col-mb-4">
+                                        <label class="form-label">Category</label>
+                                        <select class="form-select" name="category">
+                                            <% for (let i = 0; i < category.length; i++) { %>
+                                                <option value="<%= category[i]._id %>" 
+                                                    <%= product.category && category[i]._id.toString() === product.category._id.toString() ? 'selected' : '' %>>
+                                                    <%= category[i].name %>
+                                                </option>
+                                            <% } %>
+                                        </select>
+                                    </div>
                                     <div class="row d-flex justify-content-center pt-30">
                                         <div class="col-lg-6">
                                             <div class="mb-4">
-                                                <label class="form-label">Quantity</label>
+                                                <label class="form-label">Regular price</label>
                                                 <div class="row gx-2">
-                                                    <input placeholder="<%=product.stock%>" type="text" class="form-control" name="quantity" id="quantity"/>
+                                                    <input placeholder="<%=product.regularPrice%>" type="text" class="form-control" name="quantity" id="regularPrice"/>
                                                 </div>
                                             </div>
 
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-4">
-                                                <label class="form-label">Price</label>
-                                                <input placeholder="<%=product.regularPrice%>" type="text" class="form-control" name="price"/>
+                                                <label class="form-label">Current price/Offer price</label>
+                                                <input placeholder="<%=product.regularPrice%>" type="text" class="form-control" name="price" id='offerPrice'/>
                                             </div>
                                         </div>
                                         <!-- <div class="col-lg-4">
@@ -297,63 +307,45 @@
                                     </label> -->
 
                                     <div class="row col-12 d-flex justify-content-evenly align-items-center mt-25">
-
                                         <div class="addImg card mb-2 col-4">
                                             <div class="card-body p-0 d-flex flex-column justify-content-evenly align-items-center">
                                                 <div class="input-upload d-flex justify-content-center">
-                                                    <img src="/uploads/product-images/<%=product.images[0]%>"style="min-width: 100px; max-width: 1000px; id="defaultImg-1"/>
+                                                    <img src="/uploads/product-images/<%=product.images[0]%>" 
+                                                         style="min-width: 100px; max-width: 1000px;" id="defaultImg-1"/>
                                                 </div>
-                                                <div class="d-flex cropper-input-btn justify-content-between">
-                                                    <input class="form-control" type="file" name="images" id="imgInput1"
-                                                        accept="image/*"
-                                                        onchange="previewImage(event,1)" />
+                                                <div class="d-flex cropper-input-btn">
+                                                    <input class="form-control" type="file" name="images" id="imgInput1" 
+                                                           accept="image/*" onchange="previewImage(event, 1)" />
                                                     <button type="button" class="btn btn-submit btn-success" id="cropBtn1">Crop</button>
                                                 </div>
                                             </div>
                                         </div>
-                    
                                         <div class="addImg card mb-2 col-4">
                                             <div class="card-body p-0 d-flex flex-column justify-content-evenly align-items-center">
                                                 <div class="input-upload d-flex justify-content-center">
-                                                    <img src="/uploads/product-images/<%=product.images[1]%>"style="min-width: 100px; max-width: 1000px; id="defaultImg-2"/>
+                                                    <img src="/uploads/product-images/<%=product.images[1]%>" 
+                                                         style="min-width: 100px; max-width: 1000px;" id="defaultImg-2"/>
                                                 </div>
                                                 <div class="d-flex cropper-input-btn">
-                                                    <input class="form-control" type="file" name="images" id="imgInput2"
-                                                        accept="image/*"
-                                                        onchange="previewImage(event,2)" />
+                                                    <input class="form-control" type="file" name="images" id="imgInput2" 
+                                                           accept="image/*" onchange="previewImage(event, 2)" />
                                                     <button type="button" class="btn btn-submit btn-success" id="cropBtn2">Crop</button>
                                                 </div>
                                             </div>
                                         </div>
-                                        
                                         <div class="addImg card mb-2 col-4">
                                             <div class="card-body p-0 d-flex flex-column justify-content-evenly align-items-center">
                                                 <div class="input-upload d-flex justify-content-center">
-                                                    <img src="/uploads/product-images/<%=product.images[2]%>" style="min-width: 100px; max-width: 1000px;" id="defaultImg-3"/>
+                                                    <img src="/uploads/product-images/<%=product.images[2]%>" 
+                                                         style="min-width: 100px; max-width: 1000px;" id="defaultImg-3"/>
                                                 </div>
                                                 <div class="d-flex cropper-input-btn">
-                                                    <input class="form-control" type="file" name="images" id="imgInput3"
-                                                        accept="image/*"
-                                                        onchange="previewImage(event,3)" />
+                                                    <input class="form-control" type="file" name="images" id="imgInput3" 
+                                                           accept="image/*" onchange="previewImage(event, 3)" />
                                                     <button type="button" class="btn btn-submit btn-success" id="cropBtn3">Crop</button>
                                                 </div>
                                             </div>
-                                        </div>    
-                
-                                        <!-- <div class="addImg card mb-2 col-4">
-                                            <div class="card-body p-0 d-flex flex-column justify-content-evenly align-items-center">
-                                                <div class="input-upload d-flex justify-content-center">
-                                                    <img src="/Admin/imgs/theme/upload.svg" id="defaultImg-4"/>
-                                                </div>
-                                                <div class="d-flex cropper-input-btn">
-                                                    <input class="form-control" type="file" name="images" id="imgInput4"
-                                                        accept="image/*"
-                                                        onchange="previewImage(event,4)" />
-                                                    <button type="button" class="btn btn-submit btn-success" id="cropBtn4">Crop</button>
-                                                </div>
-                                            </div>
-                                        </div> -->
-                
+                                        </div>
                                     </div>
 
                                     <div class="d-flex justify-content-center align-items-center pb-25">
@@ -420,22 +412,29 @@
 
         <script>
 
+let selectedImages = [];
+            let cropperInstances = {}; // Store cropper instances for each image separately
+
             function previewImage(event, index) {
                 const imgElement = document.getElementById(`defaultImg-${index}`);
-                const file = event.target.files[0];
-                let input = event.target
-                let cropper;
+                if (!imgElement) return;
 
+                const file = event.target.files[0];
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function () {
-                        // Set the image source to the uploaded file
                         imgElement.src = reader.result;
-                        imgElement.style.maxWidth = '100%'
-                        imgElement.style.maxHeight = '100%'
-                        imgElement.classList.add("uploading-img")
-                        // Initialize cropper
-                        cropper = new Cropper(imgElement, {
+                        imgElement.style.maxWidth = '100%';
+                        imgElement.style.maxHeight = '100%';
+                        imgElement.classList.add("uploading-img");
+
+                        // Destroy any existing cropper instance for this index before creating a new one
+                        if (cropperInstances[index]) {
+                            cropperInstances[index].destroy();
+                        }
+
+                        // Initialize cropper for this specific index
+                        cropperInstances[index] = new Cropper(imgElement, {
                             aspectRatio: 1 / 1.2,
                             viewMode: 1,
                             guides: true,
@@ -451,161 +450,131 @@
                         // Save Button Logic
                         const saveButton = document.querySelector(`#cropBtn${index}`);
                         saveButton.style.display = 'initial';
+
                         saveButton.onclick = async () => {
+                            const cropper = cropperInstances[index]; // Use cropper instance for this index
                             if (cropper) {
-                                const croppedCanvas = cropper.getCroppedCanvas({width: 280, height: 300});
+                                const croppedCanvas = cropper.getCroppedCanvas({ width: 280, height: 300 });
                                 if (croppedCanvas) {
-                                    // Update the src of the existing image with the cropped result
                                     imgElement.src = croppedCanvas.toDataURL('image/jpeg', 0.8);
 
-                                    // Create a Blob and assign it to the file input
-                                    const timestamp = new Date().getTime();
-                                    const fileName = `cropped-img-${timestamp}-${index}.png`;
-                                    console.log(imgElement)
                                     await croppedCanvas.toBlob((blob) => {
-                                        const imgFile = new File([blob], fileName, { type: blob.type });
-                                        const input = document.getElementById(`imgInput${index}`);
-                                        const fileList = new DataTransfer();
-                                        fileList.items.add(imgFile);
-                                        input.files = fileList.files;
+                                        const imgFile = new File([blob], `cropped-img-${Date.now()}-${index}.png`, {
+                                            type: blob.type,
+                                        });
+
+                                        // Update selectedImages array
+                                        selectedImages[index] = imgFile;
                                     });
 
                                     saveButton.style.display = 'none';
                                     cropper.destroy();
-                                    cropper = null; 
+                                    cropperInstances[index] = null; // Clear cropper instance for this index
                                 }
-                            };  
+                            }
                         };
-                       
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            document.querySelectorAll("input[type='file']").forEach((input, index) => {
+                input.addEventListener("change", (event) => {
+                    previewImage(event, index + 1); // Ensure proper index for IDs
+                });
+            });
+            document.getElementById("product_form").addEventListener("submit", async (event) => {
+                event.preventDefault();
+
+                const name = document.getElementsByName("name")[0].value;
+                const description = document.getElementById("product_description").value;
+                const category = document.getElementsByName("category")[0].value
+                // let category = categorySelect.options[categorySelect.selectedIndex].text;
+                const regularPrice = document.getElementById("regularPrice").value;
+                const offerPrice = document.getElementById("offerPrice").value;
+
+                if (validateForm(name, description, regularPrice, offerPrice, selectedImages)) {
+                    const formData = new FormData();
+
+                    // Append all images
+                    selectedImages.forEach((file) => {
+                        if (file) {
+                            formData.append("images", file);
+                        }
+                    });
+
+                    // Append other fields
+                    formData.append("name", name);
+                    formData.append("description", description);
+                    formData.append("category", category);
+                    formData.append("regularPrice", regularPrice);
+                    formData.append("offerPrice", offerPrice);
+
+                    // Submit the form data to the server
+                    const response = await fetch(`/admin/editProduct/<%=product._id%>`, {
+                        method: "POST",
+                        body: formData,
+                    });
+
+                    const data = await response.json();
+                    if (!data.status) {
+                        return Must.failure({ time: 6000, content: data.message });
                     }
 
-                    reader.readAsDataURL(input.files[0]);
-                    let selectedImages = [];
+                    Must.success({ time: 1300, content: data.message, color: "#27ae60" });
+                    document.getElementById("icon").style.backgroundColor = 'beige'
+                    document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
 
-                    document.getElementById('imgInput').addEventListener('change', (event) => {
-                        const files = event.target.files; // Get all uploaded files
+                    setTimeout(() => {
+                        window.location.href = '/admin/products'
+                    },1300)
+                }
+            });
 
-                        // Clear the array and populate it with the new files
-                        selectedImages = [];
-                        for (let i = 0; i < files.length; i++) {
-                            const file = files[i];
-                            console.log('Selected file:', file);
-                            selectedImages.push(file); // Add each file to the array
-                        }
+            function validateForm(name, description, regularPrice, offerPrice, images) {
+                const minLength = 10;
+                const maxLength = 100;
+                const allowedCharacters = /^[a-zA-Z\s\-\&\.\']+$/;
 
-                    });
+                if (name.trim() === "") {
+                    return displayErrorMessage("Please enter a product name");
+                }
+                if (name.length < minLength || name.length > maxLength) {
+                    return displayErrorMessage(`Product name must be between ${minLength} and ${maxLength} characters.`);
+                }
+                if (description.length < 40) {
+                    return displayErrorMessage(`Product description must be atleast 40 characters.`);
+                }
+                if (!allowedCharacters.test(name)) {
+                    return displayErrorMessage("Product name contains invalid characters.");
+                }
+                if (description.trim() === "") {
+                    return displayErrorMessage("Please enter a product description.");
+                }
+                if (regularPrice === "") {
+                    return displayErrorMessage("Please enter the regular price of the product.");
+                }
+                if (offerPrice === "") {
+                    return displayErrorMessage("Please enter the offer price of the product.");
+                }
+                if (!/^\d+(\.\d{1,2})?$/.test(regularPrice) || parseFloat(regularPrice) < 0) {
+                    return displayErrorMessage("Please enter a valid price as regular price.");
+                }
+                if (!/^\d+(\.\d{1,2})?$/.test(offerPrice) || parseFloat(offerPrice) < 0) {
+                    return displayErrorMessage("Please enter a valid price as offer price.");
+                }
+                if(offerPrice > regularPrice){
+                    return displayErrorMessage("Offer price must be less than regular price.");
+                }
+                if (images.length <= 3 || images.some(img => img === undefined)) {
+                    return displayErrorMessage("Please provide at least 3 valid product images.");
+                }
+                return true;
+            }
 
-                    document.getElementById('product_form').addEventListener('submit', async (event) => {
-                        console.log("first");
-                        
-                        event.preventDefault();
-                  
-                        
-                        // try {
-                            const name = document.getElementsByName('name')[0].value;
-                            const description = document.getElementById('product_description').value;
-                            const category = document.getElementsByName('category')[0].value;
-                            const quantity = document.getElementById('quantity').value;
-                            const price = document.getElementsByName('price')[0].value;
-                           
-                            
-                            if(validateForm(name,description,category,quantity,price,file)){
-                                console.log("second");
-    
-                                
-                                // Append images
-                                const formData = new FormData();
-                                console.log(1);
-                                
-                                selectedImages.forEach(file => formData.append('images', file));
-                                
-                                // Append other fields
-                                formData.append('name', name);
-                                formData.append('description', description);
-                                formData.append('category', category);
-                                formData.append('quantity', quantity);
-                                formData.append('price', price);
-                                
-                                console.log(1);
-                                
-                                // Submit the form data to the server
-                                const response = await fetch('/admin/addProduct', {
-                                    method: 'POST',
-                                    body: formData, // Send the FormData directly
-                                });
-                                
-                                console.log(1);
-                                const data = await response.json();
-                                console.log(1);
-                                if (!data.status) {
-                                    console.log(1);
-                                    return Must.failure({time:6000, content: message})
-                                }
-                                
-                                console.log(1);
-                                // setTimeout(()=>{
-                                //     window.location.href = '/admin/addProduct'
-                                // },1300)
-    
-                                Must.success({time: 1300, content: data.message, color:'#27ae60'})
-    
-                                document.getElementById("icon").style.backgroundColor = 'beige'
-                                document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
-                            }
-
-                        // }
-                        // catch (error) {
-                        //     console.error('Error submitting form:', error);
-                        // }
-                        function validateForm(name,description,quantity,price,images) {
-
-
-                            if (name.trim() === "") {
-                                let nameError = "Please enter a product name"
-                                return displayErrorMessage(nameError);
-                            } 
-                            // else if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
-                            //     let nameError = "Product name should contain only alphabetic characters"
-                            //     return displayErrorMessage(nameError);
-                            // }
-                                        
-                            if (description.trim() === "") {
-                                let descriptionError = 'Please enter a product description.'
-                                return displayErrorMessage(descriptionError);  
-                            }
-
-                            if (quantity === "") {
-                                let quantityError = 'Please enter the product quantity.'
-                                return displayErrorMessage(quantityError);  
-                            }
-
-                            if (!/^\d+(\.\d{1,2})?$/.test(quantity) || parseInt(quantity) < 0) {
-                                console.log(quantity, typeof quantity, quantity < 0)
-                                let quantityError = 'Please enter a valid quantity.'
-                                return displayErrorMessage(quantityError);
-                            }
-
-                            if (!/^\d+(\.\d{1,2})?$/.test(price) || parseFloat(price) < 0) {
-                                let priceError = 'Please enter a valid price.'
-                                return displayErrorMessage(priceError);
-                            }
-
-                            // if (images.length < 3) {                     
-                            //     let imageError = 'Please provide atleast 3 images of the product'
-                            //     return displayErrorMessage(imageError);
-                            // }
-
-                                return true;
-                            }
-
-                            function displayErrorMessage(message){
-                            return Must.failure({time:6000, content: message})
-                            }
-                                                
-                    });
-                }  
-                
-            }          
+            function displayErrorMessage(message) {
+                return Must.failure({ time: 6000, content: message });
+            }      
             
         </script>
 

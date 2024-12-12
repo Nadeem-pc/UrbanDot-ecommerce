@@ -594,30 +594,30 @@
 </div>
             <!-- Addresses Tab -->
             <div id="addresses" class="tab-content">
-                <% if(address !== null){ %>
+                <% if(address.address && address.address.length > 0) { %>
                     <h2 class="section-title">Saved Addresses</h2>
-                    <% address.address.map((val)=>{ %>
+                    <% address.address.forEach((val) => { %>
                         <div class="address-card">
                             <div class="address-actions">
                                 <button class="btn btn-outline" onclick="location.href=''">Edit</button>
-                            <button class="btn btn-outline" onclick="location.href='/deleteAddress/<%=address._id%>/<%=val._id%>'">Delete</button>
+                                <button class="btn btn-outline" onclick="location.href='/deleteAddress/<%= address._id %>/<%= val._id %>'">Delete</button>
                             </div>
                             <div class="type d-flex "> 
                                 <h3><%= val.name %></h3>
-                                <h5 id="address-type"> <%=val.addressType%> </h5>
+                                <h5 id="address-type"><%= val.addressType %></h5>
                             </div>
                             <p><%= val.fullAddress %></p>
-                            <!-- <p><%= val.city %></p> -->
-                            <p> <%=val.pincode%> </p>
-                            <p> <%=val.phone%> </p>
-                            <p> <%= val.state%></p>
-                            <p> <%= val.country%></p>
+                            <p><%= val.pincode %></p>
+                            <p><%= val.phone %></p>
+                            <p><%= val.state %></p>
+                            <p><%= val.country %></p>
                         </div>
-                    <%})%>
-                <%}else{%>
-                    <h2 class="section-title">Add Address</h2>
-                <%}%>
-                <button class="btn" onclick="changePage('addAddress')">Add New Address</button>
+                    <% }) %>
+                    <button class="btn" onclick="changePage('addAddress')">Add New Address</button>
+                <% } else { %>
+                    <h2 class="section-title">No saved addresses</h2>
+                    <button class="btn" onclick="changePage('addAddress')">Add Address</button>
+                <% } %>
             </div>
 
             <div id="editAddress" class="tab-content">

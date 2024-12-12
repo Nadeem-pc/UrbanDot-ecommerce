@@ -33,8 +33,9 @@ admin.post('/editCategory',categoryController.editCategory)
 
 // PRODUCT MANAGEMENT 
 admin.get('/products',authMiddleware.isLogin, productController.loadProducts)
-admin.get('/addProduct',authMiddleware.isLogin, productController.loadAddProduct)
 admin.post('/addProduct', upload.array("images",3), productController.addProduct)
+admin.get('/addProduct',authMiddleware.isLogin, productController.loadAddProduct)
+admin.post('/editProduct/:id', upload.array("images",3), productController.editProduct)
 admin.get('/toogleProductBlock/:id/:status', productController.productBlockAndUnblock);
 admin.get('/editProduct/:id',authMiddleware.isLogin, productController.loadEditProduct)
 
