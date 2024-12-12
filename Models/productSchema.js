@@ -30,9 +30,9 @@ const productSchema = mongoose.Schema({
         required: true
     },
 
-    currentPrice : {
+    offerPrice : {
         type: Number,
-        default : 0
+        required: true
     },
 
     stock : {

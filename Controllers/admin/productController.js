@@ -68,7 +68,7 @@ const loadAddProduct = async (req,res) => {
 
 const addProduct = async (req, res) => {
     try {
-        const { name, description, category, price, quantity } = req.body;
+        const { name, description, category, offerPrice, regularPrice, quantity } = req.body;
       
         // Check for duplicate products
         const productExists = await Product.findOne({ productName: name });
@@ -92,15 +92,13 @@ const addProduct = async (req, res) => {
             }
         }
 
-        console.log(images);
-        
-
         // Create and save new product
         const newProduct = new Product({
             productName: name,
             description,
             category: categoryData._id,
-            regularPrice: price,
+            regularPrice,
+            offerPrice,
             stock: quantity,
             images,
         });
