@@ -403,8 +403,6 @@
                 </form>
             </div>
 
-
-
             <!-- <div class="col-md-8 col-lg-6 form-container"> -->
             <div id="addAddress" class="tab-content">
                 <h2 class="section-title mb-4">Add New Address</h2>
@@ -510,7 +508,6 @@
                     </div>
                 </form>
             </div>
-
 
 
             <!-- Orders Tab -->
@@ -849,12 +846,15 @@
                             <div><strong>${product.product.productName}</strong></div>
                             <div>₹${product.price}</div>
                             <div>Quantity: ${product.quantity}</div>
-                           ${product.status !== "Cancelled" ? `<div>
+                          ${product.status !== "Cancelled" ? `
+                            <div>
                                 <button onclick="cancelProduct('${product.product._id}', '${orderDetails._id}')" 
                                         style="margin-top:10px;background-color:red;border:0;color:white;width:70px;border-radius:4px;">
                                     Cancel
                                 </button>
-                            </div>` : ''}
+                            </div>` 
+                            : `<div style="margin-top:10px;color:red;font-weight:bold;">Cancelled</div>`
+                        }
                         </div>
                     </div>
                 `).join('')}

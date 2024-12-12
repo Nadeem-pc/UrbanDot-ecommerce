@@ -78,26 +78,31 @@ const updateOrderStatus = async (req,res) => {
     }
 }
 
-const cancelOrder = async (req,res) => {
-    const {productId} = req.body
-    const userId = req.session.user
+const cancelOrder = async (req, res) => {
+    const { productId } = req.body;
+    const userId = req.session.user;
 
     try {
-        
-        const cancelOrder = await Order.updateOne({userId,'orderedItems.product':productId},{$set:{"orderedItems.$[].status":"Cancelled"}})
-        
-        const cancelAll = await Order.updateOne({userId,"orderedItems.status":{$all:["Cancelled"]}},{$set:{orderStatus:"Cancelled"}})
+        await Order.updateOne(
+            { userId, 'orderedItems.product': productId },
+            { $set: { 'orderedItems.$.status': 'Cancelled' } }
+        );
 
-        if(cancelOrder || cancelAll){
-            return res.json({success:true, message: "Order cancelled successfully!"});
+        const order = await Order.findOne({ userId });
+
+        if (order && order.orderedItems.every(item => item.status === "Cancelled")) {
+            // Update the overall order status to 'Cancelled' if all items are cancelled
+            await Order.updateOne(
+                { _id: order._id },
+                { $set: { orderStatus: "Cancelled" } }
+            );
         }
+        return res.json({ success: true, message: "Order item cancelled successfully!" });
 
-        return res.json({success:false, message: "Order cancellation failed!"});
-       
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({ error: "Internal Server Error" })
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
     }
-}
+};
 
 module.exports = { getOrdersList, getOrderDetails, updateOrderStatus, cancelOrder }

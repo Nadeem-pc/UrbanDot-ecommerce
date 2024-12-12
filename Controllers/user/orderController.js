@@ -186,21 +186,43 @@ const showOrderPlaced = async (req,res) => {
     }
 }
 
-const cancelProduct = async (req,res) => {
+const cancelProduct = async (req, res) => {
     try {
-        const {productId,orderId} = req.body
-        let cancelOrder = await Order.pdateOne({_id:orderId,"orderedItems.product":productId},{$set:{orderStatus:"Cancelled"}})
+        const { productId, orderId } = req.body;
 
-        if(cancelOrder){
-            return res.json({status:true,message:"Order cancelled"})
+        // Update the specific product's status to "Cancelled"
+        let cancelOrder = await Order.updateOne(
+            {
+                _id: orderId,
+                "orderedItems.product": productId,
+            },
+            {
+                $set: {
+                    "orderedItems.$.status": "Cancelled",
+                },
+            }
+        );
+
+        if (cancelOrder.modifiedCount > 0) {
+            // Fetch the updated order to check the statuses
+            const order = await Order.findOne({ _id: orderId });
+
+            if (order && order.orderedItems.every(item => item.status === "Cancelled")) {
+                // Update the overall order status if all items are cancelled
+                await Order.updateOne(
+                    { _id: orderId },
+                    { $set: { orderStatus: "Cancelled" } }
+                );
+            }
+            return res.json({ status: true, message: "Order cancelled successfully." });
         }
-        res.json({status:false,message:"Order cancellation failed"})
-
+        res.json({ status: false, message: "Order cancellation failed." });
+        
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ error: "Internal Server Error" })
+        return res.status(500).json({ error: "Internal Server Error" });
     }
-}
+};
 
 const getOrderDetailsForUser = async (req, res) => {
     try {
