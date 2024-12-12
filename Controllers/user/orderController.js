@@ -109,7 +109,7 @@ const loadPaymentPage = async (req, res) => {
     }
 };
 
-const getUserAddress = async (req,res) => {
+const getUserAddressInCheckout = async (req,res) => {
     try {
         const{address} = req.body
        req.session.userAddress = address
@@ -217,7 +217,7 @@ const cancelProduct = async (req, res) => {
             return res.json({ status: true, message: "Order cancelled successfully." });
         }
         res.json({ status: false, message: "Order cancellation failed." });
-        
+
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: "Internal Server Error" });
@@ -227,40 +227,43 @@ const cancelProduct = async (req, res) => {
 const getOrderDetailsForUser = async (req, res) => {
     try {
         const orderId = req.params.orderId;
-        const orderDetails = await Order.findById(orderId)
-            .populate('orderedItems.product') // Populating ordered products
-            .populate('address'); // Populating the address
 
-        // let address = await Order.aggregate([
-        //     {$match:{_id:orderId}},
-        //     { $lookup: {
-        //       from: 'addresses',
-        //       localField: "address",
-        //       foreignField: "address._id",
-        //       as: "userAddress"
-        //     }},
-        // ])    
+        const orderDetails = await Order.findById(orderId)
+        .populate('orderedItems.product')
+        .lean();
 
         if (!orderDetails) {
             return res.status(404).json({ message: 'Order not found' });
         }
 
+        const addressDetails = await Address.findOne(
+            { "address._id": orderDetails.address },
+            { address: { $elemMatch: { _id: orderDetails.address } } }
+        );
+
+        if (!addressDetails || !addressDetails.address || addressDetails.address.length === 0) {
+            console.log('No address found for the given ObjectId');
+            orderDetails.deliveryAddress = null;
+        } else {
+            orderDetails.deliveryAddress = addressDetails.address[0];
+        }
         res.json(orderDetails);
+
     } catch (error) {
         console.error('Error fetching order details:', error);
         res.status(500).json({ message: 'Server error' });
     }
-}
+};
 
 
 module.exports = {
     cancelProduct,
     addNewAddress,
-    getUserAddress,
     showOrderPlaced,
     loadPaymentPage,
     storeOrderDetails,
     loadAddNewAddress,
     getOrderDetailsForUser,
     loadFirstPageOfCheckout,
+    getUserAddressInCheckout
 }

@@ -791,93 +791,91 @@
         }
 
         function viewOrderDetails(tabId, orderId) {
-    // Log the inputs for debugging
-    console.log(`Switching to tab with ID: ${tabId} for Order ID: ${orderId}`);
+            // Ensure all tab contents are hidden
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
 
-    // Ensure all tab contents are hidden
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-    });
-
-    // Get the target tab element
-    const targetTab = document.getElementById(tabId);
-    if (!targetTab) {
-        console.error(`Tab with ID '${tabId}' not found.`);
-        return;
-    }
-
-    // Activate the target tab
-    targetTab.classList.add('active');
-
-    // Fetch the order details dynamically
-    fetch(`/orderDetails/${orderId}`) // Ensure this route exists on the backend
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            // Get the target tab element
+            const targetTab = document.getElementById(tabId);
+            if (!targetTab) {
+                console.error(`Tab with ID '${tabId}' not found.`);
+                return;
             }
-            return response.json();
-        })
-        .then(orderDetails => {
-    console.log('Order details fetched:', orderDetails);
 
-    // Dynamically populate the `orderDetails` div
-    targetTab.innerHTML = `
-        <h2 class="section-title">Order Details</h2>
-        <div class="order-card">
-            <div class="order-header">
-                <div>
-                    <strong>${orderDetails.orderId}</strong>
-                    <div style="color: #636e72">Placed on ${orderDetails.orderDate}</div>
-                    <div style="color: #636e72">Payment Method: ${orderDetails.paymentMethod}</div>
-                </div>
-                <span class="badge success" style="background-color: ${
-                    orderDetails.orderStatus === 'Pending' ? 'orange' :
-                    orderDetails.orderStatus === 'Delivered' ? 'green' :
-                    orderDetails.orderStatus === 'Cancelled' ? 'red' : ''
-                }; display: flex; align-items: center;">
-                    ${orderDetails.orderStatus}
-                </span>
-            </div>
-            <div class="order-items">
-                ${orderDetails.orderedItems.map(product => `
-                    <div class="order-item">
-                        <div class="item-image"><img src="/uploads/product-images/${product.product.images[0]}" style='width:90px;' alt="Product Image"></div>
-                        <div>
-                            <div><strong>${product.product.productName}</strong></div>
-                            <div>₹${product.price}</div>
-                            <div>Quantity: ${product.quantity}</div>
-                          ${product.status !== "Cancelled" ? `
+            // Activate the target tab
+            targetTab.classList.add('active');
+
+            // Fetch the order details dynamically
+            fetch(`/orderDetails/${orderId}`) // Ensure this route exists on the backend
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(orderDetails => {
+
+                // Dynamically populate the `orderDetails` div
+                targetTab.innerHTML = `
+                    <h2 class="section-title">Order Details</h2>
+                    <div class="order-card">
+                        <div class="order-header">
                             <div>
-                                <button onclick="cancelProduct('${product.product._id}', '${orderDetails._id}')" 
-                                        style="margin-top:10px;background-color:red;border:0;color:white;width:70px;border-radius:4px;">
-                                    Cancel
-                                </button>
-                            </div>` 
-                            : `<div style="margin-top:10px;color:red;font-weight:bold;">Cancelled</div>`
-                        }
+                                <strong>${orderDetails.orderId}</strong>
+                                <div style="color: #636e72">Placed on ${orderDetails.orderDate}</div>
+                                <div style="color: #636e72">Payment Method: ${orderDetails.paymentMethod}</div>
+                            </div>
+                            <span class="badge success" style="background-color: ${
+                                orderDetails.orderStatus === 'Pending' ? 'orange' :
+                                orderDetails.orderStatus === 'Delivered' ? 'green' :
+                                orderDetails.orderStatus === 'Cancelled' ? 'red' : ''
+                            }; display: flex; align-items: center;">
+                                ${orderDetails.orderStatus}
+                            </span>
                         </div>
+                        <div class="order-items">
+                            ${orderDetails.orderedItems.map(product => `
+                                <div class="order-item">
+                                    <div class="item-image"><img src="/uploads/product-images/${product.product.images[0]}" style='width:90px;' alt="Product Image"></div>
+                                    <div>
+                                        <div><strong>${product.product.productName}</strong></div>
+                                        <div>₹${product.price}</div>
+                                        <div>Quantity: ${product.quantity}</div>
+                                    ${product.status !== "Cancelled" ? `
+                                        <div>
+                                            <button onclick="cancelProduct('${product.product._id}', '${orderDetails._id}')" 
+                                                    style="margin-top:10px;background-color:red;border:0;color:white;width:70px;border-radius:4px;">
+                                                Cancel
+                                            </button>
+                                        </div>` 
+                                        : `<div style="margin-top:10px;color:red;font-weight:bold;">Cancelled</div>`
+                                    }
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <strong>Total amount ₹${orderDetails.totalAmount}</strong>
+                        </div>
+                        <div>
+                            <div>Delivery Address <br></div>
+                        <div style="color: #636e72">
+                            ${orderDetails.deliveryAddress 
+                                ? `${orderDetails.deliveryAddress.name}<br>${orderDetails.deliveryAddress.fullAddress} <br>
+                                ${orderDetails.deliveryAddress.city},${orderDetails.deliveryAddress.state},${orderDetails.deliveryAddress.country}
+                                <br>${orderDetails.deliveryAddress.pincode}<br><p>Phone number: ${orderDetails.deliveryAddress.phone}</p>`
+                                : '<span style="color: red;">No delivery address found.</span>'}
+                        </div>
+                        </div>   
                     </div>
-                `).join('')}
-            </div>
-            <div style="display: flex; justify-content: center; align-items: center;">
-                <strong>Total amount ₹${orderDetails.totalAmount}</strong>
-            </div>
-            <div>
-                <div style="color: #636e72">Delivery Address <br></div>
-                <div style="color: #636e72">
-                    ${orderDetails.address 
-                        ? `${orderDetails.address.name}, ${orderDetails.address.phone}, ${orderDetails.address.fullAddress}`
-                        : 'No delivery address found.'}
-                </div>
-            </div>   
-        </div>
-    `;
-})
-.catch(error => {
-    console.error('Error fetching order details:', error);
-    targetTab.innerHTML = '<p>Failed to load order details. Please try again later.</p>';
-});
-}
+                `;
+            })
+            .catch(error => {
+                console.error('Error fetching order details:', error);
+                targetTab.innerHTML = '<p>Failed to load order details. Please try again later.</p>';
+            });
+            }
 
     async function cancelProduct(productId,orderId){
         const response = await fetch('/cancelProduct',{

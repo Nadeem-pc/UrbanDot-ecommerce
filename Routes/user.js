@@ -60,7 +60,7 @@ user.get('/checkoutInitial',isBlocked, userAuth,orderController.loadFirstPageOfC
 user.get('/checkout/:id',isBlocked,userAuth,orderController.loadAddNewAddress)
 user.post('/addNewAddress',orderController.addNewAddress)
 user.get('/payment',isBlocked,userAuth, orderController.loadPaymentPage)
-user.post('/getUserAddress',orderController.getUserAddress)
+user.post('/getUserAddress',orderController.getUserAddressInCheckout)
 user.post('/storeOrderDetails',orderController.storeOrderDetails)
 user.get('/orderPlaced',isBlocked,userAuth, orderController.showOrderPlaced)
 
