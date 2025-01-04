@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt')
 const session = require('express-session')
 const Admin = require('../../Models/adminSchema')
+const { translate } = require('pdfkit')
 
 
 const loadAdminLogin = async (req,res) => {
@@ -8,6 +9,7 @@ const loadAdminLogin = async (req,res) => {
         res.render('admin-login')
     }
     catch(error){
+        res.redirect('/admin/pageNotFound')
         console.log("Something Went Wrong",error);
     }
 }
@@ -36,13 +38,24 @@ const verifyLogin = async (req,res) => {
 
 }
 
-const loadHome = async (req,res) => {
+const logout = async (req,res) => {
     try {
-        res.render('dashboard')
+        req.session.admin = null
+        return res.redirect('/admin/login')
+
     } catch (error) {
-        console.log("Something Went Wrong",error);
+        console.log("Something went wrong",error);
+        return res.status(500).json({ success: false, message: 'Failed to log out' });
+    }
+}
+
+const pageNotFound = async (req,res) => {
+    try {
+        return res.render('page-error-404')
+    } catch (error) {
+        res.redirect('/admin/pageNotFound')
     }
 }
 
 
-module.exports = { loadAdminLogin, verifyLogin, loadHome }
+module.exports = { loadAdminLogin, verifyLogin, logout, pageNotFound }

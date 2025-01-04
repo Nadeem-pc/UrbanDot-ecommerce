@@ -1,6 +1,6 @@
 const User = require("../../Models/userSchema") 
-const Order = require("../../Models/orderSchema")
 const Product = require("../../Models/productSchema")
+const Offer = require("../../Models/offerSchema")
 
 const bcrypt = require('bcrypt')
 const crypto = require('crypto');
@@ -18,6 +18,24 @@ const { isBlocked, userAuth } = require("../../Middlewares/User/userAuth");
 const loadHomePage = async (req,res) => {
     try{    
         const products = await Product.find({isBlocked:false})
+
+        // const now = new Date()
+        // const expiredOffers = await Offer.find({ expiresOn: { $lt: now }});
+
+        // for (const offer of expiredOffers) {
+        //     if (offer.appliedTo === "Product") {
+        //         await Product.findByIdAndUpdate(offer.productId, { $unset: { offerPrice: null } });
+        //     } else if (offer.appliedTo === "Category") {
+        //         await Product.updateMany(
+        //             { category: offer.categoryId },
+        //             { $unset: { offerPrice: null } }
+        //         );
+        //     }
+
+        //     offer.isActive = false;
+        //     await offer.save();
+        // }
+
         return res.render("home",{ products, user: req.session.user || null })
     }
     catch(error){
@@ -47,7 +65,7 @@ const loadLogin = async (req,res) => {
 
 const logout = async (req,res) => {
     try {
-        req.session.destroy()
+        req.session.user = null
         return res.status(200).json({ success: true, message: 'Logged out successfully' });
     } catch (error) {
         console.log("Something went wrong",error);
@@ -110,7 +128,7 @@ async function sendOtpViaEmail (email,otp) {
         })
  
         const info = await transporter.sendMail({
-            from : process.env.NODEMAILER_EMAIL,
+            from : `UrbanDot <${process.env.NODEMAILER_EMAIL}>`,
             to : email,
             subject : "Verify Your Email for Account Activation",
             text : `Your Otp is : ${otp}`,
@@ -288,7 +306,7 @@ const forgotPassword = async (req, res) => {
         // Generate a reset token
         const resetToken = crypto.randomBytes(32).toString('hex');
         user.resetToken = resetToken;
-        user.resetTokenExpire = Date.now() + 36000; // 1 hour
+        user.resetTokenExpire = Date.now() + 360000; 
         await user.save();
 
         // Configure nodemailer
@@ -353,13 +371,12 @@ const updatePassword = async (req, res) => {
         });
 
         if (!user) {
-            return res.json({ success: false, message: 'Invalid or expired token' });
+            return res.json({ success: false, message: 'Session timeout. Please try again' });
         }
 
-        // Hash and update the new password
         user.password = await bcrypt.hash(password, 10);
-        user.resetToken = null; // Clear token
-        user.resetTokenExpire = null; // Clear token expiry
+        user.resetToken = null; 
+        user.resetTokenExpire = null; 
         await user.save();
         req.session.user = user
 

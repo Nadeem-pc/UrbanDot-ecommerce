@@ -1,0 +1,122 @@
+<aside class="navbar-aside" id="offcanvas_aside">
+    <div class="aside-top">
+        <a href="/admin/dashboard" class="brand-wrap">
+            <img src="/Admin/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
+        </a>
+        <div>
+            <button class="btn btn-icon btn-aside-minimize"><i class="text-muted material-icons md-menu_open"></i></button>
+        </div>
+    </div>
+    <nav>
+        <ul class="menu-aside" id="dashboard">
+            <li class="menu-item">
+                <a class="menu-link" href="/admin/dashboard">
+                    <i class="icon material-icons md-home"></i>
+                    <span class="text">Dashboard</span>
+                </a>
+            </li>
+
+            <li class="menu-item" id="users">
+                <a class="menu-link" href="/admin/users">
+                    <i class="icon material-icons md-people"></i>
+                    <span class="text">Users</span>
+                </a>
+            </li>
+
+            <li class="menu-item" id="category">
+                <a class="menu-link" href="/admin/category">
+                  <i class="icon material-icons md-category"></i>
+                  <span class="text">Categories</span>
+                </a>
+            </li>
+
+            <li class="menu-item has-submenu" id="products">
+                <a class="menu-link" href="">
+                    <i class="icon material-icons md-shopping_bag"></i>
+                    <span class="text">Products</span>
+                </a>
+                <div class="submenu">
+                    <a href="/admin/products">Product List</a>
+                    <a href="/admin/addProduct">Add product</a>
+                </div>
+            </li>
+
+            <li class="menu-item" id="orders">
+                <a class="menu-link" href="/admin/orders">
+                    <i class="icon material-icons md-shopping_cart"></i>
+                    <span class="text">Orders</span>
+                </a>
+            </li>
+
+            <li class="menu-item" id="stock">
+                <a class="menu-link" href="/admin/stocks">
+                  <i class="icon material-icons md-bar_chart"></i>
+                  <span class="text">Stock management</span>
+                </a>
+            </li>
+
+            <li class="menu-item" id="coupons">
+                <a class="menu-link" href="/admin/coupons">
+                    <i class="icon material-icons md-confirmation_number"></i>
+                    <span class="text">Coupons</span>
+                </a>
+            </li>
+
+            <li class="menu-item" id="offers">
+                <a class="menu-link" disabled href="/admin/offer">
+                  <i class="icon material-icons md-monetization_on"></i>
+                  <span class="text">Offers</span>
+                </a>
+            </li>
+            
+            <li class="menu-item" id="sales">
+                <a class="menu-link" disabled href="/admin/sales">
+                  <i class="icon material-icons md-pie_chart"></i>
+                  <span class="text">Sales report</span>
+                </a>
+            </li>
+
+            <li class="menu-item pt-5">
+                <a class="menu-link" href="/admin/logout">
+                  <i class=" icon material-icons md-exit_to_app" style="color: red;"></i>
+                  <span class="text" style="color: red;">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</aside>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const currentUrl = window.location.pathname;
+        const menuItems = document.querySelectorAll('.menu-item');
+        
+        menuItems.forEach(item => {
+            const link = item.querySelector('a');
+            const subMenuLinks = item.querySelectorAll('.submenu a');
+
+            if (link && link.getAttribute('href') === currentUrl) {
+                item.classList.add('active');
+            }
+
+            // Check if any submenu link is active
+            subMenuLinks.forEach(subLink => {
+                if (subLink.getAttribute('href') === currentUrl) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        if (currentUrl.includes('/admin/category') || currentUrl.includes('/admin/addCategory') || currentUrl.includes('/admin/editCategory')) {
+            document.getElementById('category').classList.add('active');
+        }
+
+        if (currentUrl.includes('/admin/products') || currentUrl.includes('/admin/addProduct') || currentUrl.includes('/admin/editProduct')) {
+            document.getElementById('products').classList.add('active');
+        }
+
+        if (currentUrl.includes('/admin/orders') || currentUrl.includes('/admin/orderDetails')) {
+            document.getElementById('orders').classList.add('active');
+        }
+    });
+</script>

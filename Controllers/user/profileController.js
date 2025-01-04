@@ -32,7 +32,8 @@ const loadProfilePage = async (req, res) => {
         .populate('orderedItems.product')
         .sort({ createdAt: -1 });
 
-        return res.render('userProfile', { user, address, orders });
+        const razorpayKey = process.env.RAZORPAY_KEY;
+        return res.render('userProfile', { user, address, orders, razorpayKey });
 
     } catch (error) {
         console.log(error);

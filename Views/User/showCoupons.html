@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", serif;
+            font-weight: 500;        
+        }
+        .poppins-medium {
+            font-family: "Poppins", serif;
+            font-weight: 500;
+            font-style: normal;
+        }
+        .icon-container{
+            width: 60px;
+            height: 60px;
+            border-radius:50px;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translate(0,-50%);
+            display: grid;
+            place-items: center;
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.7);
+        }
+        .dropper{
+            height: 65vh;
+            width: 45vh;
+            position: absolute;
+            right: 90px;
+            top: 50%;
+            transform: translate(0,-50%);
+            background-color: #e5e5e5;
+            border-radius: 10px;
+            box-shadow: 0 0 3px rgba(0, 0, 0 , 0.4);
+            padding: 10px 4px;
+            display: none;
+            z-index: 10;
+        }
+        .dropper ul{
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            overflow: scroll;
+        }
+        .dropper li{
+            min-height: 160px;
+            background-color: white;
+            box-shadow: 0 0 5px rgba(0, 0, 0 , 0.4);
+            border-radius: 5px;
+            margin: 0 4px;
+            padding: 13px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-weight: 200;
+        }
+        .description{
+            font-size: 14px;
+            font-weight: 200;
+        }
+        .clipboard{
+            display: flex;
+            justify-content: space-between;
+            background-color: #eaeaea;
+            padding: 5px 5px;align-items: center;
+        }
+        .clipboard span{
+            font-weight: 100;
+            font-family: 'Courier New', Courier, monospace;
+            margin-left: 10px;
+        }
+        .clipboard button{
+            background-color: #000000c9;
+            color: #fff;
+            border-radius: 5px;
+            border: none ;
+            padding: 8px;
+            font-size: 11px;
+        }
+        .active{
+            animation: toogleAni .6s ease;
+        }
+        .passive{
+            animation: toogleAniPassive .6s ease ;
+        }
+        @keyframes toogleAni{
+            0%{
+                right: -100px;
+            }
+            50%{
+                right: 150px;
+            }
+            100%{
+                right: 90px;
+            }
+        }
+        @keyframes toogleAniPassive{
+            0%{
+                right: 90px;
+            }
+            50%{
+                margin-right: 130px;
+                opacity: .5;
+            }
+            100%{
+                margin-right: -1000px;
+                opacity: 0;
+            }
+        }
+        .copy{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+    
+        <div class="icon-container" onclick="toogleLi()">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm0-160q17 0 28.5-11.5T520-480q0-17-11.5-28.5T480-520q-17 0-28.5 11.5T440-480q0 17 11.5 28.5T480-440Zm0-160q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm320 440H160q-33 0-56.5-23.5T80-240v-160q33 0 56.5-23.5T160-480q0-33-23.5-56.5T80-560v-160q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v160q-33 0-56.5 23.5T800-480q0 33 23.5 56.5T880-400v160q0 33-23.5 56.5T800-160Zm0-80v-102q-37-22-58.5-58.5T720-480q0-43 21.5-79.5T800-618v-102H160v102q37 22 58.5 58.5T240-480q0 43-21.5 79.5T160-342v102h640ZM480-480Z"/></svg>
+        </div>
+        <div class="dropper" id="dropper">
+            <ul>
+                <li>
+                    <div class="exp">
+                        ⏰ Expires in: 2days
+                    </div>
+                    <h3 class="name">coupon name</h3>
+                    <span class="description">get 50% discounts on above 2000rs purchase </span>
+                    <div class="clipboard">
+                        <span id="couponCode">SUIT20</span>
+                        <button onclick="copyCode(this)">
+                            copy code
+                        </button>
+                    </div>
+                </li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+    
+    <script>
+        let dropper = document.getElementById('dropper')
+        let toogleStatus = false
+        function toogleLi(){
+            toogleStatus = !toogleStatus
+    
+            if(toogleStatus){
+                dropper.classList.add("active")
+                dropper.style.display =  'initial'
+            }
+            else{
+                dropper.classList.add("passive")
+                setTimeout(()=>{
+                    dropper.style.display =  'none'
+                },500)
+            }
+    
+            setTimeout(()=>{
+                dropper.classList.remove('active', 'passive')
+            },2000)
+    
+        }
+    
+        function copyCode(e){
+            const code = document.getElementById('couponCode')
+            navigator.clipboard.writeText(code.innerHTML)
+            e.innerHTML =  `
+                <div class="copy">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="13px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q65 0 123 19t107 53l-58 59q-38-24-81-37.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160q133 0 226.5-93.5T800-480q0-18-2-36t-6-35l65-65q11 32 17 66t6 70q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm-56-216L254-466l56-56 114 114 400-401 56 56-456 457Z"/></svg>
+                    copied
+                </div>
+             `
+            setTimeout(()=>{
+                e.innerHTML = "copy code"
+            },1500)
+        }
+    </script>
+</body>
+</html>

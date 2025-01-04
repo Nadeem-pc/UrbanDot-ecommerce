@@ -50,7 +50,7 @@ const loadProducts = async (req,res) => {
     }
     catch (error) {
         console.log(error);
-        return res.status(500).json("Internal Server Error");
+        res.redirect('/admin/pageNotFound')
     }
 }
 
@@ -63,7 +63,7 @@ const loadAddProduct = async (req,res) => {
     }
     catch (error) {
         console.log(error);
-        return res.status(500).json("Internal Server Error");
+        res.redirect('/admin/pageNotFound')
     }
 }
 
@@ -134,6 +134,7 @@ const loadEditProduct = async(req,res) => {
     }
     catch (error) {
        console.log(error);
+       res.redirect('/admin/pageNotFound')
     }
 }
 
@@ -173,6 +174,7 @@ const editProduct = async (req, res) => {
         return res.status(500).json({ status: false, message: "Internal Server Error" });
     }
 };
+
 
 module.exports = {
     addProduct,

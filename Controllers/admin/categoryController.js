@@ -22,8 +22,8 @@ const loadCategories = async (req,res) => {
         });
     }
     catch(error){
+        res.redirect('/admin/pageNotFound')
         console.log(error);
-        return res.status(500).json("Internal Server Error");
     }
 }
 
@@ -33,7 +33,7 @@ const loadAddCategory = async (req,res) => {
     }
     catch (error) {
         console.log(error);
-        return res.status(500).json("Internal Server Error");
+        res.redirect('/admin/pageNotFound')
     }
 }
 
@@ -61,7 +61,7 @@ const addCategory = async (req, res) => {
         console.log(error);
         return res.status(500).json({ error: "Internal Server Error" });
     }
-};
+}
 
 const listCategory = async (req, res) => {
     try {
@@ -72,7 +72,7 @@ const listCategory = async (req, res) => {
         console.log("Something went wrong");
         return res.status(500).json({ error: "Internal Server Error" });
     }
-};
+}
 
 const unlistCategory = async (req, res) => {
     try {
@@ -83,7 +83,7 @@ const unlistCategory = async (req, res) => {
         console.log("Something went wrong");
         return res.status(500).json({ error: "Internal Server Error" });
     }
-};
+}
 
 const loadEditCategory = async (req,res) => {
     try {
@@ -94,7 +94,7 @@ const loadEditCategory = async (req,res) => {
     }
     catch (error) {
         console.log("Something went wrong");
-        return res.status(500).json({ error: "Internal Server Error" })
+        res.redirect('/admin/pageNotFound')
     }
 }
 

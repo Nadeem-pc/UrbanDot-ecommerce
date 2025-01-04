@@ -100,4 +100,5 @@ const productUnavailable = async (req,res) => {
     }
 }
 
+
 module.exports = { loadShop, loadProductDetail, productUnavailable }

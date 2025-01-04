@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>UrbanDot | Admin Dashboard</title>
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta property="og:title" content="" />
+        <meta property="og:type" content="" />
+        <meta property="og:url" content="" />
+        <meta property="og:image" content="" />
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="/Admin/imgs/theme/favicon.png" />
+        <!-- Template CSS -->
+        <link href="/Admin/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Font Awesome for icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Flatpickr for date picker -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+        <script src="https://unpkg.com/must-pop@2.1.1/dist/library.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </head>
+
+    <body>
+        <%-include("../../Views/Partials/admin/sidebar")%>  
+        <main class="main-wrap">
+            <%-include("../../Views/Partials/admin/header")%>  
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Coupon Management</h2>
+                        <p>View, Create, and delete coupons.</p>
+                    </div>
+                    <div>
+                        <button type="button" id="addBtn" class="btn btn-primary btn-sm rounded" data-bs-toggle="modal" data-bs-target="#addCouponModal">
+                            Add Coupon
+                        </button>
+                    </div>
+                </div>
+
+                <% if(coupons.length !== 0){%>
+                    <div class="card mb-4">
+                        <header class="card-header">
+                            <div class="col-lg-4 col-md-6 me-auto">
+                                <h4 >Coupons List</h4>
+                            </div>
+                        </header> 
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" style="background-color: #f8f9fa;">#</th>
+                                            <th scope="col" style="background-color: #f8f9fa;">Name</th>
+                                            <th scope="col" style="background-color: #f8f9fa;">Coupon Code</th>
+                                            <th scope="col" style="background-color: #f8f9fa;">Discount (₹)</th>
+                                            <th scope="col" style="background-color: #f8f9fa;">Start Date</th>
+                                            <th scope="col" style="background-color: #f8f9fa;">Expiry Date</th>
+                                            <th scope="col" style="background-color: #f8f9fa;">Status</th>
+                                            <th scope="col" style="background-color: #f8f9fa;" class="text-end">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% for(let i = 0; i < coupons.length; i++){ %>
+                                            <tr>
+                                                <td><%= i + 1 %></td>
+                                                <td><%=coupons[i].name%></td>
+                                                <td><%=coupons[i].code%></td>
+                                                <td><%=coupons[i].discount%></td>
+                                                <td><%= new Date(coupons[i].createdOn).toLocaleDateString('en-GB') %></td>
+                                                <td><%= new Date(coupons[i].expiresOn).toLocaleDateString('en-GB') %></td>
+                                                <td><%=coupons[i].status%></td>
+                                                <td class="text-end">
+                                                    <a href="#" id="dltBtn" onclick="deleteCoupon(`<%=coupons[i]._id%>`)" class="btn btn-md rounded font-sm text-end" style="background-color: white; border: 1px solid grey; height: 35px;">
+                                                        <i class="icon material-icons md-delete" style="color: red; position: relative; bottom: 3px;"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <%}%>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>    
+                <% } else { %>
+                    <div class="d-flex justify-content-center align-items-center" style="min-height: 55vh; padding-top: 45px;">
+                        <div class="card text-center shadow-lg p-4" style="max-width: 400px; border-radius: 10px;">
+                            <h5 class="mb-3" style="color: #333;">Welcome, Admin!</h5>
+                            <p style="color: #555; font-size: 16px;">
+                                It looks like you're just getting started — no coupons have been created yet.  
+                                Begin by <strong><a data-bs-toggle="modal" data-bs-target="#addCouponModal" style="text-decoration: none; color: #007bff;">creating your first deal</a></strong> today!
+                            </p>
+                        </div>
+                    </div>
+                    <style>
+                        #addBtn {
+                            display: none;
+                        }
+                    </style>
+                <% } %>
+
+                <!-- <div class="pagination-area mt-15 mb-50">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-start">
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        </ul>
+                    </nav>
+                </div> -->
+            </section>
+            <%-include("../../Views/Partials/admin/footer")%>  
+        </main>
+
+        <div class="modal fade" id="addCouponModal" tabindex="-1" aria-labelledby="addCouponModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="addCouponModalLabel">Add Coupon</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form id="couponForm">
+
+                    <div class="mb-3">
+                        <label for="couponName" id="nameLabel" class="form-label">Coupon Name</label>
+                        <input type="text" class="form-control" id="couponName" placeholder="Enter coupon name" required>
+                    </div>
+
+                    <!-- Coupon Code -->
+                    <div class="mb-3">
+                      <label for="couponCode" id="codeLabel" class="form-label">Coupon Code</label>
+                      <input type="text" class="form-control" id="couponCode" placeholder="Enter coupon code" required>
+                    </div>
+          
+                    <!-- Discount Amount -->
+                    <div class="mb-3">
+                      <label for="discountAmount" id="discountLabel" class="form-label">Discount Amount</label>
+                      <input type="number" class="form-control" id="discountAmount" placeholder="Enter discount amount" min="1" required>
+                    </div>
+          
+                    <!-- Minimum Purchase -->
+                    <div class="mb-3">
+                      <label for="minPurchase" id="minPurchaseLabel" class="form-label">Minimum Purchase Amount</label>
+                      <input type="number" class="form-control" id="minPurchase" placeholder="Enter minimum purchase amount" min="1" required>
+                    </div>
+          
+                    <!-- Start Date -->
+                    <div class="mb-3">
+                      <label for="startDate" class="form-label">Start Date</label>
+                      <div class="input-group">
+                        <input type="text" style="width: 420px;" class="form-control" id="startDate" placeholder="DD-MM-YYYY" required>
+                        <span class="input-group-text" id="startIcon">
+                          <i class="fa-regular fa-calendar"></i>
+                        </span>
+                      </div>
+                    </div>
+          
+                    <!-- Expiry Date -->
+                    <div class="mb-3">
+                      <label for="expirationDate" class="form-label">Expiry Date</label>
+                      <div class="input-group"  >
+                        <input type="text"style="width: 420px;" class="form-control" id="expirationDate" placeholder="DD-MM-YYYY" required>
+                        <span class="input-group-text" id="endIcon">
+                          <i class="fa-regular fa-calendar"></i>
+                        </span>
+                      </div>
+                    </div>
+          
+                    <!-- Submit -->
+                    <div class="text-end">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="submit" id="submitBtn" class="btn btn-primary">Add Coupon</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <script>
+            // Restrict negative numbers
+            document.getElementById("discountAmount").addEventListener("input", function () {
+                if (this.value < 1) this.value = "";
+            });
+            document.getElementById("minPurchase").addEventListener("input", function () {
+                if (this.value < 1) this.value = "";
+            });
+        
+            const today = new Date();
+      
+            const startDatePicker = flatpickr("#startDate", {
+                dateFormat: "d-m-Y",
+                minDate: today, 
+                allowInput: true,
+                clickOpens: true, 
+                static: true, // Keeps calendar always in proper position
+                onChange: function (selectedDates, dateStr) {
+                    document.getElementById("startDate").value = dateStr; // Update placeholder
+        
+                    if (selectedDates[0]) {
+                        const startDate = selectedDates[0];
+                        const nextDay = new Date(startDate.getTime() + 86400000); // Add 1 day to Start Date
+                        endDatePicker.set("minDate", nextDay); // Set minDate for Expiry Date
+                    }
+                },
+            });
+        
+            // Initialize Flatpickr for Expiry Date
+            const endDatePicker = flatpickr("#expirationDate", {
+                dateFormat: "d-m-Y",
+                minDate: new Date(today.getTime() + 86400000), // Set default minDate to tomorrow
+                allowInput: true,
+                clickOpens: true,
+                static: true,
+                onChange: function (selectedDates, dateStr) {
+                    document.getElementById("expirationDate").value = dateStr; // Update placeholder
+                },
+            });
+        
+            document.getElementById("startIcon").addEventListener("click", () => startDatePicker.open());
+            document.getElementById("endIcon").addEventListener("click", () => endDatePicker.open());
+        
+            document.getElementById('couponForm').addEventListener('submit', async (event) => {
+                event.preventDefault();
+        
+                const couponName = document.getElementById('couponName').value.trim()
+                const couponCode = document.getElementById('couponCode').value.trim();
+                const discount = document.getElementById('discountAmount').value;
+                const minPurchase = document.getElementById('minPurchase').value;
+                const startDate = document.getElementById('startDate').value.split("-").reverse().join("-"); // Convert to YYYY-MM-DD
+                const expiryDate = document.getElementById('expirationDate').value.split("-").reverse().join("-"); // Convert to YYYY-MM-DD
+        
+                if (validateForm(couponName, couponCode, discount, minPurchase, startDate, expiryDate)) {
+                    let response = await fetch('/admin/addCoupon', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ couponName, couponCode, discount, minPurchase, startDate, expiryDate }),
+                    });
+                    let data = await response.json();
+    
+                    if(!data.success){
+                        return Must.failure({time:2000,content:data.message})
+                    }
+
+                    setTimeout(()=>{
+                    window.location.href = '/admin/coupons'
+                    },1300)
+                    Must.success({time: 1300, content: data.message, color:'#27ae60'})
+
+                    document.getElementById("icon").style.backgroundColor = 'beige'
+                    document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
+                }
+            });
+        
+            function validateForm(couponName, couponCode, discount, minPurchase, startDate, expiryDate) {
+                let isValid = true;
+        
+                if (/\s/.test(couponCode)) {
+                    document.getElementById('codeLabel').innerHTML = "Coupon code must not contain spaces";
+                    document.getElementById('codeLabel').style.color = 'red';
+                    isValid = false;
+                }
+                else{
+                    document.getElementById('codeLabel').innerHTML = 'Coupon Code'
+                    document.getElementById('codeLabel').style.color = 'black'  
+                }  
+        
+                if (!/^[a-zA-Z]+$/.test(couponName)) {
+                    document.getElementById('nameLabel').innerHTML = "Coupon name contain only letters";
+                    document.getElementById('nameLabel').style.color = 'red';
+                    isValid = false;
+                }
+                else{
+                    document.getElementById('nameLabel').innerHTML = 'Coupon Name'
+                    document.getElementById('nameLabel').style.color = 'black'  
+                }   
+
+                if (Number(minPurchase) <= Number(discount)) {
+                    document.getElementById('minPurchaseLabel').innerHTML = "Minimum Purchase must be greater than Discount Amount";
+                    document.getElementById('minPurchaseLabel').style.color = 'red';
+                    isValid = false;
+                }
+                else{
+                    document.getElementById('minPurchaseLabel').innerHTML = 'Minimum Purchase Amount'
+                    document.getElementById('minPurchaseLabel').style.color = 'black'  
+                }   
+
+                return isValid;
+            }
+
+            async function deleteCoupon(id) {
+    // Show confirmation dialog
+    const confirmation = await Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to disable this coupon? This action cannot be undone.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel',
+    });
+
+    if (confirmation.isConfirmed) {
+        try {
+            let response = await fetch('/admin/unlistCoupon', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id }),
+            });
+
+            let status = await response.json();
+
+            if (!status.success) {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: status.message,
+                });
+            }
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Deleted!',
+                text: status.message,
+                timer: 1300,
+                showConfirmButton: false,
+            });
+
+            setTimeout(() => {
+                location.reload();
+            }, 1300);
+
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            });
+        }
+    }
+}
+        </script>
+        <script src="/Admin/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="/Admin/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="/Admin/js/vendors/select2.min.js"></script>
+        <script src="/Admin/js/vendors/perfect-scrollbar.js"></script>
+        <script src="/Admin/js/vendors/jquery.fullscreen.min.js"></script>
+        <!-- Main Script -->
+        <script src="/Admin/js/main.js?v=1.1" type="text/javascript"></script>
+    </body>
+</html>

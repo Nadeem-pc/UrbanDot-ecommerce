@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>UrbanDot | Admin Dashboard</title>
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta property="og:title" content="" />
+        <meta property="og:type" content="" />
+        <meta property="og:url" content="" />
+        <meta property="og:image" content="" />
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="/Admin/imgs/theme/favicon.png" />
+        <!-- Template CSS -->
+        <link href="/Admin/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Font Awesome for icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Flatpickr for date picker -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script src="https://unpkg.com/must-pop@2.1.1/dist/library.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    </head>
+    
+    <style>
+        .downloadBtn{
+            border: 0;
+            border-radius: 5px;
+            color: white;
+            width: 160px;
+            height: 35px;
+        }
+        #pdf{
+            background-color: green;
+        }
+        #excel{
+            background-color: orange;
+        }
+    </style>    
+    <body>
+        <%-include("../../Views/Partials/admin/sidebar")%>
+        <main class="main-wrap">
+            <%-include("../../Views/Partials/admin/header")%>
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Sales Report</h2>
+                        <p>Detailed insights into your sales and performance.</p>
+                    </div>
+                 
+                    <div>
+                        <a href="/admin/generate-pdf"><button class="downloadBtn" id="pdf">Download As PDF</button></a>
+                        <a href="/admin/generate-excel"><button class="downloadBtn" id="excel">Download As Excel</button></a> 
+                    </div>
+                </div>
+
+                    <div class="card mb-4">
+                        <header class="card-header">
+                            <div class="">
+                                <h5>Filter Sales Report</h5>
+                            </div>
+                        </header> 
+                            
+                        <div class="col-lg-6 col-md-6 ms-auto text-md-end p-15">
+                            <select class="form-select d-inline-block mb-lg-0 mr-5 mw-200" id="filterSelect">
+                                <option value="1day">Last 1 Day</option>
+                                <option value="1week">Last 1 Week</option>
+                                <option value="1month">Last 1 Month</option>
+                                <option value="1year">Last 1 Year</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        
+                            <!-- Custom Date Range Inputs (Initially hidden) -->
+                            <div id="customDateRange" style="display:none;">
+                                <input type="date" id="startDate" />
+                                <input type="date" id="endDate" />
+                            </div>
+                        
+                            <a class="btn btn-primary mb-1" href="#" id="generateReportBtn">Generate Report</a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <header class="card-header">
+                            <div class="">
+                                <h5>Sales Overview</h5>
+                               
+                            </div>
+                        </header> 
+
+                        <div class="row col-12 d-flex justify-content-between align-items-center p-5">
+                            <div class="card col-lg-3 p-3">
+                                <h5>Total Orders</h5>
+                                <h6><%= stats.totalOrders %></h6>
+                            </div>
+                            <div class="card col-lg-3 p-3">
+                                <h5>Total Sales</h5>
+                                <h6>₹ <%= stats.totalSales %></h6>
+                            </div>
+                            <div class="card col-lg-3 p-3">
+                                <h5>Total Discount</h5>
+                                <h6>₹ <%= stats.totalDiscount %></h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">OrderID</th>
+                                        <th scope="col">Customer</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Payment Method</th>
+                                        <th scope="col">Coupon Discount</th>
+                                        <th scope="col" class="text-end">Final Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (orders && orders.length > 0) { %> 
+                                        <% let serialNumber = 1; %> 
+                                        <% orders.forEach(order => { %> 
+                                            <tr>
+                                                <td><%= serialNumber++ %></td>
+                                                <td><%= order.orderId %></td>
+                                                <td><%= order.userDetails?.username || 'N/A' %></td>
+                                                <td><%= new Date(order.orderDate).toLocaleDateString() %></td>
+                                                <td><%= order.paymentMethod %></td>
+                                                <td>₹<%= order.totalDiscountApplied %></td>
+                                                <td class="text-end">₹<%= order.totalAmount %></td>
+                                            </tr>
+                                        <% }) %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="7" class="text-center">No orders found</td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+           
+                        
+                     
+                <!-- card end// -->
+                <!-- <div class="pagination-area mt-15 mb-50">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-start">
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        </ul>
+                    </nav>
+                </div> -->
+            </section>
+            <%-include("../../Views/Partials/admin/footer")%>
+        </main>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <script>
+            // Show/Hide custom date range inputs based on selection
+            const filterSelect = document.getElementById('filterSelect');
+            const customDateRange = document.getElementById('customDateRange');
+            const generateReportBtn = document.getElementById('generateReportBtn');
+        
+            filterSelect.addEventListener('change', function() {
+                if (filterSelect.value === 'custom') {
+                    customDateRange.style.display = 'block'; // Show date inputs
+                } else {
+                    customDateRange.style.display = 'none'; // Hide date inputs
+                }
+            });
+        
+            // Handle report generation based on the selected filter
+            generateReportBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const filter = filterSelect.value;
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+        
+                // Build the URL based on selected filter and date range
+                let url = '/admin/sales?filter=' + filter;
+        
+                if (filter === 'custom' && startDate && endDate) {
+                    url += '&startDate=' + startDate + '&endDate=' + endDate;
+                }
+        
+                // Redirect to the URL to generate the report
+                window.location.href = url;
+            });
+        </script>
+          
+        <script src="/Admin/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="/Admin/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="/Admin/js/vendors/select2.min.js"></script>
+        <script src="/Admin/js/vendors/perfect-scrollbar.js"></script>
+        <script src="/Admin/js/vendors/jquery.fullscreen.min.js"></script>
+        <!-- Main Script -->
+        <script src="/Admin/js/main.js?v=1.1" type="text/javascript"></script>
+    </body>
+</html>

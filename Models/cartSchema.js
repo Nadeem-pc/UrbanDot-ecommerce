@@ -30,7 +30,7 @@ const cartSchema = mongoose.Schema({
             type : Number,
             required : true
         }
-    }]
+    }],
 })
 
 const Cart = mongoose.model("Cart", cartSchema)

@@ -39,10 +39,6 @@
   .single_product_item .btn {
     margin-top: 10px;
   }
-  #applyBtn{
-    background-color: #71cd14;
-    color: white;
-  }
   .carousel,.carousel-inner,.carousel-item{
     height: 100%;
     width: 100%;
@@ -158,7 +154,12 @@
         <div class="col-lg-5 offset-lg-1">
           <div class="s_product_text">
             <h3><%=product.productName%></h3>
-            <h2>₹<%=product.regularPrice%></h2>
+            <%if(product.offerPrice !== null){%>
+              <h2>₹<%=product.offerPrice%></h2>
+              <del style="position: relative; bottom: 42px; left: 115px;">₹<%= product.regularPrice %></del>
+            <%}else{%>
+              <h2>₹<%=product.regularPrice%></h2>
+            <%}%>  
             <ul class="list">
               <!-- <li>
                 <a class="active" href="#">
@@ -181,7 +182,7 @@
             </li>
             </ul>
             <p> <%=product.description%> </p>
-            <div class="product_count w-100 d-flex justify-content-between align-items-center">
+            <div class="product_count w-25 d-flex justify-content-between align-items-center">
               <label for="qty">Quantity:</label>
               <div class="product_count">
                 <input
@@ -216,8 +217,7 @@
                   <i class="lnr lnr-chevron-down"></i>
                 </button>
               </div>
-              <input type="text" class="w-50 ms-3" placeholder="Having a coupon?">
-              <button class="applyBtn border border-radius-1" id="applyBtn">Apply</button>
+            
           </div>
             <div class="card_area">
               <% if(product.stock === 0){%>
@@ -520,13 +520,7 @@
 
   function changeTab(tabName,old){
     document.getElementById(old).style.display = 'none'
-
-    console.log(document.getElementById(old),document.getElementById(tabName));
-    // document.getElementById(`${old}Btn`).style.backgroundColor = "white"
-    
     document.getElementById(tabName).style.display = 'initial'
-    // event.target.style.backgroundColor = '#27ae60'
-
   }
 
   async function fetchId (productId){

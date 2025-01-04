@@ -1,9 +1,20 @@
 <script src="https://unpkg.com/must-pop@latest/dist/library.js"></script>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
+
+  </head>
 <%-include("../../Views/Partials/user/header")%>
 
     <style>
-
+        #downloadBtn{
+            border: 0;
+            border-radius: 4px;
+            width: 130px;
+            color: white;
+            background-color: #71cd14;
+        }
         #itemImage{
             width: 80px;
             height: 80px;
@@ -69,6 +80,8 @@
             background: white;
             border-radius: 15px;
             padding: 30px;
+            max-height: 75vh;
+            overflow: scroll;
         }
 
         .profile-picture {
@@ -356,6 +369,7 @@
                     <li class="menu-item active" onclick="showTab('profile')"> Profile</li>
                     <li class="menu-item" onclick="showTab('orders')"> Orders</li>
                     <li class="menu-item" onclick="showTab('addresses')"> Addresses</li>
+                    <li class="menu-item" onclick="location.href= '/wallet'"> Wallet</li>
                     <li class="menu-item" onclick="showTab('security')"> Security</li>
                 </ul>
             </div> 
@@ -519,7 +533,7 @@
                 <div class="order-header">
                     <div>
                         <strong> <%= order.orderId %> </strong>
-                        <div style="color: #636e72">Placed on <%= order.orderDate %></div>
+                        <div style="color: #636e72">Placed on <%= new Date(order.orderDate).toDateString() %></div>
                     </div>
                     <% if (order.orderStatus === 'Pending') { %>
                         <span class="badge success" style="background-color: orange; display: flex; align-items: center;"><%= order.orderStatus %></span>
@@ -529,10 +543,12 @@
                         <span class="badge success" style="background-color: red; display: flex; align-items: center;"><%= order.orderStatus %></span>
                     <%}else if(order.orderStatus === 'Shipped'){%>    
                         <span class="badge success" style="background-color: orange; display: flex; align-items: center;"><%= order.orderStatus %></span>
+                    <%}else if(order.orderStatus === 'Returned'){%>    
+                        <span class="badge success" style="background-color: red; display: flex; align-items: center;"><%= order.orderStatus %></span>
                     <%}%>    
                 </div>
                 <div class="order-items">
-                    <% order.orderedItems.forEach(product => { %> <!-- Loop through orderedItems -->
+                    <% order.orderedItems.forEach(product => { %> 
                         <div class="order-item">
                             <div class="item-image"><img src="/uploads/product-images/<%=product.product.images[0]%>" id="itemImage"></div>
                             <div>
@@ -587,7 +603,6 @@
                 <% }) %>
             </div>
             <div style="display: flex; justify-content: center; align-items: center;"><strong>Total amount ₹<%= order.totalAmount %></strong></div>
-            
         </div>
         <% }) %>
         
@@ -743,6 +758,7 @@
         
 
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
         // Tab switching functionality
@@ -823,53 +839,98 @@
                         <div class="order-header">
                             <div>
                                 <strong>${orderDetails.orderId}</strong>
-                                <div style="color: #636e72">Placed on ${orderDetails.orderDate}</div>
+                                <div style="color: #636e72">Placed on ${new Date(orderDetails.orderDate).toDateString()}</div>
                                 <div style="color: #636e72">Payment Method: ${orderDetails.paymentMethod}</div>
+                                <div style="color: #636e72">Payment Status: ${orderDetails.paymentStatus}</div>
+                                ${orderDetails.paymentStatus === "Pending" ? `
+                                    <button id="retryPaymentButton" class="btn btn-primary" onclick='retryPayment("${orderDetails.orderId}")' style="height:35px;padding:5px;width:55px;">Pay</button>
+                                ` : ''}
                             </div>
-                            <span class="badge success" style="background-color: ${
-                                orderDetails.orderStatus === 'Pending' ? 'orange' :
-                                orderDetails.orderStatus === 'Delivered' ? 'green' :
-                                orderDetails.orderStatus === 'Cancelled' ? 'red' : ''
-                            }; display: flex; align-items: center;">
-                                ${orderDetails.orderStatus}
-                            </span>
+                           
                         </div>
                         <div class="order-items">
-                            ${orderDetails.orderedItems.map(product => `
-                                <div class="order-item">
-                                    <div class="item-image"><img src="/uploads/product-images/${product.product.images[0]}" style='width:90px;' alt="Product Image"></div>
-                                    <div>
-                                        <div><strong>${product.product.productName}</strong></div>
-                                        <div>₹${product.price}</div>
-                                        <div>Quantity: ${product.quantity}</div>
-                                    ${product.status !== "Cancelled" ? `
-                                        <div>
-                                            <button onclick="cancelProduct('${product.product._id}', '${orderDetails._id}')" 
-                                                    style="margin-top:10px;background-color:red;border:0;color:white;width:70px;border-radius:4px;">
-                                                Cancel
-                                            </button>
-                                        </div>` 
-                                        : `<div style="margin-top:10px;color:red;font-weight:bold;">Cancelled</div>`
-                                    }
-                                    </div>
-                                </div>
-                            `).join('')}
+                           ${orderDetails.orderedItems.map(product => `
+    <div class="order-item" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+        <!-- Product Image -->
+        <div class="item-image">
+            <img src="/uploads/product-images/${product.product.images[0]}" style="width:90px;" alt="Product Image">
+        </div>
+        
+        <!-- Product Details -->
+        <div style="flex: 1; margin-left: 15px;">
+            <div><strong>${product.product.productName}</strong></div>
+            <div>₹${product.price}</div>
+            <div>Quantity: ${product.quantity}</div>
+          ${product.status === "Delivered" ? `
+        <div>
+  <button id="returnBtn-${product.product._id}" 
+          onclick="returnProduct('${product.product._id}', '${orderDetails._id}')" 
+          style="margin-top:10px;background-color:red;border:0;color:white;width:70px;border-radius:4px;">
+      Return
+  </button>
+
+</div>` 
+: product.status === "Returned" ? `
+  <!-- Don't show any buttons if status is "Returned" -->
+  <div style="margin-top:10px;color:grey;">Returned</div>`
+: product.status !== "Cancelled" ? `
+<div>
+  <button onclick="cancelProduct('${product.product._id}', '${orderDetails._id}')" 
+          style="margin-top:10px;background-color:red;border:0;color:white;width:70px;border-radius:4px;">
+      Cancel
+  </button>
+
+</div>` 
+: `<div style="margin-top:10px;color:red;font-weight:bold;">Cancelled</div>`}
+        </div>
+
+        <!-- Product Status -->
+        <div>
+            <span class="badge" style="
+                padding: 5px 10px;
+                background-color: ${
+                    product.status === 'Pending' ? 'orange' :
+                    product.status === 'Delivered' ? 'green' :
+                    product.status === 'Cancelled' ? 'red' :
+                    product.status === 'Returned' ? 'red' : 'grey'
+                };
+                color: white;
+                border-radius: 5px;
+                font-size: 14px;
+            ">
+                ${product.status}
+            </span>
+        </div>
+    </div>
+`).join('')}
+            ${orderDetails.orderStatus === "Delivered" ? `
+                <a href="/downloadInvoice/${orderDetails.orderId}" target="_blank" style="text-decoration: none;">
+                    <button id="downloadBtn" style="background-color: #4CAF50; color: white; border: none; margin-top:20px; border-radius: 5px; cursor: pointer;">
+                        Download Invoice
+                    </button>
+                </a>
+            ` : ''}
                         </div>
                         <div style="display: flex; justify-content: center; align-items: center;">
-                            <strong>Total amount ₹${orderDetails.totalAmount}</strong>
+                            <strong>Total amount: 50 (Shipping) + ${orderDetails.totalAmount-50} =  ₹${orderDetails.totalAmount}</strong>
                         </div>
                         <div>
                             <div>Delivery Address <br></div>
-                        <div style="color: #636e72">
-                            ${orderDetails.deliveryAddress 
-                                ? `${orderDetails.deliveryAddress.name}<br>${orderDetails.deliveryAddress.fullAddress} <br>
-                                ${orderDetails.deliveryAddress.city},${orderDetails.deliveryAddress.state},${orderDetails.deliveryAddress.country}
-                                <br>${orderDetails.deliveryAddress.pincode}<br><p>Phone number: ${orderDetails.deliveryAddress.phone}</p>`
-                                : '<span style="color: red;">No delivery address found.</span>'}
-                        </div>
+                            <div style="color: #636e72">
+                                ${orderDetails.deliveryAddress 
+                                    ? `${orderDetails.deliveryAddress.name}<br>${orderDetails.deliveryAddress.fullAddress} <br>
+                                    ${orderDetails.deliveryAddress.city},${orderDetails.deliveryAddress.state},${orderDetails.deliveryAddress.country}
+                                    <br>${orderDetails.deliveryAddress.pincode}<br><p>Phone number: ${orderDetails.deliveryAddress.phone}</p>`
+                                    : '<span style="color: red;">No delivery address found.</span>'}
+                            </div>
+                            
                         </div>   
-                    </div>
-                `;
+                        
+                        </div>
+                 
+                        `;
+                        
+                 
             })
             .catch(error => {
                 console.error('Error fetching order details:', error);
@@ -877,30 +938,157 @@
             });
             }
 
-    async function cancelProduct(productId,orderId){
-        const response = await fetch('/cancelProduct',{
-                method : "POST",
-                headers : {
-                    'Content-Type' : 'application/json'
-                },
-                body : JSON.stringify({productId,orderId})
-            })
-        let data = await response.json()
+            async function retryPayment(orderId) {
+                const razorpayKey = "<%= razorpayKey %>"
+                
+                try {
+                    const response = await fetch('/retryPayment', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ orderId })
+                    });
 
-        if(!data.status){
-            return Must.failure({time: 3000, content: data.message})
-        }
-        
-        setTimeout(() => {
-            window.location.href = '/profile'
-        },1500)
-
-        Must.success({time: 1500, content: data.message, color:'#27ae60'})
-
-        document.getElementById("icon").style.backgroundColor = 'beige'
-        document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
+                    const data = await response.json();
                     
+
+                    if (data.success) {
+                        const options = {
+                            key: razorpayKey,
+                            amount: data.amount,
+                            currency: "INR",
+                            order_id: data.orderId,
+                            name: "UrbanDot",
+                            description: "Retry Payment",
+                            handler: async function (response) {
+                                const verifyRes = await fetch('/verifyRazorpayPayment', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        payment_id: response.razorpay_payment_id,
+                                        order_id: response.razorpay_order_id,
+                                        signature: response.razorpay_signature,
+                                        existingOrderId: orderId 
+                                    })
+                                });
+
+                                const verifyData = await verifyRes.json();
+
+                                if (verifyData.success) {
+                                    window.location.href = '/orderPlaced';
+                                } else {
+                                    alert("Payment verification failed. Please try again.");
+                                }
+                            },
+                            theme: { color: "#3399cc" }
+                        };
+
+                        const razorpay = new Razorpay(options);
+                        razorpay.open();
+                    } else {
+                        alert("Failed to retry payment. Please try again later.");
+                    }
+                } catch (error) {
+                    console.error("Error retrying payment:", error);
+                    alert("An error occurred. Please try again.");
+                }
+            }
+
+            async function cancelProduct(productId, orderId) {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "Do you really want to cancel this order?",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, Cancel it!',
+    cancelButtonText: 'No, Keep it',
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      // If the user confirms, proceed with cancellation
+      const response = await fetch('/cancelProduct', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId, orderId }),
+      });
+
+      let data = await response.json();
+
+      if (!data.status) {
+        return Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: data.message,
+        });
+      }
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Cancelled!',
+        text: data.message,
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      setTimeout(() => {
+        window.location.href = '/profile';
+      }, 1500);
     }
+  });
+}
+
+        async function returnProduct(productId, orderId) {
+
+            Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you really want to return this product?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, return it!',
+            cancelButtonText: 'No, Keep it',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+            // If the user confirms, proceed with cancellation
+
+            const response = await fetch('/returnProduct', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ productId, orderId }),
+            });
+
+            let data = await response.json();
+
+            if (!data.status) {
+                return Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: data.message,
+                });
+            }
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Request sented',
+                text: data.message,
+                timer: 2000,
+                showConfirmButton: false,
+            });
+
+            // document.getElementById('returnBtn').innerHTML = 'Return request processing'
+
+            setTimeout(() => {
+                window.location.href = '/profile';
+            }, 2000);
+            }
+        });
+            
+        }
 
         // Size preference selection
         document.querySelectorAll('.size-box').forEach(box => {
@@ -959,8 +1147,8 @@
         document.getElementById('profile-form').addEventListener('submit', async (event) => {
             event.preventDefault()
 
-            let name = document.getElementById('name').value
-            let phone = document.getElementById('phone').value
+            let name = document.getElementById('name').value.trim()
+            let phone = document.getElementById('phone').value.trim()
 
            
            if(!validateForm()) return 

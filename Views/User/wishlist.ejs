@@ -1,0 +1,167 @@
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- FontAwesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+<script src="https://unpkg.com/must-pop@latest/dist/library.js"></script>
+
+<%-include("../../Views/Partials/user/header")%>
+
+<style>
+  body {
+    background-color: #f8f9fa;
+  }
+  .page{
+    min-height: 73vh;
+  }
+
+  .wishlist-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .item-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 10px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .item-image img {
+    width: 100px;
+    border-radius: 8px;
+  }
+  .icon-lg {
+  font-size: 1.5em; 
+} 
+
+  .item-details {
+    flex: 1;
+    margin-left: 15px;
+  }
+
+  .item-title {
+    font-weight: 600;
+  }
+
+  .rating {
+    color: #28a745;
+    font-weight: bold;
+  }
+
+  .price {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  .delete-icon {
+    width: 70px;
+    color: #dc3545;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+  }
+  #cartBtn{
+    color: #00a884;
+  }
+</style>
+
+  <!-- <h4 class="mb-4">My Wishlist (4)</h4> -->
+  <div class="page">
+    <div class="container wishlist-container my-5">
+      <!-- Check if the wishlist is empty -->
+      <% if (wishlist.items.length === 0) { %>
+        <div class="empty-cart-message">
+          <h3>Your wishlist is empty!</h3>
+          <p>There are no products in your wishlist.</p>
+          <a href="/shop" class="button">Start Shopping</a>
+        </div>
+      <% } else { %>
+        <!-- Wishlist Items -->
+        <% wishlist.items.forEach(item => { %>
+          <div class="item-card">
+            <div class="item-image">
+             <a href="/product/<%=item.productId._id%>"><img src="/uploads/product-images/<%= item.productId.images[0] %>" alt="<%= item.productId.name %>"></a> 
+            </div>
+            <div class="item-details">
+              <div class="item-title">
+                <%= item.productId.productName %> 
+              </div>
+              <div class="price">
+                ₹<%= item.productId.regularPrice %> 
+                <!-- <% if (item.productId.regularPrice) { %>
+                  <span class="text-muted text-decoration-line-through">₹<%= item.productId.regularPrice %></span>
+                <% } %> -->
+              </div>
+            </div>
+            <div class="delete-icon">
+              <i class="fas fa-cart-plus icon-lg" id="cartBtn" onclick="fetchId(`<%= item.productId._id %>`)"></i>
+              <i onclick="removeItem(`<%= item.productId._id %>`)" class="fas fa-trash-alt icon-lg"></i>
+            </div>
+          </div>
+        <% }); %>
+      <% } %>
+    </div>
+  </div>
+
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+<%-include("../../Views/Partials/user/footer")%>
+
+<script>
+  async function removeItem(productId){
+    try{
+      let response = await fetch(`/wishlist/remove/${productId}`, {
+        method: "DELETE",
+      });
+  
+      let data = await response.json();
+  
+      if (!data.status) {
+        return Must.failure({ time: 3000, content: data.message })
+      }
+      Must.success({ time: 1700, content: data.message, color: '#27ae60' });
+      document.getElementById("icon").style.backgroundColor = 'beige'
+      document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
+      
+      setTimeout(()=>{
+        location.reload()
+      },1700)
+
+    }catch(error){
+      console.error("Error removing item:", error);
+      return Must.failure({ time: 3000, content: "Something went wrong! Please try again later." })
+    }
+  }
+
+  async function fetchId (productId){
+
+    let response = await fetch('/cart',{
+      method : "POST",
+      headers : {
+        'Content-Type' : 'application/json'
+      },
+      body : JSON.stringify({productId,quantity:1})
+    })
+
+    const data = await response.json()
+
+    if(!data.status){
+      return Must.failure({ time: 3000, content: data.message })
+    }
+
+    setTimeout(()=>{
+      window.location.href = '/cart'
+    },1300)
+
+    Must.success({time: 1300, content: data.message, color:'#27ae60'})
+    document.getElementById("icon").style.backgroundColor = 'beige'
+    document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
+  }
+</script>

@@ -40,6 +40,7 @@ const listUsers = async (req,res) => {
     }
     catch (error) {
         console.log("Error while listing users",error.message);
+        res.redirect('/admin/pageNotFound')
     }
 }
 

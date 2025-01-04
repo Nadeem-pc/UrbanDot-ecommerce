@@ -32,15 +32,51 @@ const orderSchema = mongoose.Schema({
             required : true
         },
 
+        discountApplied : {
+            type: Number,
+            default: 0
+        },
+
+        // refundAmount : {
+        //     type: Number,
+        //     default: 0
+        // },
+
         status: {
             type: String,
             default: 'Pending',
         },
+
+        returnStatus : {
+            type : Boolean,
+            default : false,
+        },
+
+        adminApproval : {
+            type : Boolean,
+            default : false,
+        }
+
+        // returnReason : {
+        //     type : String,
+        //     default : ""
+        // }
     }],
 
     totalAmount : {
         type: Number,
         required : true
+    },
+
+    totalDiscountApplied : {
+        type: Number,
+        default: 0
+    },
+
+    shipping : {
+        type : Number,
+        required : true,
+        default : 50
     },
 
     address: {
@@ -51,27 +87,35 @@ const orderSchema = mongoose.Schema({
 
     orderStatus: {
         type: String,
-        enum: ['Pending','Shipped','Delivered','Cancelled'],
+        enum: ['Pending','Shipped','Delivered','Cancelled','Returned'],
         default: 'Pending',
     },
 
     paymentStatus: {
         type: String,
-        enum : ['Pending','Failed','Success',],
+        enum : ['Pending','Failed','Success','Refunded'],
         default:'Pending'
     },
 
     paymentMethod: {
         type: String,
-        enum: ['Wallet', 'COD', 'razorpay'], 
+        enum: ['Wallet', 'COD', 'Razorpay'], 
         required: true,
     },
 
     orderDate : {
-        type : String
+        type: Date, 
+        default: Date.now,
+        required: true,
     },
 
-},{ timestamps : true } )
+    createdAt: { type: Date, default: Date.now } 
+    // returnReason : {
+    //     type : String,
+    //     default : ""
+    // }
+
+})
 
 const Order = mongoose.model("Order", orderSchema)
 module.exports = Order

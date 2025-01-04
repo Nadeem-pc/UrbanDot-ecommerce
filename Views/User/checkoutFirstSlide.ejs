@@ -1,16 +1,20 @@
 <%-include("../../Views/Partials/user/header")%>
-<script src="https://unpkg.com/must-pop@latest/dist/library.js"></script>
+<%-include("../../Views/Partials/user/showCoupons", { coupons })%>
 
+<script src="https://unpkg.com/must-pop@latest/dist/library.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
 <style>
-.address-card {
+  .address-card {
     border: 1px solid #ddd;
     border-radius: 10px;
     padding: 18px;
     margin-bottom: 15px;
     position: relative;
     height: 130px;
-}
+  }
 .address-actions {
     position: absolute;
     top: 20px;
@@ -55,6 +59,21 @@
     margin-top: 80px;
     z-index: 10;
 }
+.applyBtn{
+  background-color: #00b894;
+  border: 0;
+  width: 55px;
+  height: 28px;
+  position: relative;
+  right: 4px;
+}
+.coupon{
+  margin-top: 30px;
+}
+.coupon input{
+  width: 290px;
+}
+
 </style>
 
     <!--================Home Banner Area =================-->
@@ -81,17 +100,6 @@
     <!--================Checkout Area =================-->
     <section class="checkout_area section_gap">
       <div class="container">
-        
-        <!-- <div class="cupon_area">
-          <div class="check_title">
-            <h2>
-              Have a coupon?
-              <a href="#">Click here to enter your code</a>
-            </h2>
-          </div>
-          <input type="text" placeholder="Enter coupon code" />
-          <a class="tp_btn" href="#">Apply Coupon</a>
-        </div> -->
         <div class="billing_details">
             <div class="row">
                 <div class="col-lg-8">
@@ -123,6 +131,8 @@
                     <%}%>
                 </div>
 
+                
+
             <div class="col-lg-4">
               <div class="order_box" style="margin-top: 30px;">
                 <h2>Price details</h2>
@@ -138,28 +148,33 @@
                 </ul>
                 <ul class="list list_2">
                   <li>
-                    <a href="#"
-                      >Price
-                      <span>₹<%=totalPrice+50%></span>
-                     
+                    <a href="#">
+                      Price
+                      <span>₹<%= totalPrice.toFixed(2) %></span>
                     </a>
                   </li>
                   <li>
-                    <a href="#"
-                      >Delivery Charges
-                      <span style="color: #00b894;"> <del>₹50</del> FREE</span>
+                    <a href="#">
+                      Delivery Charges
+                      <span style="color: #00b894;">₹50</span>
                     </a>
                   </li>
+                  
                   <li>
-                    <a href="#"
-                      >Total Payable
-                      <span>₹<%=totalPrice%></span>
+                    <a href="#">
+                      Total Payable
+                      <span>₹<%= (totalPrice+50 ).toFixed(2) %></span>
                     </a>
                   </li>
                 </ul>
     
                 <!-- <a class="main_btn" href="#" style="background-color: #00b894;">Place order</a> -->
               </div>
+              <div class="coupon">
+                <input type="text" placeholder="Having a coupon?" id="coupon"> 
+                <button class="applyBtn" id="applyBtn">Apply</button>
+              </div>
+
             </div>
           </div>
         </div>
@@ -169,36 +184,122 @@
 
 <script>
 
-    async function fetchData() {
+  async function fetchData() {
 
-        let radios = document.getElementsByName('selectedAddress')
+      let radios = document.getElementsByName('selectedAddress')
 
-        let address = null
-        let isSelected = false
-        for(const radio of radios){
-            if(radio.checked){
-                address = radio.value
-                isSelected = true
-                break
-            }
-        }
+      let address = null
+      let isSelected = false
+      for(const radio of radios){
+          if(radio.checked){
+              address = radio.value
+              isSelected = true
+              break
+          }
+      }
+      const totalElement = document.querySelector('.list_2 li:last-child span');
+    const totalPayable = parseFloat(totalElement.innerText.replace('₹', ''));
 
-        let response = await fetch('/getUserAddress',{
-            method : 'POST',
-            headers : {
-                'Content-Type' : "application/json"
-            },
-            body : JSON.stringify({address})
-        })
-        let data = await response.json()
 
-        if(data.status){
-            window.location.href = '/payment'
-        }
-        return Must.failure({time: 3000, content: data.message})
+      let response = await fetch('/getUserAddress',{
+          method : 'POST',
+          headers : {
+              'Content-Type' : "application/json"
+          },
+          body : JSON.stringify({address,totalPayable})
+      })
+      let data = await response.json()
+
+      if(data.status){
+          window.location.href = '/payment'
+      }
+      return Must.failure({time: 3000, content: data.message})
+  }
+    document.getElementById('applyBtn').addEventListener('click', async (event) => {
+    event.preventDefault();
+
+    const applyBtn = document.getElementById('applyBtn');
+    const couponInput = document.getElementById('coupon');
+    const totalElement = document.querySelector('.list_2 li:last-child span');
+    
+    // Ensure original total amount is saved for resetting
+    if (!window.originalTotalAmount) {
+        window.originalTotalAmount = parseFloat(totalElement.innerText.replace('₹', ''));
     }
+
+    // Handle "Remove" functionality
+    if (applyBtn.innerHTML === 'Remove') {
+        const discountLi = document.querySelector('.list_2 li.discount');
+        if (discountLi) {
+            discountLi.remove(); // Remove the discount line
+        }
+
+        // Reset total amount to the original price
+        totalElement.innerText = `₹${window.originalTotalAmount.toFixed(2)}`;
+        
+        // Reset button and provide feedback
+        applyBtn.innerHTML = 'Apply';
+
+        // Clear the coupon input field
+        couponInput.value = '';
+
+        Must.success({ time: 1500, content: 'Coupon removed successfully.', color: '#e74c3c' });
+        document.getElementById("icon").style.backgroundColor = ''; // Reset icon style
+        document.getElementsByClassName("pop-container")[0].style.borderRadius = ''; // Reset container style
+        return;
+    }
+
+    // For "Apply" functionality
+    const response = await fetch('/verifyCoupon', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ couponCode: couponInput.value }),
+    });
+
+    const data = await response.json();
+
+    if (!data.success) {
+        return Must.failure({ time: 3000, content: data.message });
+    }
+
+    // Dynamically show the discount
+    const discountLi = document.querySelector('.list_2 li.discount');
+    if (discountLi) {
+        discountLi.remove(); 
+    }
+
+    const newDiscountLi = document.createElement('li');
+    newDiscountLi.classList.add('discount');
+    newDiscountLi.innerHTML = `
+      <a href="#">
+        Discount
+        <span style="color: #00b894;"> -₹${data.discountAmount.toFixed(2)}</span>
+      </a>
+    `;
+    document.querySelector('.list_2').insertBefore(newDiscountLi, document.querySelector('.list_2 li:last-child'));
+
+    // Update the total payable amount
+    totalElement.innerText = `₹${data.totalAmount.toFixed(2)}`;
+
+    // Change button text to "Remove" and provide feedback
+    applyBtn.innerHTML = 'Remove';
+    Must.success({ time: 1500, content: data.message, color: '#27ae60' });
+    document.getElementById("icon").style.backgroundColor = 'beige';
+    document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px';
+});
+
+// document.getElementById('continueBtn').addEventListener('click', (event) => {
+//     event.preventDefault();
+
+//     const totalElement = document.querySelector('.list_2 li:last-child span');
+//     const totalPayable = parseFloat(totalElement.innerText.replace('₹', ''));
+
+//     // Redirect to the next page with `totalPayable` passed as a query parameter
+//     window.location.href = `/paymentPage?totalPayable=${totalPayable}`;
+// });
     
 </script>
 
 <%-include("../../Views/Partials/user/footer")%>
-   

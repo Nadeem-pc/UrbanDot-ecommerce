@@ -1,5 +1,3 @@
-const User = require('../../Models/userSchema')
-
 const userAuth = (req,res,next) => {
     if(req.session.user){
         next()
@@ -25,8 +23,4 @@ const isLogout = (req,res,next) => {
 }
 
 
-module.exports = {
-    userAuth,
-    isLogout,
-    isBlocked
-}
+module.exports = { userAuth, isLogout, isBlocked }

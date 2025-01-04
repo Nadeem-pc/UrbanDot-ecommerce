@@ -4,9 +4,11 @@ const passport  = require("passport")
 const userController = require('../Controllers/user/userController')
 const cartController = require('../Controllers/user/cartController')
 const orderController = require('../Controllers/user/orderController')
+const walletController = require('../Controllers/user/walletController')
 const profileController = require('../Controllers/user/profileController')
 const addressController = require('../Controllers/user/addressController')
 const ShoppingController = require('../Controllers/user/shoppingController')
+const wishlistController = require('../Controllers/user/wishlistController')
 const {isBlocked, isLogout, userAuth} = require('../Middlewares/User/userAuth')
 
 // Home Page
@@ -44,6 +46,7 @@ user.post('/addAddress',addressController.addAddress)
 user.get('/editAddress/:id', isBlocked, userAuth, addressController.loadEditAddress)
 user.post('/editAddress',userAuth, addressController.editAddress)
 user.get('/deleteAddress/:mainId/:id',addressController.deleteAddress)
+user.get('/wallet',isBlocked, userAuth,walletController.loadWallet)
 
 // Cart Management
 user.get('/cart', isBlocked, userAuth, cartController.loadCart)
@@ -51,8 +54,17 @@ user.post('/cart', userAuth, cartController.addToCart)
 user.post('/removeProduct',cartController.removeProduct)
 user.post('/cart/update',cartController.updateCart)
 
+// Wishlist Management
+user.get('/wishlist', isBlocked, userAuth, wishlistController.loadWishlist)
+user.post('/wishlist',wishlistController.addToWishlist)
+user.delete('/wishlist/remove/:productId',wishlistController.removeProduct)
+
 // Order Management
 user.post('/cancelProduct',orderController.cancelProduct)
+user.post('/storeOrderDetails',orderController.storeOrderDetails)
+user.get('/orderPlaced',isBlocked,userAuth, orderController.showOrderPlaced)
+user.post('/returnProduct',orderController.returnProduct)
+user.get('/downloadInvoice/:orderId',orderController.downloadInvoice)
 user.get('/orderDetails/:orderId', isBlocked, userAuth, orderController.getOrderDetailsForUser)
 
 // Checkout Management
@@ -61,8 +73,11 @@ user.get('/checkout/:id',isBlocked,userAuth,orderController.loadAddNewAddress)
 user.post('/addNewAddress',orderController.addNewAddress)
 user.get('/payment',isBlocked,userAuth, orderController.loadPaymentPage)
 user.post('/getUserAddress',orderController.getUserAddressInCheckout)
-user.post('/storeOrderDetails',orderController.storeOrderDetails)
-user.get('/orderPlaced',isBlocked,userAuth, orderController.showOrderPlaced)
+user.post('/createRazorpayOrder',orderController.createRazorpayOrder);
+user.post('/verifyRazorpayPayment',orderController.verifyRazorpayPayment);
+user.post('/verifyCoupon',orderController.verifyCoupon)
+user.post('/handleFailedPayment',orderController.handleFailedPayment);
+user.post('/retryPayment',orderController.retryPayment)
 
 // Others
 user.get('/blocked', userController.blockedUser)

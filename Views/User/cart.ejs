@@ -1,5 +1,5 @@
 <%-include("../../Views/Partials/user/header")%>
-   
+
 <style>
   #productImg{
     width: 150px;
@@ -77,7 +77,11 @@
                   </div>
                 </td>
                 <td>
-                  <h5>₹<%=item.productId.regularPrice%></h5>
+                  <%if(item.productId.offerPrice === null){%>
+                    <h5>₹<%=item.productId.regularPrice%></h5>
+                  <%}else{%>
+                    <h5>₹<%=item.productId.offerPrice%></h5>
+                  <%}%>  
                 </td>
                 <td>
 
@@ -140,7 +144,7 @@
                   <h5>Subtotal</h5>
                 </td>
                 <td>
-                  <h5>₹<%=cart.totalPrice%></h5>
+                  <h5>₹<%=cart.totalPrice.toFixed(2)%></h5>
                 </td>
      
               </tr>
@@ -179,33 +183,34 @@
    
 <script>
 
-function increaseQty(button) {
+  function increaseQty(button) {
     const input = button.parentElement.querySelector("input.qty");
     let quantity = parseInt(input.value, 10);
     const stock = parseInt(input.getAttribute("data-stock"), 10);
-    const maxQuantity = Math.min(stock, 10); // Limit quantity to 10 or stock, whichever is smaller
-
+    const maxQuantity = Math.min(stock, 10); 
     if (quantity < maxQuantity) {
       input.value = quantity + 1;
       updateCartItem(input);
+      window.location.reload()
     } else {
       document.getElementById('cart-btn').style.display = 'none'
       document.getElementsByClassName('main_btn')
     }
-  }
-
-  function decreaseQty(button) {
-    const input = button.parentElement.querySelector("input.qty"); // Find the input in the same parent
-    let quantity = parseInt(input.value, 10); // Convert value to a number
-    if (!isNaN(quantity) && quantity > 1) {
-      input.value = quantity - 1;
-      updateCartItem(input); // Update the cart item
     }
-  }
+
+    function decreaseQty(button) {
+      const input = button.parentElement.querySelector("input.qty"); 
+      let quantity = parseInt(input.value, 10); 
+      if (!isNaN(quantity) && quantity > 1) {
+        input.value = quantity - 1;
+        updateCartItem(input); 
+        window.location.reload()
+      }
+    }
 
   function updateCartItem(input) {
     const quantity = parseInt(input.value, 10);
-    const productId = input.getAttribute("data-product-id"); // Ensure data-product-id is set correctly
+    const productId = input.getAttribute("data-product-id"); 
 
     fetch(`/cart/update`, {
       method: 'POST',

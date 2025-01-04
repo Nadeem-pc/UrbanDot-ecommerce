@@ -20,7 +20,7 @@ const getStockDetails = async (req,res) => {
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json("Internal Server Error");
+        res.redirect('/admin/pageNotFound')
     }
 }
 

@@ -44,11 +44,8 @@ const deleteAddress = async (req,res) => {
             { _id: new mongoose.Types.ObjectId(mainId), 'address._id' : new mongoose.Types.ObjectId(id) }, 
             {$set:{'address.$.isDeleted' : true}}
         );
-
-        setTimeout(() => {
-            res.redirect('/profile')
-        },1500)
- 
+        return res.redirect('/profile')
+        
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: "Internal Server Error" })
