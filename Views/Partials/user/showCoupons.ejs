@@ -122,6 +122,9 @@
     </div>
     <div class="dropper" id="dropper">
         <ul>
+            <%if(!coupons[0]){%>
+                return null
+            <%}%>
             <% for(let i = 0; i < coupons.length; i++){ %>
                 <li>
                     <div class="exp" >
