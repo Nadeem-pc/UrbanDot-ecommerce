@@ -122,24 +122,27 @@
     </div>
     <div class="dropper" id="dropper">
         <ul>
-            <%if(!coupons[0]){%>
-                return null
-            <%}%>
-            <% for(let i = 0; i < coupons.length; i++){ %>
+            <%if(coupons.length !== 0){%>
+                <% for(let i = 0; i < coupons.length; i++){ %>
+                    <li>
+                        <div class="exp" >
+                            ⏰ Expires in: <%= coupons[i].daysLeft %> Days
+                        </div>
+                        <h3 class="name"><%= coupons[i].name %></h3>
+                        <span class="description">Get ₹<%= coupons[i].discount %> discount on orders above ₹<%= coupons[i].minPurchase %></span>
+                        <div class="clipboard">
+                            <span id="couponCode-<%= i %>"><%= coupons[i].code %></span>
+                            <button onclick="copyCode('<%= i %>', this)">
+                                Copy code
+                            </button>
+                        </div>
+                    </li>
+                <% } %>
+            <%}else{%>    
                 <li>
-                    <div class="exp" >
-                        ⏰ Expires in: <%= coupons[i].daysLeft %> Days
-                    </div>
-                    <h3 class="name"><%= coupons[i].name %></h3>
-                    <span class="description">Get ₹<%= coupons[i].discount %> discount on orders above ₹<%= coupons[i].minPurchase %></span>
-                    <div class="clipboard">
-                        <span id="couponCode-<%= i %>"><%= coupons[i].code %></span>
-                        <button onclick="copyCode('<%= i %>', this)">
-                            Copy code
-                        </button>
-                    </div>
+                    <h4>No coupons available</h4>
                 </li>
-            <% } %>
+            <%}%>   
         </ul>
     </div>
 
