@@ -17,18 +17,18 @@ const loadOffer = async (req, res) => {
         const totalOffers = await Offer.countDocuments();
 
         const offers = await Offer.find()
-            .populate({
-                path: 'productId',
-                select: 'productName', 
-            })
-            .populate({
-                path: 'categoryId',
-                select: 'name', 
-            })
-            .skip(skip)
-            .limit(limit);
+        .populate({
+            path: 'productId',
+            select: 'productName', 
+        })
+        .populate({
+            path: 'categoryId',
+            select: 'name', 
+        })
+        .skip(skip)
+        .limit(limit);
 
-            const totalPages = Math.ceil(totalOffers / limit)
+        const totalPages = Math.ceil(totalOffers / limit)
 
         return res.render('offer', { category, products, offer: offers, currentPage: parseInt(page), totalPages});
     } catch (error) {

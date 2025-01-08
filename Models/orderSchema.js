@@ -37,11 +37,6 @@ const orderSchema = mongoose.Schema({
             default: 0
         },
 
-        // refundAmount : {
-        //     type: Number,
-        //     default: 0
-        // },
-
         status: {
             type: String,
             default: 'Pending',

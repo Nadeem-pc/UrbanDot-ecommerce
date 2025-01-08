@@ -15,16 +15,35 @@ const session = require('express-session');
 const { isBlocked, userAuth } = require("../../Middlewares/User/userAuth");
 
  
-const loadHomePage = async (req,res) => {
-    try{    
-        const products = await Product.find({isBlocked:false})
-        return res.render("home",{ products, user: req.session.user || null })
-    }
-    catch(error){
+const loadHomePage = async (req, res) => {
+    try {
+        const now = new Date();
+        const offers = await Offer.find({ isActive: true });
+
+        for (let offer of offers) {
+            if (new Date(offer.expiresOn) < now) {
+                if (offer.appliedTo === "Product") {
+                    await Product.findByIdAndUpdate(offer.productId, { $set: { offerPrice: null } });
+                } else if (offer.appliedTo === "Category") {
+                    const categoryId = offer.categoryId
+                    const productsInCategory = await Product.find({ category: categoryId })
+                    for (let product of productsInCategory) {
+                        product.offerPrice = null
+                        await product.save();
+                    }  
+                }
+                await Offer.deleteOne({ _id: offer._id });
+            }
+        }
+
+        const products = await Product.find({ isBlocked: false });
+        return res.render("home", { products, user: req.session.user || null });
+
+    } catch (error) {
         console.log("Something Went Wrong");
-        res.redirect('/pageNotFound')       
+        res.redirect('/pageNotFound');
     }
-}
+};
 
 const pageNotFound = async (req,res) => {
     try{
