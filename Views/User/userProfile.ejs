@@ -249,7 +249,7 @@
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
             margin-bottom: 30px;
         }
@@ -381,16 +381,12 @@
                 <h2 class="section-title">Profile Information</h2>
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-value">12</div>
+                        <div class="stat-value"><%=orders.length%></div>
                         <div class="stat-label">Orders</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value">3</div>
-                        <div class="stat-label">Wishlisted</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">250</div>
-                        <div class="stat-label">Points</div>
+                        <div class="stat-value"><%=address.address.length%></div>
+                        <div class="stat-label">Addresses</div>
                     </div>
                 </div>
                 
@@ -875,7 +871,7 @@
   <div style="margin-top:10px;color:grey;">Returned</div>`
 : product.status !== "Cancelled" ? `
 <div>
-  <button onclick="cancelProduct('${product.product._id}', '${orderDetails._id}')" 
+  <button id="cancelProduct-btn" onclick="cancelProduct('${product.product._id}', '${orderDetails._id}')" 
           style="margin-top:10px;background-color:red;border:0;color:white;width:70px;border-radius:4px;">
       Cancel
   </button>
@@ -911,9 +907,17 @@
                 </a>
             ` : ''}
                         </div>
-                        <div style="display: flex; justify-content: center; align-items: center;">
-                            <strong>Total amount: 50 (Shipping) + ${orderDetails.totalAmount-50} =  ₹${orderDetails.totalAmount}</strong>
-                        </div>
+                   <div style="display: flex; justify-content: center; align-items: center;">
+    ${orderDetails.totalAmount !== 0 ? `
+        <strong>
+            Total amount: 50 (Shipping) + ${orderDetails.totalAmount - 50} = ₹${orderDetails.totalAmount}
+        </strong>
+    ` : `
+        <strong>
+            Total amount: 0
+        </strong>
+    `}
+</div>
                         <div>
                             <div>Delivery Address <br></div>
                             <div style="color: #636e72">
@@ -923,6 +927,15 @@
                                     <br>${orderDetails.deliveryAddress.pincode}<br><p>Phone number: ${orderDetails.deliveryAddress.phone}</p>`
                                     : '<span style="color: red;">No delivery address found.</span>'}
                             </div>
+                            
+                            ${orderDetails.orderStatus !== "Cancelled" ? `
+    <button 
+        id="cancelOrder-btn" 
+        style="border:0; border-radius:3px; width:100px; background-color:red; color:white;" 
+        onclick="cancelOrder('${orderDetails._id}')">
+        Cancel Order
+    </button>
+` : ''}
                             
                         </div>   
                         
@@ -936,6 +949,45 @@
                 console.error('Error fetching order details:', error);
                 targetTab.innerHTML = '<p>Failed to load order details. Please try again later.</p>';
             });
+            }
+
+            async function cancelOrder(orderId) {
+                // Ask for confirmation using SweetAlert
+                const confirmation = await Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you really want to cancel this order?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, cancel it!',
+                    cancelButtonText: 'No, keep it'
+                });
+
+                // If the user confirms, proceed with cancellation
+                if (confirmation.isConfirmed) {
+                    let response = await fetch('/cancelOrder', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ orderId })
+                    });
+
+                    let data = await response.json();
+
+                    if (!data.success) {
+                        return Must.failure({ time: 3000, content: data.message });
+                    }
+              
+                    Must.success({ time: 1500, content: data.message, color: '#27ae60' });
+                    setTimeout(()=>{
+                        location.reload()
+                    },1500)
+
+                    document.getElementById("icon").style.backgroundColor = 'beige';
+                    document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px';
+                } 
             }
 
             async function retryPayment(orderId) {
@@ -1032,6 +1084,7 @@
         showConfirmButton: false,
       });
 
+      document.getElementById('cancelProduct-btn').style.display = 'none'
       setTimeout(() => {
         window.location.href = '/profile';
       }, 1500);

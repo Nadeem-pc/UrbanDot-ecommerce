@@ -16,6 +16,7 @@
     font-weight: bold;
   }
   .single_product_item {
+    /* max-height: 70vh; */
     border: 1px solid #ddd;
     border-radius: 5px;
     text-align: center;
@@ -373,7 +374,7 @@
                   <div class="media">
                     <div class="d-flex">
                       <img
-                        src="img/product/single-product/review-1.png"
+                        src=""
                       />
                     </div>
                     <div class="media-body">
@@ -392,7 +393,7 @@
                   <div class="media">
                     <div class="d-flex">
                       <img
-                        src="img/product/single-product/review-2.png"
+                        src=""
                         alt=""
                       />
                     </div>
@@ -415,7 +416,7 @@
                   <div class="media">
                     <div class="d-flex">
                       <img
-                        src="img/product/single-product/review-3.png"
+                        src=""
                         alt=""
                       />
                     </div>
@@ -488,19 +489,25 @@
 
   let count = 0
   
-  function nextImg(Jsonimages){
-    let images = JSON.parse(Jsonimages)
-    if(count+1 >= images.length || count < 0) return ;
-    let instance = '/uploads/product-images/'
-    document.getElementById('image').src = instance+images[++count]
-  }
+  function nextImg(Jsonimages) {
+  let images = JSON.parse(Jsonimages);
+  if (count + 1 >= images.length || count < 0) return;
+  let instance = '/uploads/product-images/';
+  document.getElementById('image').src = instance + images[++count];
 
-  function prevImg(Jsonimages){
-    let images = JSON.parse(Jsonimages)
-    if(count <= 0) return ;
-    let instance = '/uploads/product-images/'
-    document.getElementById('image').src = instance+images[--count]
-  }
+  // Update the zoom background URL
+  document.getElementById('imageZoom').style.setProperty('--url', `url('${instance + images[count]}')`);
+}
+
+function prevImg(Jsonimages) {
+  let images = JSON.parse(Jsonimages);
+  if (count <= 0) return;
+  let instance = '/uploads/product-images/';
+  document.getElementById('image').src = instance + images[--count];
+
+  // Update the zoom background URL
+  document.getElementById('imageZoom').style.setProperty('--url', `url('${instance + images[count]}')`);
+}
 
   const imageZoom = document.getElementById('imageZoom');
 

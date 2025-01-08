@@ -33,14 +33,9 @@ const couponSchema = mongoose.Schema({
         default : 0,
     },
 
-    // maximumDiscount : {
-    //     type : Number,
-    //     required : true,
-    // },
-
     status : {
         type : String,
-        enum : ['Active','Expired','Disabled'],
+        enum : ['Active','Expired'],
         default : 'Active'
     },
 })

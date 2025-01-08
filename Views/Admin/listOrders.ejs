@@ -56,7 +56,7 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <!-- <th>#ID</th> -->
+                                        <th>#ID</th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Total</th>
@@ -67,23 +67,14 @@
                                 </thead>
                                 <tbody>
                                     <% if (orders && orders.length > 0) { %> 
-                                        <% orders.forEach(order => { %> <!-- Loop through each order -->
-                                            <tr>
-                                                <!-- Order ID -->
-                                           
-                                                    <!-- <td></td> -->
-                                              
+                                        <% let serialNumber = (currentPage - 1) * 10 + 1; %> 
+                                        <% orders.forEach(order => { %>
 
-                                                <!-- User Name -->
+                                            <tr>
+                                                <td><%= serialNumber++ %></td>
                                                 <td><b><%= order.userDetails[0]?.username  %></b></td>
-                                
-                                                <!-- User Email -->
                                                 <td><%= order.userDetails[0]?.email || 'N/A' %></td>
-                                
-                                                <!-- Total Amount -->
                                                 <td>₹<%= order.totalAmount %></td>
-                                
-                                                <!-- Order Status -->
                                                 <td>
                                                     <% if (order.orderStatus === 'Pending') { %>
                                                         <span class="badge rounded-pill alert-warning">Pending</span>
@@ -98,22 +89,10 @@
                                                     <%}%>    
                                                 </td>
                                 
-                                                <!-- Order Date -->
                                                 <td><%= new Date(order.orderDate).toLocaleDateString() || 'N/A' %></td>
                                 
-                                                <!-- Actions -->
                                                 <td class="text-end">
                                                     <a href="/admin/orderDetails/<%=order._id%>" class="btn btn-md rounded font-sm">Details</a>
-                                                    <!-- <div class="dropdown">
-                                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm">
-                                                            <i class="material-icons md-more_horiz"></i>
-                                                        </a>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="#">View detail</a>
-                                                            <a class="dropdown-item" href="#">Edit info</a>
-                                                            <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                        </div>
-                                                    </div> -->
                                                 </td>
                                             </tr>
                                         <% }) %>
@@ -129,15 +108,14 @@
                     </div>
                     <!-- card-body end// -->
                 </div>
-                <!-- card end// -->
                 <div class="pagination-area mt-15 mb-50">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-start">
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <!-- <li class="page-item"><a class="page-link" href="#">02</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">></a>
-                            </li> -->
+                            <%for(let i = 1; i <= totalPages; i++){%>
+                                <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
+                                    <a class="page-link" href="?page=<%= i %>"> <%= i %> </a>
+                                </li>
+                            <%}%>
                         </ul>
                     </nav>
                 </div>

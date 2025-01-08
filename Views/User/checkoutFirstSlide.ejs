@@ -229,25 +229,47 @@
 
     // Handle "Remove" functionality
     if (applyBtn.innerHTML === 'Remove') {
-        const discountLi = document.querySelector('.list_2 li.discount');
-        if (discountLi) {
-            discountLi.remove(); // Remove the discount line
-        }
-
-        // Reset total amount to the original price
-        totalElement.innerText = `₹${window.originalTotalAmount.toFixed(2)}`;
-        
-        // Reset button and provide feedback
-        applyBtn.innerHTML = 'Apply';
-
-        // Clear the coupon input field
-        couponInput.value = '';
-
-        Must.success({ time: 1500, content: 'Coupon removed successfully.', color: '#e74c3c' });
-        document.getElementById("icon").style.backgroundColor = ''; // Reset icon style
-        document.getElementsByClassName("pop-container")[0].style.borderRadius = ''; // Reset container style
-        return;
+    const discountLi = document.querySelector('.list_2 li.discount');
+    if (discountLi) {
+        discountLi.remove(); // Remove the discount line
     }
+
+    // Reset total amount to the original price
+    totalElement.innerText = `₹${window.originalTotalAmount.toFixed(2)}`;
+    
+    // Reset button and provide feedback
+    applyBtn.innerHTML = 'Apply';
+
+    // Clear the coupon input field
+    const couponCode = couponInput.value;
+    couponInput.value = '';
+
+    // Notify the backend to remove the couponId from the user's usedCoupons array
+    fetch('/removeCoupon', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ couponCode }),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        if (data.success) {
+            Must.success({ time: 1500, content: data.message, color: '#e74c3c' });
+
+    document.getElementById("icon").style.backgroundColor = ''; 
+    document.getElementsByClassName("pop-container")[0].style.borderRadius = ''; 
+        } else {
+            Must.failure({ time: 1500, content: data.message });
+        }
+    })
+    .catch((error) => {
+        console.error('Error removing coupon:', error);
+        Must.failure({ time: 1500, content: 'An error occurred. Please try again.' });
+    });
+
+    return;
+}
 
     // For "Apply" functionality
     const response = await fetch('/verifyCoupon', {

@@ -117,12 +117,14 @@
                 </div>
                   
                 </td>
-                <td>
-                  <h5>₹<%=item.totalPrice%></h5>
-                </td>
-                <td>
-                  <button id="dltBtn" onclick="removeItem(`<%= cart._id %>`,`<%= item.productId._id %>`)">REMOVE</button>
-                </td>
+                  <td>
+                    <h5 class="total-price" data-product-id="<%= item.productId._id %>">
+                      ₹<%= item.totalPrice %>
+                    </h5>
+                  </td>
+                  <td>
+                    <button id="dltBtn" onclick="removeItem(`<%= cart._id %>`,`<%= item.productId._id %>`)">REMOVE</button>
+                  </td>
               </tr>
               
               <%})%>
@@ -144,7 +146,9 @@
                   <h5>Subtotal</h5>
                 </td>
                 <td>
-                  <h5>₹<%=cart.totalPrice.toFixed(2)%></h5>
+                  <h5 id="cart-subtotal">
+                    ₹<%= cart.totalPrice.toFixed(2) %>
+                  </h5>
                 </td>
      
               </tr>
@@ -183,65 +187,67 @@
    
 <script>
 
-  function increaseQty(button) {
+function increaseQty(button) {
     const input = button.parentElement.querySelector("input.qty");
     let quantity = parseInt(input.value, 10);
     const stock = parseInt(input.getAttribute("data-stock"), 10);
     const maxQuantity = Math.min(stock, 10); 
+
     if (quantity < maxQuantity) {
-      input.value = quantity + 1;
-      updateCartItem(input);
-      window.location.reload()
+        input.value = quantity + 1;
+        updateCartItem(input); // Update cart without reloading
     } else {
-      document.getElementById('cart-btn').style.display = 'none'
-      document.getElementsByClassName('main_btn')
+        document.getElementById('cart-btn').style.display = 'none';
+        // Optional: You can add more UI feedback when quantity limit is reached
     }
-    }
+}
 
-    function decreaseQty(button) {
-      const input = button.parentElement.querySelector("input.qty"); 
-      let quantity = parseInt(input.value, 10); 
-      if (!isNaN(quantity) && quantity > 1) {
+function decreaseQty(button) {
+    const input = button.parentElement.querySelector("input.qty"); 
+    let quantity = parseInt(input.value, 10); 
+    
+    if (!isNaN(quantity) && quantity > 1) {
         input.value = quantity - 1;
-        updateCartItem(input); 
-        window.location.reload()
-      }
+        updateCartItem(input); // Update cart without reloading
     }
+}
 
-  function updateCartItem(input) {
+function updateCartItem(input) {
     const quantity = parseInt(input.value, 10);
     const productId = input.getAttribute("data-product-id"); 
 
     fetch(`/cart/update`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        productId: productId,
-        quantity: quantity,
-      }),
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            productId: productId,
+            quantity: quantity,
+        }),
     })
     .then((response) => response.json())
     .then((data) => {
-      if (data.success) {
-        // Update UI with new totals
-        const totalPriceElement = document.querySelector(`.total-price[data-product-id="${productId}"]`);
-        const subtotalElement = document.getElementById("cart-subtotal");
+        if (data.success) {
+            // Update the individual product price in the cart
+            const totalPriceElement = document.querySelector(`.total-price[data-product-id="${productId}"]`);
+            const subtotalElement = document.getElementById("cart-subtotal");
 
-        if (totalPriceElement) {
-        totalPriceElement.textContent = `₹${data.totalPrice.toFixed(2)}`;
-        }
+            // Update total price for this item
+            if (totalPriceElement) {
+                totalPriceElement.textContent = `₹${data.totalPrice.toFixed(2)}`;
+            }
 
-        if (subtotalElement) {
-          subtotalElement.textContent = `₹${data.cartSubtotal.toFixed(2)}`;
+            // Update the overall cart subtotal
+            if (subtotalElement) {
+                subtotalElement.textContent = `₹${data.cartSubtotal.toFixed(2)}`;
+            }
+        } else {
+            console.error("Failed to update cart:", data.message);
         }
-      } else {
-        console.error("Failed to update cart:", data.message);
-      }
     })
     .catch((error) => console.error("Error:", error));
-  }
+}
 
   async function removeItem(mainId,productId) {
 

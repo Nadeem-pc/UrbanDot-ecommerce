@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const ObjectId = mongoose.Types.ObjectId
 
 const userSchema =  mongoose.Schema({
     username : {
@@ -43,6 +44,14 @@ const userSchema =  mongoose.Schema({
         type: Number,
         default: null
     },
+
+    usedCoupons : [{
+        couponId : {
+            type : ObjectId,
+            ref : "Coupon",
+            required : true
+        }
+    }]
 
 },  )
 

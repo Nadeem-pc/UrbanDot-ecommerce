@@ -6,7 +6,7 @@ const Order = require('../../Models/orderSchema')
 
 const loadSalesReport = async (req, res) => {
     try {
-        const { filter, startDate, endDate } = req.query;
+        const { filter, startDate, endDate, page = 1, limit = 10 } = req.query;
 
         let matchConditions = {};
 
@@ -45,6 +45,11 @@ const loadSalesReport = async (req, res) => {
             };
         }
 
+        // Pagination logic
+        const currentPage = parseInt(page) || 1
+        const ordersPerPage = parseInt(limit)
+        const skip = (currentPage - 1) * ordersPerPage
+
         let orders = await Order.aggregate([
             {
                 $match: matchConditions,
@@ -66,7 +71,16 @@ const loadSalesReport = async (req, res) => {
             {
                 $sort: { createdAt: -1 },
             },
+            {
+                $skip: skip, // Skip documents for pagination
+            },
+            {
+                $limit: ordersPerPage, // Limit documents per page
+            },
         ]);
+
+        const totalRecords = await Order.countDocuments(matchConditions); // Total orders matching the filter
+        const totalPages = Math.ceil(totalRecords / ordersPerPage);
 
         const stats = await Order.aggregate([
             {
@@ -96,6 +110,8 @@ const loadSalesReport = async (req, res) => {
                 totalDiscount: totalDiscount.toFixed(2),
             },
             noData: orders.length === 0,
+            currentPage,
+            totalPages,
         });
     } catch (error) {
         console.error('Error loading sales report:', error);

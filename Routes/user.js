@@ -61,11 +61,13 @@ user.delete('/wishlist/remove/:productId',wishlistController.removeProduct)
 
 // Order Management
 user.post('/cancelProduct',orderController.cancelProduct)
+user.post('/cancelOrder',orderController.cancelOrder)
 user.post('/storeOrderDetails',orderController.storeOrderDetails)
 user.get('/orderPlaced',isBlocked,userAuth, orderController.showOrderPlaced)
 user.post('/returnProduct',orderController.returnProduct)
 user.get('/downloadInvoice/:orderId',orderController.downloadInvoice)
 user.get('/orderDetails/:orderId', isBlocked, userAuth, orderController.getOrderDetailsForUser)
+user.post('/removeCoupon',orderController.removeCoupon)
 
 // Checkout Management
 user.get('/checkoutInitial',isBlocked, userAuth,orderController.loadFirstPageOfCheckout)

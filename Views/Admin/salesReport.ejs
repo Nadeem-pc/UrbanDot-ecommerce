@@ -63,113 +63,108 @@
                     </div>
                 </div>
 
-                    <div class="card mb-4">
-                        <header class="card-header">
-                            <div class="">
-                                <h5>Filter Sales Report</h5>
-                            </div>
-                        </header> 
+                <div class="card mb-4">
+                    <header class="card-header">
+                        <div class="">
+                            <h5>Filter Sales Report</h5>
+                        </div>
+                    </header> 
+                        
+                    <div class="col-lg-6 col-md-6 ms-auto text-md-end p-15">
+                        <select class="form-select d-inline-block mb-lg-0 mr-5 mw-200" id="filterSelect">
+                            <option value="1day">Last 1 Day</option>
+                            <option value="1week">Last 1 Week</option>
+                            <option value="1month">Last 1 Month</option>
+                            <option value="1year">Last 1 Year</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    
+                        <!-- Custom Date Range Inputs (Initially hidden) -->
+                        <div id="customDateRange" style="display:none;">
+                            <input type="date" id="startDate" />
+                            <input type="date" id="endDate" />
+                        </div>
+                    
+                        <a class="btn btn-primary mb-1" href="#" id="generateReportBtn">Generate Report</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <header class="card-header">
+                        <div class="">
+                            <h5>Sales Overview</h5>
                             
-                        <div class="col-lg-6 col-md-6 ms-auto text-md-end p-15">
-                            <select class="form-select d-inline-block mb-lg-0 mr-5 mw-200" id="filterSelect">
-                                <option value="1day">Last 1 Day</option>
-                                <option value="1week">Last 1 Week</option>
-                                <option value="1month">Last 1 Month</option>
-                                <option value="1year">Last 1 Year</option>
-                                <option value="custom">Custom</option>
-                            </select>
-                        
-                            <!-- Custom Date Range Inputs (Initially hidden) -->
-                            <div id="customDateRange" style="display:none;">
-                                <input type="date" id="startDate" />
-                                <input type="date" id="endDate" />
-                            </div>
-                        
-                            <a class="btn btn-primary mb-1" href="#" id="generateReportBtn">Generate Report</a>
+                        </div>
+                    </header> 
+
+                    <div class="row col-12 d-flex justify-content-between align-items-center p-5">
+                        <div class="card col-lg-3 p-3">
+                            <h5>Total Orders</h5>
+                            <h6><%= stats.totalOrders %></h6>
+                        </div>
+                        <div class="card col-lg-3 p-3">
+                            <h5>Total Sales</h5>
+                            <h6>₹ <%= stats.totalSales %></h6>
+                        </div>
+                        <div class="card col-lg-3 p-3">
+                            <h5>Total Discount</h5>
+                            <h6>₹ <%= stats.totalDiscount %></h6>
                         </div>
                     </div>
+                </div>
 
-                    <div class="card">
-                        <header class="card-header">
-                            <div class="">
-                                <h5>Sales Overview</h5>
-                               
-                            </div>
-                        </header> 
-
-                        <div class="row col-12 d-flex justify-content-between align-items-center p-5">
-                            <div class="card col-lg-3 p-3">
-                                <h5>Total Orders</h5>
-                                <h6><%= stats.totalOrders %></h6>
-                            </div>
-                            <div class="card col-lg-3 p-3">
-                                <h5>Total Sales</h5>
-                                <h6>₹ <%= stats.totalSales %></h6>
-                            </div>
-                            <div class="card col-lg-3 p-3">
-                                <h5>Total Discount</h5>
-                                <h6>₹ <%= stats.totalDiscount %></h6>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">OrderID</th>
-                                        <th scope="col">Customer</th>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Payment Method</th>
-                                        <th scope="col">Coupon Discount</th>
-                                        <th scope="col" class="text-end">Final Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% if (orders && orders.length > 0) { %> 
-                                        <% let serialNumber = 1; %> 
-                                        <% orders.forEach(order => { %> 
-                                            <tr>
-                                                <td><%= serialNumber++ %></td>
-                                                <td><%= order.orderId %></td>
-                                                <td><%= order.userDetails?.username || 'N/A' %></td>
-                                                <td><%= new Date(order.orderDate).toLocaleDateString() %></td>
-                                                <td><%= order.paymentMethod %></td>
-                                                <td>₹<%= order.totalDiscountApplied %></td>
-                                                <td class="text-end">₹<%= order.totalAmount %></td>
-                                            </tr>
-                                        <% }) %>
-                                    <% } else { %>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">OrderID</th>
+                                    <th scope="col">Customer</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Payment Method</th>
+                                    <th scope="col">Coupon Discount</th>
+                                    <th scope="col" class="text-end">Final Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (orders && orders.length > 0) { %> 
+                                    <% let serialNumber = (currentPage - 1) * 10 + 1; %> 
+                                    <% orders.forEach(order => { %> 
                                         <tr>
-                                            <td colspan="7" class="text-center">No orders found</td>
+                                            <td><%= serialNumber++ %></td>
+                                            <td><%= order.orderId %></td>
+                                            <td><%= order.userDetails?.username || 'N/A' %></td>
+                                            <td><%= new Date(order.orderDate).toLocaleDateString() %></td>
+                                            <td><%= order.paymentMethod %></td>
+                                            <td>₹<%= order.totalDiscountApplied %></td>
+                                            <td class="text-end">₹<%= order.totalAmount %></td>
                                         </tr>
-                                    <% } %>
-                                </tbody>
-                            </table>
-                        </div>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="7" class="text-center">No orders found</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
                     </div>
+                </div>
            
-                        
-                     
-                <!-- card end// -->
-                <!-- <div class="pagination-area mt-15 mb-50">
+                <div class="pagination-area mt-15 mb-50">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-start">
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <%for(let i = 1; i <= totalPages; i++){%>
+                                <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
+                                    <a class="page-link" href="?page=<%= i %>"> <%= i %> </a>
+                                </li>
+                            <%}%>
                         </ul>
                     </nav>
-                </div> -->
+                </div>
             </section>
             <%-include("../../Views/Partials/admin/footer")%>
         </main>
-
-                </div>
-              </div>
-            </div>
-          </div>
-
 
           <script>
             // Show/Hide custom date range inputs based on selection

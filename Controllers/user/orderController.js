@@ -14,6 +14,7 @@ const { use } = require('passport')
 const PDFDocument = require('pdfkit-table');
 const fs = require('fs');
 const session = require('express-session')
+const { log } = require('console')
 
 
 const loadFirstPageOfCheckout = async (req, res) => {
@@ -149,7 +150,24 @@ const verifyCoupon = async (req, res) => {
                 message: `Minimum purchase of ${coupon.minPurchase} is required for activating this coupon`
             });
         }
+        const couponUsed = await User.findOne({_id: userId,'usedCoupons.couponId': coupon._id})
+        
+        if(couponUsed){
+            return res.json({success: false, message: "Coupon already used"})
+        }
 
+        await User.findByIdAndUpdate(
+            userId,
+            {
+                $addToSet: {
+                    usedCoupons: {
+                        couponId: coupon._id
+                    }
+                }
+            },
+            { new: true }
+        );
+        
         return res.json({
             success: true,
             message: `Coupon applied! You saved ₹${discountAmount.toFixed(2)}`,
@@ -161,6 +179,29 @@ const verifyCoupon = async (req, res) => {
         return res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 };
+
+const removeCoupon = async (req,res) => {
+    const { couponCode } = req.body;
+    const userId = req.session.user; 
+    try {
+        
+        const coupon = await Coupon.findOne({ code: couponCode });
+        if (!coupon) {
+            return res.json({ success: false, message: 'Invalid coupon code.' });
+        }
+
+        await User.findByIdAndUpdate(userId, {
+            $pull: {
+                usedCoupons: { couponId: coupon._id }
+            }
+        });
+
+        res.json({ success: true, message: 'Coupon removed successfully.' });
+    } catch (error) {
+        console.error('Error removing coupon:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+}
 
 const loadAddNewAddress = async (req,res) => {
     try {
@@ -390,7 +431,18 @@ const cancelProduct = async (req, res) => {
     try {
         const { productId, orderId } = req.body;
 
-        let cancelOrder = await Order.updateOne(
+        // Find the order first to check payment method and get product details
+        const order = await Order.findOne({ _id: orderId });
+        if (!order) {
+            return res.json({ status: false, message: "Order not found." });
+        }
+
+        const product = order.orderedItems.find(item => item.product.toString() === productId);
+        if (!product) {
+            return res.json({ status: false, message: "Product not found in order." });
+        }
+
+        const cancelOrder = await Order.updateOne(
             {
                 _id: orderId,
                 "orderedItems.product": productId,
@@ -401,26 +453,127 @@ const cancelProduct = async (req, res) => {
                 },
             }
         );
+        const refundAmount = product.price * product.quantity;
+
+        const updatedTotalAmount = order.totalAmount - refundAmount;
+
+        const updatedOrder = await Order.findByIdAndUpdate(
+            orderId,
+            { totalAmount: updatedTotalAmount },
+            { new: true } 
+        );
+        
 
         if (cancelOrder.modifiedCount > 0) {
-            const order = await Order.findOne({ _id: orderId });
+            // Refund logic for Wallet or Razorpay
+            if (order.paymentMethod === "Wallet" || order.paymentMethod === "Razorpay" && order.paymentStatus === "Success") {
 
-            if (order && order.orderedItems.every(item => item.status === "Cancelled")) {
-                // Update the overall order status if all items are cancelled
+          
+                // Update the user's wallet
+                const wallet = await Wallet.findOne({ userId: order.userId });
+                if (wallet) {
+                    wallet.balanceAmount += refundAmount;
+                    wallet.transactions.push({
+                        type: "credit",
+                        amount: refundAmount.toFixed(2),
+                        description: `Refund for cancelled product on order ${order.orderId}`,
+                    });
+                    await wallet.save();
+                } else {
+                    await Wallet.create({
+                        userId: order.userId,
+                        balanceAmount: refundAmount.toFixed(2),
+                        transactions: [
+                            {
+                                type: 'credit',
+                                amount: refundAmount.toFixed(2),
+                                description: `Refund for cancelled order ${order.orderId}`
+                            }
+                        ]
+                    });
+                }
+            }
+
+            // Check if all items are cancelled to update the overall order status
+            const updatedOrder = await Order.findOne({ _id: orderId });
+            if (updatedOrder.orderedItems.every(item => item.status === "Cancelled")) {
                 await Order.updateOne(
                     { _id: orderId },
                     { $set: { orderStatus: "Cancelled" } }
                 );
             }
-            return res.json({ status: true, message: "Order cancelled successfully." });
+
+            return res.json({ status: true, message: "Order cancelled and refund processed successfully." });
         }
+
         res.json({ status: false, message: "Order cancellation failed." });
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return res.status(500).json({ error: "Internal Server Error" });
     }
-};
+}
+
+const cancelOrder = async (req,res) => {
+    const { orderId } = req.body
+    try {
+        const order = await Order.findById(orderId);
+        const cancelOrder = await Order.findByIdAndUpdate(
+            orderId,
+            {
+                orderStatus: 'Cancelled',
+                "orderedItems.$[].status": "Cancelled" 
+            },
+            { new: true, arrayFilters: [] } 
+        );
+        if(!cancelOrder){
+            return res.json({ success: false, message: "Order cancellation failed. Please try again"})
+        }
+
+
+        const updatedOrder = await Order.findByIdAndUpdate(
+            orderId,
+            { totalAmount: 0 },
+            { new: true } 
+        );
+
+        if (order.paymentMethod === 'Wallet' || order.paymentMethod === 'Razorpay' && order.paymentStatus === 'Success') {
+            // Refund the total amount to the user's wallet
+            const refundAmount = order.totalAmount;
+
+            const wallet = await Wallet.findOne({ userId: order.userId });
+            if (wallet) {
+                // Update wallet balance and add a transaction
+                wallet.balanceAmount += refundAmount;
+                wallet.transactions.push({
+                    type: 'credit',
+                    amount: refundAmount,
+                    description: `Refund for cancelled order ${order.orderId}`
+                });
+                await wallet.save();
+            } else {
+                // If the wallet doesn't exist, create a new wallet for the user
+                await Wallet.create({
+                    userId: order.userId,
+                    balanceAmount: refundAmount,
+                    transactions: [
+                        {
+                            type: 'credit',
+                            amount: refundAmount,
+                            description: `Refund for cancelled order ${order.orderId}`
+                        }
+                    ]
+                });
+            }
+        }
+
+        res.json({ success: true, message: "Order cancelled successfully"})
+        
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
 
 const getOrderDetailsForUser = async (req, res) => {
     try {
@@ -756,7 +909,9 @@ const retryPayment = async (req, res) => {
 };
 
 module.exports = {
+    cancelOrder,
     verifyCoupon,
+    removeCoupon,
     cancelProduct,
     retryPayment,
     returnProduct,

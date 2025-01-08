@@ -107,14 +107,18 @@
                         }
                     </style>
                 <% } %>
-
-                <!-- <div class="pagination-area mt-15 mb-50">
+               
+                <div class="pagination-area mt-15 mb-50">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-start">
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <%for(let i = 1; i <= totalPages; i++){%>
+                                <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
+                                    <a class="page-link" href="?page=<%= i %>"> <%= i %> </a>
+                                </li>
+                            <%}%>
                         </ul>
                     </nav>
-                </div> -->
+                </div>
             </section>
             <%-include("../../Views/Partials/admin/footer")%>  
         </main>

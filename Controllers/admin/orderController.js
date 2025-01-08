@@ -5,24 +5,41 @@ const Wallet = require('../../Models/walletSchema')
 const Product = require('../../Models/productSchema')
 
 
-const getOrdersList = async (req,res) => {
+const getOrdersList = async (req, res) => {
     try {
-        let orders = await Order.aggregate([
-            { $lookup: {
-              from: 'users',
-              localField: "userId",
-              foreignField: "_id",
-              as: "userDetails"
-            }},
-        ])
-        .sort({createdAt:-1})
-        
-        return res.render('listOrders',{orders})
+        const { page = 1 } = req.query; 
+        const limit = 10;
+        const skip = (page - 1) * limit; 
+        const totalOrders = await Order.countDocuments();
+
+        // Fetch paginated orders with aggregation and sorting
+        const orders = await Order.aggregate([
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'userDetails',
+                },
+            },
+            { $sort: { createdAt: -1 } },
+            { $skip: skip }, 
+            { $limit: limit }, 
+        ]);
+
+        const totalPages = Math.ceil(totalOrders / limit);
+
+        return res.render('listOrders', {
+            orders,
+            currentPage: parseInt(page),
+            totalPages,
+        })
+
     } catch (error) {
-        console.log(error);
-        res.redirect('/admin/pageNotFound')
+        console.error('Error fetching orders:', error);
+        res.redirect('/admin/pageNotFound');
     }
-}
+};
 
 const getOrderDetails = async (req, res) => {
     try {

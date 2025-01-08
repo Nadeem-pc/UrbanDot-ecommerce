@@ -4,7 +4,15 @@ const cron = require('node-cron');
 
 const loadCoupons = async (req, res) => {
     try {
-        const coupons = await Coupon.find();
+        const { page = 1 } = req.query
+        const limit = 7 
+        const skip = (page - 1) * limit
+
+        const totalCoupons = await Coupon.countDocuments();
+
+        const coupons = await Coupon.find()
+        .skip(skip)
+        .limit(limit)
 
         const now = new Date();
 
@@ -15,7 +23,14 @@ const loadCoupons = async (req, res) => {
             return coupon;
         });
 
-        res.render('coupons', { coupons: updatedCoupons });
+        const totalPages = Math.ceil(totalCoupons / limit);
+
+        res.render('coupons', { 
+            coupons: updatedCoupons,
+            currentPage: parseInt(page),
+            totalPages
+        })
+        
     } catch (error) {
         console.error(error);
         res.redirect('/admin/pageNotFound')
@@ -48,9 +63,9 @@ const createCoupon = async (req,res) => {
 const deleteCoupon = async (req,res) => {
     try {
         const{ id } = req.body
-        const updateCoupon = await Coupon.findByIdAndUpdate({_id:id},{$set:{status:'Disabled'}})
+        const deleteCoupon = await Coupon.deleteOne({ _id: id })
 
-        if(!updateCoupon){
+        if(!deleteCoupon){
             return res.json({success: false, message: "Coupon deletion failed. Please try again"})
         }
         res.json({success: true, message: "Coupon unlisted successfully"})

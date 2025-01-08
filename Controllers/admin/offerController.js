@@ -5,12 +5,16 @@ const Product = require('../../Models/productSchema');
 
 const loadOffer = async (req, res) => {
     try {
+        const { page = 1 } = req.query; 
+        const limit = 7; 
+        const skip = (page - 1) * limit;
+
         const products = await Product.find();
         const category = await Category.find();
-        
         const now = new Date();
 
         await Offer.deleteMany({ expiresOn: { $lt: now } });
+        const totalOffers = await Offer.countDocuments();
 
         const offers = await Offer.find()
             .populate({
@@ -20,9 +24,13 @@ const loadOffer = async (req, res) => {
             .populate({
                 path: 'categoryId',
                 select: 'name', 
-            });
+            })
+            .skip(skip)
+            .limit(limit);
 
-        return res.render('offer', { category, products, offer: offers });
+            const totalPages = Math.ceil(totalOffers / limit)
+
+        return res.render('offer', { category, products, offer: offers, currentPage: parseInt(page), totalPages});
     } catch (error) {
         console.error('Error loading offers:', error);
         res.redirect('/admin/pageNotFound')

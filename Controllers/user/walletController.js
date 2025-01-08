@@ -22,24 +22,5 @@ const loadWallet = async (req, res) => {
     }
 };
 
-// const addTransaction = async (userId, amount, description, type) => {
-//     const userId = req.session.user
-//     const wallet = await Wallet.findOne({ userId });
-
-//     if (!wallet) {
-//         throw new Error("Wallet not found for the user.");
-//     }
-
-//     wallet.balanceAmount += type === "credit" ? amount : -amount;
-
-//     wallet.transactions.push({
-//         type,
-//         amount,
-//         description
-//     });
-
-//     await wallet.save();
-// };
-
 
 module.exports = { loadWallet }

@@ -50,14 +50,14 @@
                         </button>  
                     </div>
                 </div>
-                <div class="card mb-4">
-                     <header class="card-header">
-                       <div class="row gx-3">
+
+                <% if(offer.length !== 0){%>
+                    <div class="card mb-4">
+                        <header class="card-header">
                             <div class="col-lg-4 col-md-6 me-auto">
                                 <h4>Offers</h4>
                             </div>
-                    </header> 
-
+                        </header> 
 
                         <div class="card-body">
                             <div class="table-responsive">
@@ -101,14 +101,34 @@
                                 </table>
                             </div>
                         </div>
-                <!-- card end// -->
-                <!-- <div class="pagination-area mt-15 mb-50">
+                    </div>    
+                <%}else{%>
+                    <div class="d-flex justify-content-center align-items-center" style="min-height: 55vh; padding-top: 45px;">
+                        <div class="card text-center shadow-lg p-4" style="max-width: 400px; border-radius: 10px;">
+                            <h5 class="mb-3" style="color: #333;">Welcome, Admin!</h5>
+                            <p style="color: #555; font-size: 16px;">
+                                It looks like you're just getting started — no offers have been created yet.  
+                                Begin by today!
+                            </p>
+                        </div>
+                    </div>
+                    <style>
+                        #addBtn {
+                            display: none;
+                        }
+                    </style>
+                <% } %>
+                <div class="pagination-area mt-15 mb-50">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-start">
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <%for(let i = 1; i <= totalPages; i++){%>
+                                <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
+                                    <a class="page-link" href="?page=<%= i %>"> <%= i %> </a>
+                                </li>
+                            <%}%>
                         </ul>
                     </nav>
-                </div> -->
+                </div>
             </section>
             <%-include("../../Views/Partials/admin/footer")%>
         </main>
