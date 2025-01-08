@@ -18,24 +18,6 @@ const { isBlocked, userAuth } = require("../../Middlewares/User/userAuth");
 const loadHomePage = async (req,res) => {
     try{    
         const products = await Product.find({isBlocked:false})
-
-        // const now = new Date()
-        // const expiredOffers = await Offer.find({ expiresOn: { $lt: now }});
-
-        // for (const offer of expiredOffers) {
-        //     if (offer.appliedTo === "Product") {
-        //         await Product.findByIdAndUpdate(offer.productId, { $unset: { offerPrice: null } });
-        //     } else if (offer.appliedTo === "Category") {
-        //         await Product.updateMany(
-        //             { category: offer.categoryId },
-        //             { $unset: { offerPrice: null } }
-        //         );
-        //     }
-
-        //     offer.isActive = false;
-        //     await offer.save();
-        // }
-
         return res.render("home",{ products, user: req.session.user || null })
     }
     catch(error){

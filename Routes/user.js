@@ -89,6 +89,7 @@ user.get('/unavailable',ShoppingController.productUnavailable)
 // Google Authentication
 user.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}))
 user.get('/google/callback',passport.authenticate('google',{failureRedirect:'/signup'}),(req,res) => {
+    req.session.user = req.user._id
     res.redirect('/')
 })
 
