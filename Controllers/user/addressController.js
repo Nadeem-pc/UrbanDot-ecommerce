@@ -29,7 +29,6 @@ const addAddress = async (req,res) => {
             return res.status(200).json({status:true, message:"Address added successfully"})
         }
 
-
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: "Internal Server Error" })
@@ -118,7 +117,6 @@ const editAddress = async (req, res) => {
 
         return res.status(200).json({status:true, message:"Address edited successfully"})
         
-
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: "Internal Server Error" });

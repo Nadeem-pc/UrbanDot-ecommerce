@@ -16,6 +16,16 @@
         <link href="/Admin/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
     </head>
 
+    <style>
+        .return-highlight {
+            background-color: rgba(255, 0, 0, 0.749);
+            color: white;
+        }
+        .return-highlight td {
+            color: white;
+        }
+    </style>
+
     <body>
         <%-include("../../Views/Partials/admin/sidebar")%>
         <main class="main-wrap">
@@ -69,8 +79,10 @@
                                     <% if (orders && orders.length > 0) { %> 
                                         <% let serialNumber = (currentPage - 1) * 10 + 1; %> 
                                         <% orders.forEach(order => { %>
-
-                                            <tr>
+                                            <% 
+                                                const hasReturn = order.orderedItems.some(item => item.returnStatus === true && item.adminApprovalStatus === 'Processing'); 
+                                            %>
+                                            <tr class="<%= hasReturn ? 'return-highlight' : '' %>">
                                                 <td><%= serialNumber++ %></td>
                                                 <td><b><%= order.userDetails[0]?.username  %></b></td>
                                                 <td><%= order.userDetails[0]?.email || 'N/A' %></td>
@@ -88,9 +100,7 @@
                                                         <span class="badge rounded-pill alert-danger">Returned</span>
                                                     <%}%>    
                                                 </td>
-                                
                                                 <td><%= new Date(order.orderDate).toLocaleDateString() || 'N/A' %></td>
-                                
                                                 <td class="text-end">
                                                     <a href="/admin/orderDetails/<%=order._id%>" class="btn btn-md rounded font-sm">Details</a>
                                                 </td>

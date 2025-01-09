@@ -63,10 +63,14 @@ const addToCart = async (req, res) => {
 
 const loadCart = async (req, res) => {
     try {
+        if (!req.session.user) {
+            return res.redirect('/login'); 
+        }
+
         const cart = await Cart.findOne({ userId: req.session.user }).populate('items.productId');
 
         if (!cart) {
-            return res.render('cart', { cart });
+            return res.render('cart', { cart: { items: [], totalPrice: 0 } }); // Handle empty cart
         }
 
         cart.totalPrice = cart.items.reduce((total, item) => {

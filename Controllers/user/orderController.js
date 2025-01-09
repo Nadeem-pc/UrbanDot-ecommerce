@@ -208,7 +208,7 @@ const loadAddNewAddress = async (req,res) => {
         const cartId = req.params
         let cart = await Cart.findOne({_id:new mongoose.Types.ObjectId(cartId)}).populate('items.productId')   
         
-        return res.render('addNewAddress',{cart,totalPrice:req.session.totalPrice, products:req.session.products})
+        return res.render('addNewAddress',{cart,totalPrice:req.session.totalPayable, products:req.session.products})
 
     } catch (error) {
         console.log(error);
@@ -219,8 +219,6 @@ const loadAddNewAddress = async (req,res) => {
 const addNewAddress = async (req,res) => {
     const{name,phone,pincode,fullAddress,city,country,state,addressType} = req.body
     const userId = req.session.user
-    console.log(req.body);
-    
 
     try {
         const userData = await User.findOne({_id:userId})
@@ -764,11 +762,11 @@ const handleFailedPayment = async (req, res) => {
 
 const returnProduct = async (req,res) => {
     try {
-        const{ productId, orderId } = req.body
+        const{ productId, orderId, reason } = req.body
 
         let sendReturnReq = await Order.updateOne(
             { _id : orderId, "orderedItems.product" : productId },
-            { $set: { "orderedItems.$.returnStatus" : true } }
+            { $set: { "orderedItems.$.returnStatus" : true, "orderedItems.$.returnReason": reason } }
         );
 
         if(!sendReturnReq){

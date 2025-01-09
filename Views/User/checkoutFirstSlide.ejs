@@ -80,9 +80,7 @@
     <section class="banner_area">
       <div class="banner_inner d-flex align-items-center">
         <div class="container">
-          <div
-            class="banner_content d-md-flex justify-content-between align-items-center"
-          >
+          <div class="banner_content d-md-flex justify-content-between align-items-center">
             <div class="mb-3 mb-md-0">
               <h2>Product Checkout</h2>
               <p>Very us move be blessed multiply night</p>
@@ -101,36 +99,34 @@
     <section class="checkout_area section_gap">
       <div class="container">
         <div class="billing_details">
-            <div class="row">
-                <div class="col-lg-8">
-                    <% if(address !== null){ %>
-                        <h3>Saved address</h3>
-                        <div id="addresses" class="tab-content">
-                            <% address.address.map((val)=>{ %>
-                                <div class="address-card">
-                                    <div class="address-actions">
-                                        <button class="btn btn-outline" onclick="location.href='/editAddress/<%=val._id%>'">Edit</button>
-                                    </div>
-                                    <div class="type d-flex"> 
-                                        <input type="radio" value="<%=val._id%>" name="selectedAddress" required>
-                                        <h3><%= val.name %></h3>
-                                        <h5 id="address-type"> <%=val.addressType%> </h5>
-                                    </div>
-                                    <p><%= val.fullAddress %></p>
-                                    <!-- <p> <%=val.pincode%> </p> -->
-                                    <p> <%=val.phone%> </p>
-                                    <!-- <p> <%= val.state%></p> -->
-                                    <!-- <p> <%= val.country%></p> -->
+          <div class="row">
+            <div class="col-lg-8">
+                <% if (address && address.address.length > 0) { %>
+                    <h3>Saved Address</h3>
+                    <div id="addresses" class="tab-content">
+                        <% address.address.map((val) => { %>
+                            <div class="address-card">
+                                <div class="address-actions">
+                                    <button class="btn btn-outline" onclick="location.href='/editAddress/<%=val._id%>'">Edit</button>
                                 </div>
-                            <%})%>
-                            <button class="btn" onclick="location.href='/checkout/<%=cart._id%>'">Add New Address</button>
-                            <button class="btn" id="continueBtn" style="background-color: orange;" onclick="fetchData()">Continue</button>
-                        </div>
-                    <%}else{%>
-                        <script>window.location.href='/checkout/<%=cart._id%>'</script>
-                    <%}%>
-                </div>
-
+                                <div class="type d-flex"> 
+                                    <input type="radio" value="<%=val._id%>" name="selectedAddress" required>
+                                    <h3><%= val.name %></h3>
+                                    <h5 id="address-type"> <%=val.addressType%> </h5>
+                                </div>
+                                <p><%= val.fullAddress %></p>
+                                <p><%= val.phone %></p>
+                            </div>
+                        <% }) %>
+                        <button class="btn" onclick="location.href='/checkout/<%=cart._id%>'">Add New Address</button>
+                        <button class="btn" id="continueBtn" style="background-color: orange;" onclick="fetchData()">Continue</button>
+                    </div>
+                <% } else { %>
+                    <script>
+                        window.location.href = '/checkout/<%=cart._id%>';
+                    </script>
+                <% } %>
+            </div>
                 
 
             <div class="col-lg-4">

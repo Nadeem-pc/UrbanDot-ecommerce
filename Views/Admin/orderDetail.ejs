@@ -40,6 +40,48 @@
             background-color: red;
             width: 70px;
         }
+        .modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1050;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Dim background */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-dialog {
+    width: 100%;
+    max-width: 500px;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+}
     </style>
 
     <body>
@@ -163,15 +205,17 @@
                                             <%}else{%>
                                                 <td >₹<%= (item.productDetails[0].offerPrice * item.orderedItems.quantity).toFixed(2) %></td>
                                             <%}%>    
-                                            <% if (item.orderedItems.adminApproval === true) { %>
-                                                <!-- Show Returned button if adminApproval is true -->
+                                            <% if (item.orderedItems.adminApprovalStatus === 'Approved') { %>
                                                 <td class="text-end">
                                                     <button class="cancelBtn" style="width: 70px;" disabled>Returned</button>
                                                 </td>
-                                            <% } else if (item.orderedItems.returnStatus === true) { %>
-                                                <!-- Show Approve return request button -->
+                                            <% } else if(item.orderedItems.adminApprovalStatus === 'Rejected'){ %>
                                                 <td class="text-end">
-                                                    <button class="approveBtn" style="border: 0; width: 110px; border-radius: 5px; background-color: orange; color: white;" onclick="approveReturnReq('<%= item.orderedItems.product %>',' <%= order._id %>')">Approve return</button>
+                                                    <button class="cancelBtn" style="width: 70px; background-color: red;" disabled>Rejected</button>
+                                                </td>
+                                            <% } else if (item.orderedItems.returnStatus === true) { %>
+                                                <td class="text-end">
+                                                    <button class="approveBtn" style="border: 0; width: 115px; border-radius: 5px; background-color: orange; color: white;" onclick="approveReturnReq('<%= item.orderedItems.product %>',' <%= order._id %>','<%=item.orderedItems.returnReason%>')">Product Returned</button>
                                                 </td>
                                             <% } else if (item.orderedItems.status !== "Cancelled") { %>
                                                 <!-- Show Cancel button -->
@@ -210,7 +254,28 @@
                     </div>
                 </div>
             </div>
+            <div id="returnReasonModal" class="modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Return Request</h5>
+                            <button type="button" class="close" onclick="closeModal()">×</button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="returnReasonText">Reason: <span></span></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="approveReturnBtn" class="btn btn-success">Approve Return</button>
+                            <button id="rejectReturnBtn" class="btn btn-danger">Reject</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             </section>
+
+
+
             <%-include("../../Views/Partials/admin/footer")%>
         </main>
         <script src="/Admin/js/vendors/jquery-3.6.0.min.js"></script>
@@ -298,44 +363,60 @@
     }
     }
 
-    const approveReturnReq = async (productId, orderId) => {
-    productId = productId.trim();
-    orderId = orderId.trim();
+    const approveReturnReq = async (productId, orderId, returnReason) => {
+    // Update the return reason text in the modal
+    document.getElementById('returnReasonText').textContent = `Reason: ${returnReason}`;
 
-    const result = await Swal.fire({
-        title: 'Are you sure?',
-        text: "You are about to approve this return request.",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, approve it!',
-        cancelButtonText: 'Cancel',
+    // Set up approve button
+    document.getElementById("approveReturnBtn").onclick = async () => {
+        await handleReturnDecision(productId.trim(), orderId.trim(), true); // Approve case
+    };
+
+    // Set up reject button
+    document.getElementById("rejectReturnBtn").onclick = async () => {
+        await handleReturnDecision(productId.trim(), orderId.trim(), false); // Reject case
+    };
+
+    // Show the modal
+    document.getElementById("returnReasonModal").style.display = "flex";
+};
+
+const handleReturnDecision = async (productId, orderId, approve) => {
+    const action = approve ? 'approve' : 'reject'; // Define action type
+    const response = await fetch(`/admin/returnProduct`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId, orderId, action }),
     });
 
-    if (result.isConfirmed) {
-        let response = await fetch('/admin/returnProduct', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ productId, orderId }),
+    const data = await response.json();
+
+    closeModal();
+
+    if (!data.success) {
+        return Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: data.message,
         });
-
-        let data = await response.json();
-
-        if (!data.success) {
-            return Must.failure({ time: 2500, content: data.message });
-        }
-
-        Must.success({ time: 2000, content: data.message, color: '#27ae60' });
-        document.getElementById("icon").style.backgroundColor = 'beige';
-        document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px';
-
-        setTimeout(() => {
-            window.location.href = '/admin/orders';
-        }, 2000);
     }
+
+    Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: data.message,
+    });
+
+    // Reload the page after action
+    setTimeout(() => {
+        window.location.reload();
+    }, 2000);
+};
+
+const closeModal = () => {
+    document.getElementById("returnReasonModal").style.display = "none";
 };
 
 </script>

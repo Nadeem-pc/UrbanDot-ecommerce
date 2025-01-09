@@ -47,15 +47,17 @@ const orderSchema = mongoose.Schema({
             default : false,
         },
 
-        adminApproval : {
-            type : Boolean,
-            default : false,
-        }
+        returnReason : {
+            type : String,
+            default : ""
+        },
 
-        // returnReason : {
-        //     type : String,
-        //     default : ""
-        // }
+        adminApprovalStatus: {
+            type: String,
+            enum: ['Processing','Approved','Rejected'],
+            default: 'Processing',
+        },
+
     }],
 
     totalAmount : {
@@ -105,11 +107,6 @@ const orderSchema = mongoose.Schema({
     },
 
     createdAt: { type: Date, default: Date.now } 
-    // returnReason : {
-    //     type : String,
-    //     default : ""
-    // }
-
 })
 
 const Order = mongoose.model("Order", orderSchema)

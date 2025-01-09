@@ -48,7 +48,7 @@ const addressSchema = mongoose.Schema({
         
         fullAddress : {
             type : String,
-            required : false
+            required : true
         }, 
 
         isDeleted : {

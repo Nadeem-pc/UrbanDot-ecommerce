@@ -147,8 +147,9 @@ const cancelOrder = async (req, res) => {
 
 const approveReturnReq = async (req, res) => {
     try {
-        const { productId, orderId } = req.body;
+        const { productId, orderId, action } = req.body;
 
+        // Validate input
         if (!productId || !orderId) {
             return res.status(400).json({ success: false, message: "Missing productId or orderId." });
         }
@@ -157,52 +158,77 @@ const approveReturnReq = async (req, res) => {
             return res.status(400).json({ success: false, message: "Invalid productId or orderId." });
         }
 
-        const reqApproved = await Order.updateOne(
-            {
-                _id: new mongoose.Types.ObjectId(orderId),
-                'orderedItems.product': new mongoose.Types.ObjectId(productId),
-            },
-            { $set: { 'orderedItems.$.adminApproval': true, 'orderedItems.$.status': 'Returned', orderStatus: "Returned", paymentStatus: "Refunded" } }
-        );
-
-        if (reqApproved.matchedCount === 0) {
-            return res.json({ success: false, message: "No matching order or product found." });
-        }
-
-        const order = await Order.findById(orderId);
-        if (order.paymentMethod === "Razorpay" || order.paymentMethod === "COD" && order.orderStatus === "Delivered" || order.paymentMethod === "Wallet") {
-            const orderedItem = order.orderedItems.find(item => item.product.toString() === productId);
-
-            if (orderedItem) {
-                const amountToAdd = orderedItem.price * orderedItem.quantity;
-
-                const product = await Product.findById(productId).populate('category');
-
-                if (!product) {
-                    return res.status(404).json({ success: false, message: "Product not found." });
+        if (action === "approve") {
+            // Approve return request
+            const reqApproved = await Order.updateOne(
+                {
+                    _id: new mongoose.Types.ObjectId(orderId),
+                    'orderedItems.product': new mongoose.Types.ObjectId(productId),
+                },
+                { 
+                    $set: { 
+                        'orderedItems.$.adminApprovalStatus': 'Approved', 
+                        'orderedItems.$.status': 'Returned', 
+                        orderStatus: "Returned", 
+                        paymentStatus: "Refunded" 
+                    } 
                 }
+            );
 
-                const wallet = await Wallet.findOne({ userId: order.userId });
+            if (reqApproved.matchedCount === 0) {
+                return res.json({ success: false, message: "No matching order or product found." });
+            }
 
-                if (wallet) {
-                    wallet.balanceAmount += amountToAdd;
+            const order = await Order.findById(orderId);
 
-                    wallet.transactions.push({
-                        type: "credit",
-                        amount: amountToAdd,
-                        description: `Refund for ${product.category.name}`, 
-                    });
+            if (order && (order.paymentMethod === "Razorpay" || order.paymentMethod === "COD" || order.paymentMethod === "Wallet")) {
+                const orderedItem = order.orderedItems.find(item => item.product.toString() === productId);
 
-                    await wallet.save();
+                if (orderedItem) {
+                    const amountToAdd = orderedItem.price * orderedItem.quantity;
+
+                    const product = await Product.findById(productId).populate('category');
+                    if (!product) {
+                        return res.status(404).json({ success: false, message: "Product not found." });
+                    }
+
+                    const wallet = await Wallet.findOne({ userId: order.userId });
+                    if (wallet) {
+                        wallet.balanceAmount += amountToAdd;
+                        wallet.transactions.push({
+                            type: "credit",
+                            amount: amountToAdd,
+                            description: `Refund for ${product.category.name}`, 
+                        });
+                        await wallet.save();
+                    }
                 }
             }
+
+            return res.json({ success: true, message: "Return request approved successfully!" });
+        } else {
+            // Reject return request
+            const reqRejected = await Order.updateOne(
+                {
+                    _id: new mongoose.Types.ObjectId(orderId),
+                    'orderedItems.product': new mongoose.Types.ObjectId(productId),
+                },
+                { 
+                    $set: { 
+                        'orderedItems.$.adminApprovalStatus': "Rejected", 
+                    } 
+                }
+            );
+
+            if (reqRejected.matchedCount === 0) {
+                return res.json({ success: false, message: "No matching order or product found." });
+            }
+
+            return res.json({ success: true, message: "Return request rejected successfully!" });
         }
-
-        res.json({ success: true, message: "Return request approved successfully!" });
-
     } catch (error) {
         console.error("Error in approveReturnReq:", error);
-        return res.status(500).json({ success: false, message: "Internal Server Error" });
+        res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
 
