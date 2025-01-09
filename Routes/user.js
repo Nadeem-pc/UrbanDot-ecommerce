@@ -93,4 +93,6 @@ user.get('/google/callback',passport.authenticate('google',{failureRedirect:'/si
     res.redirect('/')
 })
 
+user.use(userController.pageNotFound)
+
 module.exports = user   

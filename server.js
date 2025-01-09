@@ -42,8 +42,8 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/',userRouter)
 app.use('/admin',adminRouter)
+app.use('/',userRouter)
 
 app.listen(process.env.PORT, () => {
     console.log("Server is running...");

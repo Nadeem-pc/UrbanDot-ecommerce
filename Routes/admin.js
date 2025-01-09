@@ -76,4 +76,6 @@ admin.delete('/deleteOffer',offerController.deleteOffer)
 // 404
 admin.get('/pageNotFound',adminController.pageNotFound)
 
+admin.use(adminController.pageNotFound)
+
 module.exports = admin
