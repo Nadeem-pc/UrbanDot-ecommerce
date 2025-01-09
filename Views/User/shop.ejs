@@ -165,9 +165,11 @@
                           <i class="ti-heart heart-icon"></i>
                           <div class="fireworks"></div>
                         </a>
-                        <a href="#" onclick="addToCart(`<%=item._id%>`)" class="addToCart-button">
-                          <i class="ti-shopping-cart"></i>
-                        </a>
+                        <% if(item.stock !== 0){ %>
+                          <a href="#" onclick="addToCart(`<%=item._id%>`)" class="addToCart-button">
+                            <i class="ti-shopping-cart"></i>
+                          </a>
+                        <%}%>  
                       </div>
                     </div>
                     <div class="product-btm">
