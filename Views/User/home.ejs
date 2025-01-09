@@ -92,6 +92,70 @@
       font-weight: 500;
       text-align: center;
   }
+  .heart-icon {
+  font-size: 32px;
+  color: gray;
+  transition: transform 0.3s, color 0.3s;
+  cursor: pointer;
+  position: relative;
+}
+
+.heart-icon.active {
+  color: red;
+  transform: scale(1.4);
+}
+
+/* Heart Icon Styling */
+.heart-icon {
+  font-size: 20px; /* Normal size */
+  color: gray;
+  transition: color 0.3s ease, transform 0.3s ease;
+  position: relative;
+  z-index: 5;
+}
+
+.heart-icon.active {
+  color: red;
+  transform: scale(1.1); /* Subtle pop effect */
+}
+
+/* Fireworks Container */
+.fireworks {
+  position: absolute;
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Perfect center */
+  width: 60px;
+  height: 60px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.firework-spark {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: gold; /* Golden spark */
+  border-radius: 50%;
+  opacity: 0;
+  animation: explode 0.8s ease-out forwards;
+}
+
+.firework-spark:nth-child(even) {
+  background-color: orange; /* Alternate color for variety */
+}
+
+@keyframes explode {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--x), var(--y)) scale(0.5);
+    opacity: 0;
+  }
+}
+
 </style>
 <body>
 
@@ -184,12 +248,15 @@
                   <!-- <a href="#">
                     <i class="ti-eye"></i>
                   </a> -->
-                  <a href="#">
-                    <i class="ti-heart"></i>
+                  <a href="#" onclick="addToWishlist(`<%=item._id%>`, this, event)" class="wishlist-button">
+                    <i class="ti-heart heart-icon"></i>
+                    <div class="fireworks"></div>
                   </a>
-                  <a href="#">
-                    <i class="ti-shopping-cart"></i>
-                  </a>
+                  <% if(item.stock !== 0){ %>
+                    <a href="#" onclick="addToCart(`<%=item._id%>`)" class="addToCart-button">
+                      <i class="ti-shopping-cart"></i>
+                    </a>
+                  <%}%>  
                 </div>
               </div>
               <div class="product-btm">
@@ -402,12 +469,15 @@
                     <!-- <a href="#">
                       <i class="ti-eye"></i>
                     </a> -->
-                    <a href="#">
-                      <i class="ti-heart"></i>
+                    <a href="#" onclick="addToWishlist(`<%=item._id%>`, this, event)" class="wishlist-button">
+                      <i class="ti-heart heart-icon"></i>
+                      <div class="fireworks"></div>
                     </a>
-                    <a href="#">
-                      <i class="ti-shopping-cart"></i>
-                    </a>
+                    <% if(item.stock !== 0){ %>
+                      <a href="#" onclick="addToCart(`<%=item._id%>`)" class="addToCart-button">
+                        <i class="ti-shopping-cart"></i>
+                      </a>
+                    <%}%>  
                   </div>
                 </div>
                 <div class="product-btm">
@@ -489,6 +559,78 @@
         });
     }
 
+  async function addToWishlist(id, element, event) {
+    event.preventDefault();
+
+    try {
+      let response = await fetch("/wishlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+
+      let data = await response.json();
+
+      if (!data.success) {
+        return Must.failure({ time: 3000, content: data.message })
+        return;
+      }
+
+      // Heart Icon Animation
+      const heartIcon = element.querySelector(".heart-icon");
+      heartIcon.classList.add("active");
+
+      // Fireworks Effect
+      const fireworksContainer = element.querySelector(".fireworks");
+      fireworksContainer.innerHTML = ""; 
+      
+      for (let i = 0; i < 15; i++) {
+        const spark = document.createElement("div");
+        spark.classList.add("firework-spark");
+
+        // Randomize position
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = Math.random() * 40 + 10; // Between 10px to 50px
+        const x = Math.cos(angle) * distance;
+        const y = Math.sin(angle) * distance;
+
+        // Position spark
+        spark.style.setProperty("--x", `${x}px`);
+        spark.style.setProperty("--y", `${y}px`);
+
+        fireworksContainer.appendChild(spark);
+      }
+
+      setTimeout(() => {
+        heartIcon.classList.remove("active");
+      }, 1000);
+
+    } catch (error) {
+      console.error("Error:", error);
+      return Must.failure({ time: 3000, content: "Something went wrong" })
+    }
+  }
+
+  async function addToCart(productId){
+    let response = await fetch('/cart',{
+      method : "POST",
+      headers : {
+        'Content-Type' : 'application/json'
+      },
+      body : JSON.stringify({ productId, quantity: 1 })
+    })
+    const data = await response.json()
+
+    if (!data.status) {
+      return Must.failure({ time: 3000, content: data.message })
+    }
+
+    Must.success({time: 1300, content: data.message, color:'#27ae60'})
+
+    document.getElementById("icon").style.backgroundColor = 'beige'
+    document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
+
+  }
 
 </script>
 
