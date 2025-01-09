@@ -5,6 +5,7 @@ const Coupon = require('../../Models/couponSchema')
 const Product = require('../../Models/productSchema')
 const Address = require('../../Models/addressSchema')
 const Wallet = require('../../Models/walletSchema')
+const Category = require('../../Models/categorySchema')
 
 const mongoose = require('mongoose')
 const Razorpay = require('razorpay');
@@ -21,6 +22,12 @@ const loadFirstPageOfCheckout = async (req, res) => {
         const userId = req.session.user;
         const cart = await Cart.findOne({ userId: new mongoose.Types.ObjectId(userId) }).populate('items.productId');
 
+        const unlistedCategory = await Category.find({ isListed: false });
+
+        if (unlistedCategory.length > 0) {
+            return res.redirect('/unavailable');
+        }
+        
         if (!cart || !cart.items.length) {
             return res.redirect('/unavailable');
         }
@@ -34,7 +41,7 @@ const loadFirstPageOfCheckout = async (req, res) => {
                 product &&
                 !product.isBlocked &&
                 product.category.isActive !== false &&
-                product.stock > 0
+                product.stock >= 0
             ) {
                 if (product.stock >= item.quantity) {
                     validItems.push({ ...item.toObject(), product });
@@ -48,7 +55,6 @@ const loadFirstPageOfCheckout = async (req, res) => {
         }
 
         if (stockErrors.length > 0) {
-            // Render a page or redirect to a page with stock error details
             return res.render('stockErrorPage', {
                 stockErrors, // Pass stock errors to the template
                 message: "Some products have insufficient stock.",

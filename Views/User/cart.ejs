@@ -98,6 +98,7 @@
                         max="<%= Math.min(item.productId.stock, 10) %>"
                         data-stock="<%= item.productId.stock %>"
                         data-max="10"
+                        readonly
                     />
                     <button
                         onclick="increaseQty(this)"
