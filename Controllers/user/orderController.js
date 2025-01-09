@@ -14,7 +14,6 @@ const { use } = require('passport')
 const PDFDocument = require('pdfkit-table');
 const fs = require('fs');
 const session = require('express-session')
-const { log } = require('console')
 
 
 const loadFirstPageOfCheckout = async (req, res) => {
@@ -753,6 +752,7 @@ const handleFailedPayment = async (req, res) => {
         });
 
         await newOrder.save();
+        await Cart.findOneAndUpdate({ userId: req.session.user }, { $set: { items: [] } });
         res.status(200).json({ success: true });
     } catch (error) {
         console.error(error);
@@ -888,9 +888,28 @@ const retryPayment = async (req, res) => {
     try {
         const { orderId } = req.body;
 
-        const existingOrder = await Order.findOne({ orderId });
-        const amount = existingOrder.totalAmount * 100; // Convert to paisa
+        const existingOrder = await Order.findOne({ orderId }).populate('orderedItems.product');
+        if (!existingOrder) {
+            return res.status(404).json({ success: false, message: "Order not found" });
+        }
 
+        const orderedItems = existingOrder.orderedItems;
+        for (let item of orderedItems) {
+            const product = item.product;
+            const newStock = product.stock - item.quantity;
+
+            if (newStock < 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Insufficient stock for product: ${product.productName}`
+                });
+            }
+
+            product.stock = newStock;
+            await product.save();
+        }
+
+        const amount = existingOrder.totalAmount * 100; // Convert to paisa
         const options = {
             amount: amount.toFixed(0),
             currency: "INR",
@@ -905,6 +924,7 @@ const retryPayment = async (req, res) => {
         res.status(500).json({ success: false, message: "Failed to retry payment" });
     }
 };
+
 
 module.exports = {
     cancelOrder,

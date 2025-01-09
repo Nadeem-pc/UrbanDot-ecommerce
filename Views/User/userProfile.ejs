@@ -896,7 +896,7 @@
                                 <div style="color: #636e72">Placed on ${new Date(orderDetails.orderDate).toDateString()}</div>
                                 <div style="color: #636e72">Payment Method: ${orderDetails.paymentMethod}</div>
                                 <div style="color: #636e72">Payment Status: ${orderDetails.paymentStatus}</div>
-                                ${orderDetails.paymentStatus === "Pending" ? `
+                                ${orderDetails.paymentStatus === "Pending" && orderDetails.orderStatus !== 'Cancelled' ?`
                                     <button id="retryPaymentButton" class="btn btn-primary" onclick='retryPayment("${orderDetails.orderId}")' style="height:35px;padding:5px;width:55px;">Pay</button>
                                 ` : ''}
                             </div>
