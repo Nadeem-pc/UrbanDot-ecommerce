@@ -106,14 +106,16 @@
                             </div>
                             
                             <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                                <select id="orderStatusSelect" class="form-select d-inline-block mb-lg-0 mr-5 mw-200" name="orderStatus">
-                                    <option>Change status</option>
-                                    <option value="Pending">Pending</option>
-                                    <option value="Shipped">Shipped</option>
-                                    <option value="Delivered">Delivered</option>
-                                </select>
-                                <input type="hidden" id="orderId" value="<%= order._id %>" />
-                                <button type="submit" id="updateStatusBtn" class="btn btn-primary mb-1">Update Status</button>
+                                <% if(order.paymentStatus !== 'Pending'){ %>
+                                    <select id="orderStatusSelect" class="form-select d-inline-block mb-lg-0 mr-5 mw-200" name="orderStatus">
+                                        <option>Change status</option>
+                                        <option value="Pending">Pending</option>
+                                        <option value="Shipped">Shipped</option>
+                                        <option value="Delivered">Delivered</option>
+                                    </select>
+                                    <input type="hidden" id="orderId" value="<%= order._id %>" />
+                                    <button type="submit" id="updateStatusBtn" class="btn btn-primary mb-1">Update Status</button>
+                                <%}%>    
                             </div>
                         </div>
                     </header>
@@ -148,7 +150,8 @@
                                     <p class="mb-1">
                                         <!-- Shipping: <%= order.shippingMethod || 'Not specified' %> <br /> -->
                                         Payment method : <%= order.paymentMethod || 'Not specified' %> <br />
-                                        Status : <%= order.orderStatus %>
+                                        Payment status : <%= order.paymentStatus %> <br>
+                                        Order status : <%= order.orderStatus %>
                                     </p>
                                 </div>
                             </article>
