@@ -135,7 +135,6 @@
       },1700)
 
     }catch(error){
-      console.error("Error removing item:", error);
       return Must.failure({ time: 3000, content: "Something went wrong! Please try again later." })
     }
   }

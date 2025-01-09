@@ -182,7 +182,6 @@
                                         return Must.failure({ time: 2000, message: "Payment verification failed. Please try again." });
                                     }
                                 } catch (error) {
-                                    console.error(error);
                                     return Must.failure({ time: 2000, message: "Error occurred during payment verification. Please try again." });
                                 }
                             },
@@ -205,7 +204,6 @@
                                             return Must.failure({ time: 2000, message: "Failed to handle the payment failure. Please try again." });
                                         }
                                     } catch (error) {
-                                        console.error(error);
                                         return Must.failure({ time: 2000, message: "Error occurred during payment failure handling." });
                                     }
                                 }

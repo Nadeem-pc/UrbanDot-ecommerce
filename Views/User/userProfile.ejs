@@ -1008,7 +1008,6 @@
                  
             })
             .catch(error => {
-                console.error('Error fetching order details:', error);
                 targetTab.innerHTML = '<p>Failed to load order details. Please try again later.</p>';
             });
             }
@@ -1043,9 +1042,7 @@
                     }
               
                     Must.success({ time: 1500, content: data.message, color: '#27ae60' });
-                    setTimeout(()=>{
-                        location.reload()
-                    },1500)
+                    document.getElementById("cancelOrder-btn").remove();
 
                     document.getElementById("icon").style.backgroundColor = 'beige';
                     document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px';
@@ -1102,7 +1099,6 @@
                         alert("Failed to retry payment. Please try again later.");
                     }
                 } catch (error) {
-                    console.error("Error retrying payment:", error);
                     alert("An error occurred. Please try again.");
                 }
             }
@@ -1146,10 +1142,9 @@
         showConfirmButton: false,
       });
 
-      document.getElementById('cancelProduct-btn').style.display = 'none'
-      setTimeout(() => {
-        window.location.href = '/profile';
-      }, 1500);
+      document.getElementById("cancelProduct-btn").remove();
+
+    
     }
   });
 }

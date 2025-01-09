@@ -260,7 +260,6 @@
         }
     })
     .catch((error) => {
-        console.error('Error removing coupon:', error);
         Must.failure({ time: 1500, content: 'An error occurred. Please try again.' });
     });
 
