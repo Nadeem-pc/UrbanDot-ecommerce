@@ -4,7 +4,6 @@ const Category = require('../../Models/categorySchema')
 const fs = require('fs')
 const path = require('path')
 const sharp = require('sharp')
-const { log } = require('console')
 const { default: mongoose } = require('mongoose')
 
 

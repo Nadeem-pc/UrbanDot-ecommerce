@@ -406,7 +406,6 @@
                     <li class="menu-item" onclick="showTab('orders')"> Orders</li>
                     <li class="menu-item" onclick="showTab('addresses')"> Addresses</li>
                     <li class="menu-item" onclick="location.href= '/wallet'"> Wallet</li>
-                    <li class="menu-item" onclick="showTab('security')"> Security</li>
                 </ul>
             </div> 
 
@@ -763,29 +762,6 @@
                     </div>
                 </form>
             </div>
-
-   
-            <!-- Security Tab -->
-            <div id="security" class="tab-content">
-                <h2 class="section-title">Change account password</h2>
-                <form id="passwordChangingForm">
-                    <div class="form-group">
-                        <label id="currentPassIndication">Current Password</label>
-                        <input type="password" name="password" id="currentPassword">
-                    </div>
-                    <div class="form-group">
-                        <label id="newPassIndication">New Password</label>
-                        <input type="password" name="newPassword" id="newPassword">
-                    </div>
-                    <div class="form-group">
-                        <label id="confirmPassIndication">Confirm New Password</label>
-                        <input type="password" id="confirmPassword">
-                    </div>
-                    <button class="btn">Update Password</button>
-                </form>
-                <a class="d-flex align-items-center justify-content-center" href="/forgotPassword">Forgot password</a>
-            </div>
-     
 
     </div>
 
@@ -1328,67 +1304,6 @@ async function submitReturnReason() {
             return true
         }
     
-        // Change Password
-        function passwordValidation(){
-            let password = document.getElementById('currentPassword')
-            let newPassword = document.getElementById('newPassword')
-            let confirmPassword = document.getElementById('confirmPassword')
-
-            const passwordCriteria = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-            if(!passwordCriteria.test(newPassword.value)){
-                document.getElementById('newPassIndication').innerHTML = 'Password must be at least 8 characters long and contain uppercase, lowercase, number and special character.'
-                document.getElementById('newPassIndication').style.color = 'red'
-                return false
-            }else{
-                document.getElementById('newPassIndication').innerHTML = 'Current Password'
-                document.getElementById('newPassIndication').style.color = 'black'
-            }
-
-            if(newPassword.value !== confirmPassword.value){
-                document.getElementById('confirmPassIndication').innerHTML = 'Password does not match. Please re-enter your password.'
-                document.getElementById('confirmPassIndication').style.color = 'red'
-                return false
-            }else{
-                document.getElementById('confirmPassIndication').innerHTML = 'Confirm Password'
-                document.getElementById('confirmPassIndication').style.color = 'black'
-            }
-            
-            return true
-        }
-
-        document.getElementById('passwordChangingForm').addEventListener('submit', async (event) => {
-            event.preventDefault()
-
-            let password = document.getElementById('currentPassword').value
-            let changedPassword = document.getElementById('newPassword').value
-    
-            if(!passwordValidation()) return 
-
-            const response = await fetch('/changePassword',{ 
-                method : "POST",
-                headers : {
-                    'Content-Type' : "application/json"
-                },
-                body : JSON.stringify({password,changedPassword})
-            })
-
-            let data = await response.json()
-
-            if(!data.status){
-                return Must.failure({time: 3000, content: data.message})
-            }
-
-            setTimeout(() => {
-                window.location.href = '/profile'
-            },1500)
-
-            Must.success({time: 1500, content: data.message, color:'#27ae60'})
-
-            document.getElementById("icon").style.backgroundColor = 'beige'
-            document.getElementsByClassName("pop-container")[0].style.borderRadius = '5px'
-
-        })
 
         // Add address
         function validateAddress(name,phone,pincode,city,isSelected){

@@ -8,26 +8,23 @@ const session = require('express-session');
 
 const loadShop = async (req, res) => {
   try {
-    const { sort = 'new-arrivals', category = '', page = 1, search = '' } = req.query; // Include search parameter
-    const limit = 6; // Products per page
+    const { sort = 'new-arrivals', category = '', page = 1, search = '' } = req.query; 
+    const limit = 6; 
     const skip = (page - 1) * limit;
 
-    // Fetch listed categories for filtering
-    const listedCategories = await Category.find({ isListed: true }).select('_id'); // Fetch IDs of listed categories
+    const listedCategories = await Category.find({ isListed: true }).select('_id'); 
 
-    // Build the query object
     const query = { 
-      isBlocked: false, // Exclude blocked products
-      category: { $in: listedCategories.map(cat => cat._id) }, // Exclude products from unlisted categories
+      isBlocked: false, 
+      category: { $in: listedCategories.map(cat => cat._id) },
     };
     if (category) {
-      query.category = category; // Include specific category if provided
+      query.category = category; 
     }
     if (search) {
-      query.productName = { $regex: search, $options: 'i' }; // Case-insensitive search
+      query.productName = { $regex: search, $options: 'i' }; 
     }
 
-    // Sorting options
     let sortOption = {};
     switch (sort) {
       case "low-to-high":
@@ -43,23 +40,19 @@ const loadShop = async (req, res) => {
         sortOption.productName = -1;
         break;
       default:
-        sortOption.createdAt = -1; // Default: New arrivals
+        sortOption.createdAt = -1; 
     }
 
-    // Fetch products with filters, sorting, pagination, and search
     const products = await Product.find(query)
       .sort(sortOption)
       .skip(skip)
       .limit(limit);
 
-    // Count total products for pagination
     const totalProducts = await Product.countDocuments(query);
     const totalPages = Math.ceil(totalProducts / limit);
 
-    // Fetch all categories for the sidebar (only include listed categories)
     const categories = await Category.find({ isListed: true });
 
-    // Render the shop page
     res.render("shop", {
       products,
       categories,
@@ -100,12 +93,12 @@ const loadProductDetail = async (req, res) => {
 };
 
 const productUnavailable = async (req,res) => {
-    try {
-        return res.render('productUnavailable')
-    } catch (error) {
-        console.error("Error in loadShop:", error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+  try {
+    return res.render('productUnavailable')
+  } catch (error) {
+    console.error("Error in loadShop:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 }
 
 
