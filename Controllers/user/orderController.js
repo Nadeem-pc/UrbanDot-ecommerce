@@ -434,7 +434,6 @@ const cancelProduct = async (req, res) => {
     try {
         const { productId, orderId } = req.body;
 
-        // Find the order first to check payment method and get product details
         const order = await Order.findOne({ _id: orderId });
         if (!order) {
             return res.json({ status: false, message: "Order not found." });
@@ -497,7 +496,6 @@ const cancelProduct = async (req, res) => {
                 }
             }
 
-            // Check if all items are cancelled to update the overall order status
             const updatedOrder = await Order.findOne({ _id: orderId });
             if (updatedOrder.orderedItems.every(item => item.status === "Cancelled")) {
                 await Order.updateOne(
@@ -839,7 +837,6 @@ const downloadInvoice = async (req, res) => {
         doc.text(`Payment Method: ${orderDetails.paymentMethod}`, { indent: 20 });
         doc.moveDown();
         
-        // Add Shipping Address
         doc.fontSize(13).font('Helvetica-Bold').text('Shipping Address', { indent: 20 }).moveDown();
         doc.fontSize(11).font('Helvetica').text(`Name: ${orderDetails.address.name}`, { indent: 20 }).moveDown();
         doc.fontSize(11).font('Helvetica').text(`Address: ${orderDetails.address.fullAddress}`, { indent: 20 }).moveDown();
@@ -868,9 +865,9 @@ const downloadInvoice = async (req, res) => {
         doc.table(tableData, {
             prepareHeader: () => doc.font('Helvetica-Bold').fontSize(10),
             prepareRow: (row, i) => doc.font('Helvetica').fontSize(10),
-            columnSpacing: 11, // Add spacing between columns
-            padding: 5, // Add padding inside each cell
-            width: 530, // Adjust the table width
+            columnSpacing: 11, 
+            padding: 5, 
+            width: 530,
             x: 45
         });
 
