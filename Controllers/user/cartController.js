@@ -18,10 +18,8 @@ const addToCart = async (req, res) => {
 
         const price = product.offerPrice !== null ? product.offerPrice : product.regularPrice;
 
-        // Find or create the cart
         let cart = await Cart.findOne({ userId });
         if (!cart) {
-            // Create a new cart if it doesn't exist
             cart = new Cart({
                 userId,
                 items: [{ productId, quantity, price, totalPrice: price * quantity }],
@@ -52,9 +50,9 @@ const addToCart = async (req, res) => {
             );
         }
 
-        // Save the updated cart
         await cart.save();
         res.status(200).json({ status: true, message: "Product added to cart" });
+
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Internal Server Error" });
@@ -137,7 +135,6 @@ const updateCart = async (req, res) => {
 
         await cart.save();
 
-        // Calculate the cart subtotal
         const cartSubtotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
 
         res.status(200).json({
