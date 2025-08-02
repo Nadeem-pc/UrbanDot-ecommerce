@@ -57,14 +57,12 @@ const loadEditAddress = async (req, res) => {
         const user = req.session.user;
         const addressToEdit = req.session.addressToEdit;
 
-        // Find the user's address
         const addressDoc = await Address.findOne({ user });
 
         if (!addressDoc) {
             return res.status(404).json({ error: "Address not found" });
         }
 
-        // Find the index of the address to edit
         const addressIndex = addressDoc.address.findIndex(p => p._id.toString() === id.toString());
 
         if (addressIndex === -1) {
@@ -76,10 +74,8 @@ const loadEditAddress = async (req, res) => {
             ADDRESS = addressDoc.address[addressIndex];
         }
 
-        // Store the address ID to session for update later
         req.session.addressToEdit = id;
 
-        // Render the edit address view
         return res.render('editAddress', { ADDRESS });
 
     } catch (error) {
@@ -94,7 +90,6 @@ const editAddress = async (req, res) => {
         const addressToEdit = req.session.addressToEdit;
         const user = req.session.user;
 
-        // Find and update the address
         const updatedAddress = await Address.findOneAndUpdate(
             { user, "address._id": addressToEdit },
             {
@@ -108,7 +103,7 @@ const editAddress = async (req, res) => {
                     "address.$.addressType": addressType
                 }
             },
-            { new: true } // To return the updated document
+            { new: true } 
         );
 
         if (!updatedAddress) {
