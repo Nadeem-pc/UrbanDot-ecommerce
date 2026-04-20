@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <!-- Required meta tags -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <link rel="icon" href="/User/img/favcon.png" type="image/png" />
   <title>UrbanDot</title>
-  <!-- Bootstrap CSS -->
+
   <link rel="stylesheet" href="/User/css/bootstrap.css" />
   <link rel="stylesheet" href="/User/linericon/style.css" />
   <link rel="stylesheet" href="/User/css/font-awesome.min.css" />
@@ -19,123 +17,387 @@
   <link rel="stylesheet" href="/User/animate-css/animate.css" />
   <link rel="stylesheet" href="/User/jquery-ui/jquery-ui.css" />
   <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css">
-
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QZs6Qff92bmd3Ze3lmtHIIeH3cYsH2T82gjmvCmMLRHoK97Dn9kwA5AupAmcSbTw" crossorigin="anonymous">
-  <!-- main css -->
   <link rel="stylesheet" href="/User/css/style.css" />
   <link rel="stylesheet" href="/User/css/responsive.css" />
+  <!-- <script src="/User/js/bootstrap.bundle.min.js"></script> -->
 
-  <script src="https://unpkg.com/must-pop@2.1.1/dist/library.js"></script>  
-  
   <style>
-    .nav{
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 80px;
-    }
-    .header_area{
-      position:sticky;
-      width: 100%;
-    }
-    body{
-      position:  relative;
-    }
-    #logoutButton{
-      border: 0;
-      color: #00a884;
-      background-color: white;
-      padding-left: 18px;
-      padding-bottom: 10px;
-    }
-    #loginButton{
-      padding-left: 18px;
-      padding-bottom: 10px;
-    }
-  </style>
+    /* ── Header shell ───────────────────────────────────── */
+.header_area {
+  position: sticky !important;
+  top: 0 !important;
+  width: 100% !important;
+  z-index: 1030 !important;
+  background: rgba(255,255,255,0.96) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(15,23,42,0.08) !important;
+  box-shadow: none !important;
+}
 
+/* ── Navbar row ─────────────────────────────────────── */
+.header_area .navbar {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  min-height: 70px !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  border: none !important;
+  position: relative;
+}
+
+/* ── Brand ──────────────────────────────────────────── */
+.header_area .navbar-brand {
+  flex-shrink: 0;
+  margin-right: 24px;
+  padding: 0;
+}
+
+.header_area .navbar-brand img {
+  height: 36px;
+  width: auto;
+  display: block;
+}
+
+/* ── Collapse wrapper ───────────────────────────────── */
+/* !! REMOVED flex overrides from here — they were breaking Bootstrap's collapse on mobile !! */
+.header_area .navbar-collapse {
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+/* Kill the old .row / .col wrappers if still present */
+.header_area .navbar-collapse > .row {
+  display: contents !important;
+}
+.header_area .navbar-collapse > .row > [class*="col-"] {
+  display: contents !important;
+}
+
+/* ── Desktop: force flex row layout ────────────────── */
+@media (min-width: 992px) {
+  .header_area .navbar-collapse {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex: 1 1 auto !important;
+    width: auto !important;
+  }
+}
+
+/* ── Center nav ─────────────────────────────────────── */
+.header_area .center_nav {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 5px !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex: 1 1 auto !important;
+}
+
+/* ── Right nav ──────────────────────────────────────── */
+.header_area .right_nav {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 6px !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+.header_area .right_nav .nav-item,
+.header_area .center_nav .nav-item {
+  display: flex !important;
+  align-items: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* ── Nav links ──────────────────────────────────────── */
+.header_area .nav-link,
+.header_area .center_nav .nav-item .nav-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #0f172a !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  padding: 8px 14px !important;
+  border-radius: 999px !important;
+  line-height: 1 !important;
+  border: none !important;
+  background: transparent !important;
+  transition: background-color 150ms ease, color 150ms ease !important;
+  white-space: nowrap !important;
+}
+
+.header_area .nav-item.active > .nav-link,
+.header_area .nav-link:hover {
+  background: rgba(37,99,235,0.08) !important;
+  color: #2563eb !important;
+}
+
+/* ── Icon buttons ───────────────────────────────────── */
+.header_area .icons {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  background: rgba(15,23,42,0.04) !important;
+  border: 1px solid rgba(15,23,42,0.08) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  text-decoration: none !important;
+  transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+  flex-shrink: 0;
+}
+
+.header_area .icons i {
+  font-size: 16px !important;
+  color: #0f172a !important;
+  line-height: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.header_area .icons:hover {
+  background: rgba(37,99,235,0.10) !important;
+  border-color: rgba(37,99,235,0.20) !important;
+  transform: translateY(-1px);
+}
+
+/* ── Logout button ──────────────────────────────────── */
+#logoutButton {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 8px 18px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(15,23,42,0.15) !important;
+  background: #fff !important;
+  color: #0f172a !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  text-transform: none !important;
+  transition: background-color 150ms ease, color 150ms ease !important;
+}
+
+#logoutButton:hover {
+  background: #0f172a !important;
+  color: #fff !important;
+}
+
+/* ── Login link ─────────────────────────────────────── */
+#loginButton {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 8px 18px !important;
+  border-radius: 999px !important;
+  background: rgba(37,99,235,0.10) !important;
+  color: #2563eb !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  text-transform: none !important;
+  transition: background-color 150ms ease, color 150ms ease !important;
+}
+
+#loginButton:hover {
+  background: #2563eb !important;
+  color: #fff !important;
+}
+
+/* ── Mobile toggler ─────────────────────────────────── */
+.header_area .navbar-toggler {
+  border: 1px solid rgba(15,23,42,0.12) !important;
+  border-radius: 10px !important;
+  padding: 8px 10px !important;
+  box-shadow: none !important;
+  outline: none !important;
+  flex-shrink: 0;
+}
+
+.header_area .navbar-toggler .icon-bar {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: #0f172a;
+  border-radius: 2px;
+  margin: 4px 0;
+}
+
+/* ── Mobile collapse ────────────────────────────────── */
+@media (max-width: 991.98px) {
+
+  /* Positioning and appearance of the dropdown panel */
+  .header_area .navbar-collapse {
+    position: absolute !important;
+    top: calc(100% + 10px) !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    padding: 14px !important;
+    border-radius: 16px !important;
+    background: rgba(255,255,255,0.98) !important;
+    border: 1px solid rgba(15,23,42,0.08) !important;
+    box-shadow: 0 18px 45px rgba(15,23,42,0.12) !important;
+  }
+
+  /* Hidden state — cooperates with Bootstrap instead of fighting it */
+  .header_area .navbar-collapse.collapse:not(.show) {
+    display: none !important;
+  }
+
+  /* Open state */
+  .header_area .navbar-collapse.collapse.show {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+  }
+
+  /* Bootstrap's animation state — must stay block for height transition to work */
+  .header_area .navbar-collapse.collapsing {
+    display: block !important;
+    overflow: hidden !important;
+  }
+
+  .header_area .center_nav {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 6px !important;
+    flex: unset !important;
+    width: 100% !important;
+    padding-bottom: 12px !important;
+    border-bottom: 1px solid rgba(15,23,42,0.06) !important;
+  }
+
+  .header_area .center_nav .nav-item {
+    width: 100% !important;
+  }
+
+  .header_area .center_nav .nav-link {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 12px 14px !important;
+  }
+
+  .header_area .right_nav {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    padding-top: 12px !important;
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .header_area .right_nav .nav-item {
+    margin: 0 !important;
+  }
+
+  .header_area .right_nav .nav-item:last-child {
+    width: 100% !important;
+    margin-top: 6px !important;
+  }
+
+  #loginButton,
+  #logoutButton {
+    width: 100% !important;
+  }
+}
+  </style>
 </head>
 
 <body>
   <header class="header_area">
     <div class="main_menu">
       <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-light w-100">
-          <!-- Brand and toggle get grouped for better mobile display -->
+        <nav class="navbar navbar-expand-lg navbar-light">
+
           <a class="navbar-brand logo_h" href="/">
-            <img src="/User/img/logo.svg">
+            <img src="/User/img/logo.svg" alt="UrbanDot">
           </a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+
+          <button class="navbar-toggler" type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <!-- Collect the nav links, forms, and other content for toggling -->
-          <div class="collapse navbar-collapse offset w-100" id="navbarSupportedContent">
-            <div class="row w-100 mr-0">
-              <div class="col-lg-7 pr-0">
-                <ul class="nav navbar-nav center_nav pull-right">
-                  <li class="nav-item active">
-                    <a class="nav-link" href="/">Home</a>
-                  </li>
-                  <li class="nav-item submenu dropdown">
-                    <a href="/shop" class="nav-link dropdown-toggle" id="shopBtn" data-toggle="dropdown" role="button" aria-haspopup="true"
-                      aria-expanded="false">Shop</a>
-                    <!-- <ul class="dropdown-menu">
-                      <li class="nav-item">
-                        <a class="nav-link" href="category.html">Shop Category</a>
-                      </li>
-                    </ul> -->
-                  </li>
-        
-                  <li class="nav-item submenu dropdown">
-                    <!-- <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                      aria-expanded="false">About us</a>
-                    <ul class="dropdown-menu"></ul> -->
-                  </li>
-                  <!-- <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
-                  </li> -->
-                </ul>
-              </div>
 
-              <div class="col-lg-5 pr-0">
-                <ul class="nav navbar-nav navbar-right right_nav pull-right">
-                  <li class="nav-item">
-                    <!-- <a href="#" class="icons">
-                      <i class="ti-search" aria-hidden="true"></i>
-                    </a> -->
-                  </li>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-                  <li class="nav-item">
-                    <a href="/cart" class="icons">
-                      <i class="ti-shopping-cart"></i>
-                    </a>
-                  </li>
+            <ul class="center_nav justify-content-center">
+              <li class="nav-item active">
+                <a class="nav-link" href="/">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/shop">Shop</a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link"
+                  aria-haspopup="true"
+                  aria-expanded="false">About us
+                </a>
+                
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Contact us</a>
+              </li>
+            </ul>
 
-                  <li class="nav-item">
-                    <a href="/profile" class="icons">
-                      <i class="ti-user" aria-hidden="true"></i>
-                    </a>
-                  </li>
+            <ul class="right_nav">
+              <li class="nav-item">
+                <a href="/cart" class="icons">
+                  <i class="ti-shopping-cart"></i>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/profile" class="icons">
+                  <i class="ti-user" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/wishlist" class="icons">
+                  <i class="ti-heart" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li class="nav-item">
+                <% if (isLoggedIn) { %>
+                  <button id="logoutButton">Logout</button>
+                <% } else { %>
+                  <a href="/login" id="loginButton">Login</a>
+                <% } %>
+              </li>
+            </ul>
 
-                  <li class="nav-item">
-                    <a href="/wishlist" class="icons">
-                      <i class="ti-heart" aria-hidden="true"></i>
-                    </a>
-                    <% if (isLoggedIn) { %>
-                      <button id="logoutButton">Logout</button>
-                    <% } else { %>
-                      <a href="/login" id="loginButton">Login</a>
-                    <% } %>
-                  </li>
-                </ul>
-              </div>
-            </div>
           </div>
         </nav>
       </div>
     </div>
   </header>
+  <script src="/User/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
