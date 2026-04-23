@@ -1,174 +1,203 @@
-
-  <%-include("../../Views/Partials/user/header")%>
+<%-include("../../Views/Partials/user/header")%>
 
 <style>
   * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 
-  body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  /* Heart Icon Styling */
+  .heart-icon {
+    font-size: 20px; 
+    color: gray;
+    transition: color 0.3s ease, transform 0.3s ease;
+    position: relative;
+    z-index: 5;
   }
 
-  .container {
-      max-width: 1200px;
-      margin: 0 auto;
-  }
-  .categories-grid div{ 
-    width: 190px;
-    height: 190px;
+  .heart-icon.active {
+    color: red;
+    transform: scale(1.1); /* Subtle pop effect */
   }
 
-  .category{
-    padding-top: 40px;
-    padding-bottom: 160px;
-    padding-left: 60px;
-    padding-right: 60px;
+  /* Fireworks Container */
+  .fireworks {
+    position: absolute;
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Perfect center */
+    width: 60px;
+    height: 60px;
+    pointer-events: none;
+    z-index: 1;
   }
 
-  h1 {
-      text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 48px;
+  .firework-spark {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: gold; /* Golden spark */
+    border-radius: 50%;
+    opacity: 0;
+    animation: explode 0.8s ease-out forwards;
   }
 
-  .categories-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 32px;
+  .firework-spark:nth-child(even) {
+    background-color: orange; /* Alternate color for variety */
   }
 
-  @media (min-width: 768px) {
-  .categories-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  }
-
-  @media (min-width: 1024px) {
-    .categories-grid {
-      grid-template-columns: repeat(6, 1fr);
+  @keyframes explode {
+    0% {
+      transform: translate(0, 0) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(var(--x), var(--y)) scale(0.5);
+      opacity: 0;
     }
   }
 
-  .category-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
+  /*---------------------
+    Hero
+  -----------------------*/
+  .primary-btn {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 14px 30px;
+    color: #ffffff;
+    background: #000000;
+    letter-spacing: 4px;
   }
 
-  .category-image-container {
-    width: 100%;
-    padding-top: 100%; /* Creates a perfect circle */
+  .primary-btn i {
+    margin-left: 14px;
+    font-size: 12px;
+    vertical-align: middle;
+  }
+
+  .hero__items {
+    height: 800px;
+    padding-top: 230px;
+  }
+
+  .hero__text h6 {
+    color: #e53637;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 28px;
     position: relative;
-    border-radius: 50%;
-    background-color: #f9fafb;
-    /* background-color: #f9fafb; */
-    /* background-color: #f8f9fa; */
-    overflow: hidden;
-    transition: box-shadow 0.3s ease;
-  }
-
-  .category-image-container:hover {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    cursor: pointer;
-  }
-
-  .category-image {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      padding: 16px;
-      object-fit: contain;
-  }
-
-  .category-name {
-      font-size: 1.125rem;
-      font-weight: 500;
-      text-align: center;
-  }
-  .heart-icon {
-  font-size: 32px;
-  color: gray;
-  transition: transform 0.3s, color 0.3s;
-  cursor: pointer;
-  position: relative;
-}
-
-.heart-icon.active {
-  color: red;
-  transform: scale(1.4);
-}
-
-/* Heart Icon Styling */
-.heart-icon {
-  font-size: 20px; /* Normal size */
-  color: gray;
-  transition: color 0.3s ease, transform 0.3s ease;
-  position: relative;
-  z-index: 5;
-}
-
-.heart-icon.active {
-  color: red;
-  transform: scale(1.1); /* Subtle pop effect */
-}
-
-/* Fireworks Container */
-.fireworks {
-  position: absolute;
-  top: 50%; /* Center vertically */
-  left: 50%; /* Center horizontally */
-  transform: translate(-50%, -50%); /* Perfect center */
-  width: 60px;
-  height: 60px;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.firework-spark {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background-color: gold; /* Golden spark */
-  border-radius: 50%;
-  opacity: 0;
-  animation: explode 0.8s ease-out forwards;
-}
-
-.firework-spark:nth-child(even) {
-  background-color: orange; /* Alternate color for variety */
-}
-
-@keyframes explode {
-  0% {
-    transform: translate(0, 0) scale(1);
+    top: 0;
     opacity: 1;
+    -webkit-transition: all, 0.3s;
+    -o-transition: all, 0.3s;
+    transition: all, 0.3s;
   }
-  100% {
-    transform: translate(var(--x), var(--y)) scale(0.5);
-    opacity: 0;
-  }
-}
 
+  .hero__text h2 {
+    color: #111111;
+    font-size: 48px;
+    font-weight: 500;
+    line-height: 58px;
+    margin-bottom: 30px;
+    position: relative;
+    top: 0;
+    opacity: 1;
+    -webkit-transition: all, 0.6s;
+    -o-transition: all, 0.6s;
+    transition: all, 0.6s;
+  }
+
+  .hero__text p {
+    font-size: 16px;
+    line-height: 28px;
+    margin-bottom: 35px;
+    position: relative;
+    top: 0;
+    opacity: 1;
+    -webkit-transition: all, 0.9s;
+    -o-transition: all, 0.9s;
+    transition: all, 0.9s;
+  }
+
+  .hero__text .primary-btn {
+    position: relative;
+    top: 0;
+    opacity: 1;
+    -webkit-transition: all, 1.1s;
+    -o-transition: all, 1.1s;
+    transition: all, 1.1s;
+  }
+
+  @media (max-width: 767.98px) {
+    .hero__items {
+      height: auto;
+      min-height: calc(100vh - 70px);
+      padding-top: 156px;
+      padding-bottom: 56px;
+    }
+
+    .hero__text h6 {
+      margin-bottom: 16px;
+    }
+
+    .hero__text h2 {
+      font-size: 36px;
+      line-height: 44px;
+      margin-bottom: 18px;
+    }
+
+    .hero__text p {
+      margin-bottom: 22px;
+    }
+
+    .primary-btn {
+      padding: 12px 22px;
+      letter-spacing: 3px;
+    }
+  }
+
+  .home_banner_area {
+    margin-bottom: 85px !important;
+  }
+
+  @media (max-width: 767.98px) {
+    .home_banner_area {
+      margin-bottom: 40px !important;
+    }
+  }
+
+  .feature_product_area .single-product .product-btm h4,
+  .inspired_product_area .single-product .product-btm h4 {
+    line-height: 18px;
+    height: 36px;
+    overflow: hidden;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
 </style>
-<body>
 
+<body>
   <!--================Home Banner Area =================-->
   <section class="home_banner_area mb-40">
-    <div class="banner_inner d-flex align-items-center">
-      <div class="container">
-        <div class="banner_content row">
-          <div class="col-lg-12">
-            <p class="sub text-uppercase">men Collection</p>
-            <h3><span>Show</span> Your <br />Personal <span>Style</span></h3>
-            <h4>Fowl saw dry which a above together place.</h4>
-            <a class="main_btn mt-40" href="/shop">View Collection</a>
+    <div class="hero__slider">
+      <div class="hero__items set-bg" data-setbg="img/hero/hero-1.jpg">
+        <div class="container">
+          <div class="row">
+            <div class="col-xl-5 col-lg-7 col-md-8">
+              <div class="hero__text">
+                <h6>UrbanDot</h6>
+                <h2>Wear the Difference Be the Standard.</h2>
+                <p>Premium menswear thoughtfully crafted for the modern man. Timeless style that speaks before you do.</p>
+                <a href="/shop" class="primary-btn">Shop now <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+            </div>
+            </div>
           </div>
         </div>
       </div>
@@ -179,14 +208,14 @@
   <!-- Start feature Area -->
   <section class="feature-area section_gap_bottom_custom">
     <div class="container">
-      <div class="row">
+      <div class="row justify-content-center">
         <div class="col-lg-3 col-md-6">
           <div class="single-feature">
             <a href="#" class="title">
-              <i class="flaticon-money"></i>
-              <h3>Money back gurantee</h3>
+              <i class="fa fa-tag" aria-hidden="true"></i>
+              <h3>Best Price</h3>
             </a>
-            <p>Shall open divide a one</p>
+            <p>Quality fashion at the most competitive prices. Unbeatable value, every time.</p>
           </div>
         </div>
 
@@ -194,19 +223,9 @@
           <div class="single-feature">
             <a href="#" class="title">
               <i class="flaticon-truck"></i>
-              <h3>Free Delivery</h3>
+              <h3>Fast Shipping</h3>
             </a>
-            <p>Shall open divide a one</p>
-          </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6">
-          <div class="single-feature">
-            <a href="#" class="title">
-              <i class="flaticon-support"></i>
-              <h3>Alway support</h3>
-            </a>
-            <p>Shall open divide a one</p>
+            <p>Orders dispatched within 24 hours. Quick and reliable delivery to your doorstep.</p>
           </div>
         </div>
 
@@ -216,7 +235,17 @@
               <i class="flaticon-blockchain"></i>
               <h3>Secure payment</h3>
             </a>
-            <p>Shall open divide a one</p>
+            <p>Your payments are 100% encrypted and protected. Shop with complete confidence.</p>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+          <div class="single-feature">
+            <a href="#" class="title">
+              <i class="flaticon-money"></i>
+              <h3>Money back gurantee</h3>
+            </a>
+            <p>Not happy with your order? Get a full refund within 7 days, no questions asked.</p>
           </div>
         </div>
       </div>
@@ -230,14 +259,13 @@
       <div class="row justify-content-center">
         <div class="col-lg-12">
           <div class="main_title">
-            <h2><span>Featured products</span></h2>
-            <p>Bring called seed first of third give itself now ment</p>
+            <h2><span>New Arrivals</span></h2>
+            <p>Fresh styles just landed. Shop the latest trends before they sell out.</p>
           </div>
         </div>
       </div>
 
       <div class="row">
-        
         <% for(let i = 0; i < 3; i++){ %>
           <% let item = products[i]%>
           <div class="col-lg-4 col-md-6">
@@ -276,13 +304,6 @@
   </section>
   <!--================ End Feature Product Area =================-->
 
-  <!-- <div class="category">
-    <h1>Shop by categories</h1>
-    <div class="categories-grid d-flex justify-content-around" id="categoriesGrid">
-    
-    </div>
-  </div> -->
-
   <!--================ Offer Area =================-->
   <section class="offer_area">
     <div class="container">
@@ -291,7 +312,7 @@
           <div class="offer_content">
             <h3 class="text-uppercase mb-40">all men’s collection</h3>
             <h2 class="text-uppercase">50% off</h2>
-            <a href="/shop" class="main_btn mb-20 mt-5">Discover Now</a>
+            <a href="/shop" class="primary-btn mb-20 mt-5">Discover Now</a>
             <p>Limited Time Offer</p>
           </div>
         </div>
@@ -300,160 +321,13 @@
   </section>
   <!--================ End Offer Area =================-->
 
-  <!--================ New Product Area =================-->
-  <!-- <section class="new_product_area section_gap_top section_gap_bottom_custom">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-lg-12">
-          <div class="main_title">
-            <h2><span>new products</span></h2>
-            <p>Bring called seed first of third give itself now ment</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-lg-6">
-          <div class="new_product">
-            <h5 class="text-uppercase">collection of 2019</h5>
-            <h3 class="text-uppercase">Men’s summer t-shirt</h3>
-            <div class="product-img">
-              <img class="img-fluid" src="/User/img/product/new-product/new-product1.png" alt="" />
-            </div>
-            <h4>$120.70</h4>
-            <a href="#" class="main_btn">Add to cart</a>
-          </div>
-        </div>
-
-        <div class="col-lg-6 mt-5 mt-lg-0">
-          <div class="row">
-            
-            <div class="col-lg-6 col-md-6">
-              <div class="single-product">
-                <div class="product-img">
-                  <img class="img-fluid w-100" src="/User/img/product/new-product/n1.jpg" alt="" />
-                  <div class="p_icon">
-                    <a href="#">
-                      <i class="ti-eye"></i>
-                    </a>
-                    <a href="#">
-                      <i class="ti-heart"></i>
-                    </a>
-                    <a href="#">
-                      <i class="ti-shopping-cart"></i>
-                    </a>
-                  </div>
-                </div>
-                <div class="product-btm">
-                  <a href="#" class="d-block">
-                    <h4>Nike latest sneaker</h4>
-                  </a>
-                  <div class="mt-3">
-                    <span class="mr-4">$25.00</span>
-                    <del>$35.00</del>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-6 col-md-6">
-              <div class="single-product">
-                <div class="product-img">
-                  <img class="img-fluid w-100" src="/User/img/product/new-product/n2.jpg" alt="" />
-                  <div class="p_icon">
-                    <a href="#">
-                      <i class="ti-eye"></i>
-                    </a>
-                    <a href="#">
-                      <i class="ti-heart"></i>
-                    </a>
-                    <a href="#">
-                      <i class="ti-shopping-cart"></i>
-                    </a>
-                  </div>
-                </div>
-                <div class="product-btm">
-                  <a href="#" class="d-block">
-                    <h4>Men’s denim jeans</h4>
-                  </a>
-                  <div class="mt-3">
-                    <span class="mr-4">$25.00</span>
-                    <del>$35.00</del>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-6 col-md-6">
-              <div class="single-product">
-                <div class="product-img">
-                  <img class="img-fluid w-100" src="/User/img/product/new-product/n3.jpg" alt="" />
-                  <div class="p_icon">
-                    <a href="#">
-                      <i class="ti-eye"></i>
-                    </a>
-                    <a href="#">
-                      <i class="ti-heart"></i>
-                    </a>
-                    <a href="#">
-                      <i class="ti-shopping-cart"></i>
-                    </a>
-                  </div>
-                </div>
-                <div class="product-btm">
-                  <a href="#" class="d-block">
-                    <h4>quartz hand watch</h4>
-                  </a>
-                  <div class="mt-3">
-                    <span class="mr-4">$25.00</span>
-                    <del>$35.00</del>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-6 col-md-6">
-              <div class="single-product">
-                <div class="product-img">
-                  <img class="img-fluid w-100" src="/User/img/product/new-product/n4.jpg" alt="" />
-                  <div class="p_icon">
-                    <a href="#">
-                      <i class="ti-eye"></i>
-                    </a>
-                    <a href="#">
-                      <i class="ti-heart"></i>
-                    </a>
-                    <a href="#">
-                      <i class="ti-shopping-cart"></i>
-                    </a>
-                  </div>
-                </div>
-                <div class="product-btm">
-                  <a href="#" class="d-block">
-                    <h4>adidas sport shoe</h4>
-                  </a>
-                  <div class="mt-3">
-                    <span class="mr-4">$25.00</span>
-                    <del>$35.00</del>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section> -->
-  <!--================ End New Product Area =================-->
-
   <!--================ Inspired Product Area =================-->
   <section class="inspired_product_area section_gap_bottom_custom">
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-lg-12">
           <div class="main_title">
-            <!-- <h2><span>Inspired products</span></h2>
-            <p>Bring called seed first of third give itself now ment</p> -->
+            
           </div>
         </div>
       </div>
@@ -506,62 +380,7 @@
   <!--================ End Inspired Product Area =================-->
 
   <script>
-    const categories = [
-        {
-            id: 1,
-            name: 'Top wear',
-            image: "/User/img/category/topwear.png"
-        },
-        {
-            id: 2,
-            name: 'Bottom wear',
-            image: '/User/img/category/bottomwear.png'
-        },
-        {
-            id: 3,
-            name: 'Footwear',
-            image: '/User/img/category/footwear.png'
-
-        },
-        {
-            id: 4,
-            name: 'Watches',
-            image: '/User/img/category/watches.jpeg'
-        },
-
-    ];
-
-    function renderCategories() {
-        const categoriesGrid = document.getElementById('categoriesGrid');
-        
-        categories.forEach(category => {
-            const categoryElement = document.createElement('div');
-            categoryElement.className = 'category-item';
-            
-            categoryElement.innerHTML = `
-                <div class="category-image-container">
-                    <img 
-                        src="${category.image}" 
-                        alt="${category.name}" 
-                        class="category-image"
-                    >
-                </div>
-                <h2 class="category-name">${category.name}</h2>
-            `;
-
-            // Add click event listener if needed
-            categoryElement.addEventListener('click', () => {
-                console.log(`Category clicked: ${category.name}`);
-                // Add your navigation logic here
-            });
-
-            categoriesGrid.appendChild(categoryElement);
-        });
-    }
-
   async function addToWishlist(id, element, event) {
-    event.preventDefault();
-
     try {
       let response = await fetch("/wishlist", {
         method: "POST",
@@ -573,7 +392,6 @@
 
       if (!data.success) {
         return Must.failure({ time: 3000, content: data.message })
-        return;
       }
 
       // Heart Icon Animation
