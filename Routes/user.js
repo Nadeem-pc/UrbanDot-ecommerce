@@ -56,7 +56,7 @@ user.post('/cart/update',cartController.updateCart)
 
 // Wishlist Management
 user.get('/wishlist', isBlocked, userAuth, wishlistController.loadWishlist)
-user.post('/wishlist',wishlistController.addToWishlist)
+user.post('/wishlist',userAuth, wishlistController.addToWishlist)
 user.delete('/wishlist/remove/:productId',wishlistController.removeProduct)
 
 // Order Management
@@ -75,16 +75,17 @@ user.get('/checkout/:id',isBlocked,userAuth,orderController.loadAddNewAddress)
 user.post('/addNewAddress',orderController.addNewAddress)
 user.get('/payment',isBlocked,userAuth, orderController.loadPaymentPage)
 user.post('/getUserAddress',orderController.getUserAddressInCheckout)
-user.post('/createRazorpayOrder',orderController.createRazorpayOrder);
-user.post('/verifyRazorpayPayment',orderController.verifyRazorpayPayment);
+user.post('/createRazorpayOrder',orderController.createRazorpayOrder)
+user.post('/verifyRazorpayPayment',orderController.verifyRazorpayPayment)
 user.post('/verifyCoupon',orderController.verifyCoupon)
-user.post('/handleFailedPayment',orderController.handleFailedPayment);
+user.post('/handleFailedPayment',orderController.handleFailedPayment)
 user.post('/retryPayment',orderController.retryPayment)
 
 // Others
 user.get('/blocked', userController.blockedUser)
 user.get('/pageNotFound',userController.pageNotFound)
 user.get('/unavailable',ShoppingController.productUnavailable)
+user.get('/contact',userController.loadContact)
 
 // Google Authentication
 user.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}))
