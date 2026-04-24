@@ -39,6 +39,7 @@ app.use(express.static(path.join(__dirname,'Public')))
 // Middleware to set session data for use in views
 app.use((req, res, next) => {
     res.locals.isLoggedIn = !!req.session.user; 
+    res.locals.currentPath = req.path;
     next();
 });
 
