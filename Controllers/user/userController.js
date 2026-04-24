@@ -388,6 +388,15 @@ const updatePassword = async (req, res) => {
     }
 };
 
+const loadContact = async (req, res) => {
+    try {
+        return res.render('contact');
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
 module.exports = {
     logout,
     resendOtp,
@@ -396,6 +405,7 @@ module.exports = {
     loadSignUp,
     verifyLogin,
     blockedUser,
+    loadContact,
     loadHomePage,
     pageNotFound,
     insertSignUp,
